@@ -9,6 +9,8 @@ int main(int argc, char **argv)
     {
         while (1)
         {
+
+
             input = readline("minishell$ ");
             if (input == NULL)
             {
@@ -24,8 +26,17 @@ int main(int argc, char **argv)
 
 
 	        // printf(">>> %s\n", input);
-	        printf(">>> %s\n", &input[5]);
+	        // printf(">>>%s\n", &input[5]);
+
+            // char cwd[1024];
+            // if (ft_strncmp(input, "pwd", 3) == 0)
+            // {
+            //     getcwd(cwd, sizeof(cwd));
+            //     printf("%s\n", cwd);
+            // }
+            
             // echo_cmd(input);
+            pwd_cmd(input);
             free(input);
         }
     }
