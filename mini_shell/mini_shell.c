@@ -22,7 +22,9 @@ int main(int argc, char **argv)
                 // just to take an image.
             // <<<
 
-	        // printf(">>> %s\n", input+5);
+
+	        // printf(">>> %s\n", input);
+	        printf(">>> %s\n", &input[5]);
             // echo_cmd(input);
             free(input);
         }
