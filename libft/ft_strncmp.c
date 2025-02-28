@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../mini_shell/mini_shell.h"
+#include "../srcs/mini_shell.h"
 
 int	ft_strncmp(char *s1, char *s2, size_t n)
 {

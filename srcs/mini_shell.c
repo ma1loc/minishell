@@ -19,28 +19,17 @@ int main(int argc, char **argv, char **env)
                 break;
             }
             
-            // >>> parsing
+            // >>> parsing (tokenization)
                 // will start here.
                 // just to take an image.
             // <<<
 
+            cd_cmd(input);
 
-	        // printf(">>> %s\n", input);
-	        // printf(">>>%s\n", &input[5]);
-
-            // char cwd[1024];
-            // if (ft_strncmp(input, "pwd", 3) == 0)
-            // {
-            //     getcwd(cwd, sizeof(cwd));
-            //     printf("%s\n", cwd);
-            // }
-            
             // echo_cmd(input);
             // pwd_cmd(input);
-            // cd_cmd(input);
             // exit_cmd(input);
             env_cmd(input, env);
-            // printf("%s\n", getenv(input));
             free(input);
         }
     }

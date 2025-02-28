@@ -9,7 +9,8 @@
 /*   Updated: 2024/11/08 15:53:58 by yanflous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../mini_shell/mini_shell.h"
+
+#include "../srcs/mini_shell.h"
 
 size_t	ft_strlen(char *str)
 {

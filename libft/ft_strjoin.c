@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../mini_shell/mini_shell.h"
+#include "../srcs/mini_shell.h"
 
 static void	mem_fill(char *str, char *ptr, size_t idx)
 {

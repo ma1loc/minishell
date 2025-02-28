@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../mini_shell/mini_shell.h"
-
+#include "../srcs/mini_shell.h"
 
 int	ft_putnbr(int nbr)
 {

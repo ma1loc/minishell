@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../mini_shell/mini_shell.h"
+#include "../srcs/mini_shell.h"
 
 static	int	puthex(unsigned long n)
 {
