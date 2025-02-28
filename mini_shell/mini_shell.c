@@ -36,7 +36,9 @@ int main(int argc, char **argv)
             // }
             
             // echo_cmd(input);
-            pwd_cmd(input);
+            // pwd_cmd(input);
+            // cd_cmd(input);
+            exit_cmd(input);
             free(input);
         }
     }

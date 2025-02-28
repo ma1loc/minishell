@@ -20,6 +20,7 @@ void	ft_putstr_fd(char *s, int fd);
 // >>> built_in_cmds
 void    echo_cmd(char *args);   // the echo command fun.
 void	pwd_cmd(char *input);   // the pwd path print fun.
-// void    cd_cmd(char *args);
+void    cd_cmd(char *args);     // the cd command fun.
+void	exit_cmd(char *input);   // the exit command fun.
 
 # endif
