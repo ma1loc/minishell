@@ -1,7 +1,7 @@
 #include "mini_shell.h"
 
 // cc cc.c -lreadline -o a.out
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **env)
 {
     char *input;
     argv[1] = NULL;
@@ -38,7 +38,9 @@ int main(int argc, char **argv)
             // echo_cmd(input);
             // pwd_cmd(input);
             // cd_cmd(input);
-            exit_cmd(input);
+            // exit_cmd(input);
+            env_cmd(input, env);
+            // printf("%s\n", getenv(input));
             free(input);
         }
     }
