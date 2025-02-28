@@ -30,9 +30,12 @@ void	echo_cmd(char *args)
 // ◦ cd with only a relative or absolute path
 // chdir() is a syscall use to change the location of the current path
 // like [cd ..] [cd example.txt]
-// void    cd_cmd(char *args)
-// {
-// }
+void    cd_cmd(char *args)
+{
+	int	result;
+
+	
+}
 
 
 // ◦ pwd with no options
@@ -45,14 +48,15 @@ void	pwd_cmd(char *input)
 	pwd = NULL;
 	if (ft_strncmp(input, "pwd", 3) == 0)
 	{
-		if (getcwd(path, sizeof(path)))
+		pwd = getcwd(path, sizeof(path));
+		if (pwd)
 		{
 			pwd = ft_strjoin(path, "\n");
 			ft_putstr_fd(pwd, 1);
 			free(pwd);
 		}
 		else
-			perror("cd:");
+			perror("pwd:");
     }
 }
 

@@ -47,3 +47,13 @@ int main(int argc, char **argv)
     }
     return 0;
 }
+
+// main for the test leak.
+// int main()
+// {
+//     char *input;
+
+//     input = "pwd";
+//     pwd_cmd(input);
+
+// }

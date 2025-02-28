@@ -10,3 +10,8 @@
     getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
     tgetnum, tgetstr, tgoto, tputs
 
+## [chdir]
+Changing the current working directory
+The chdir() system call changes the calling process’s current working directory to
+the relative or absolute pathname specified in pathname (which is dereferenced if it
+is a symbolic link).
