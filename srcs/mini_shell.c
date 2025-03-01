@@ -1,36 +1,41 @@
 #include "mini_shell.h"
 
-// cc cc.c -lreadline -o a.out
-int main(int argc, char **argv, char **env)
+// int main(int argc, char **argv, char **env)
+int main(int argc, char **argv)
 {
     char *input;
     argv[1] = NULL;
+
+    input = NULL;
     if (argc == 1)
     {
+        // signal(SIGINT, handle_sigint);
         while (1)
         {
-
-
-            input = readline("minishell$ ");
+            input = readline("minishell$ "); // prompt && take input 
             if (input == NULL)
             {
-                free(input);
+                // free(input);
                 printf("minishell exit done\n");
                 break;
             }
-            
             // >>> parsing (tokenization)
                 // will start here.
                 // just to take an image.
             // <<<
 
-            cd_cmd(input);
-
-            // echo_cmd(input);
-            // pwd_cmd(input);
+            // >>> just a command to test.
+            // env_cmd(input, env);
+            
             // exit_cmd(input);
-            env_cmd(input, env);
-            free(input);
+            // here >>> add the input from the readline in the history buffer
+            // check for not include the enter lines in the history (just valid input)
+            // add_history(input); allocates memory for storing the command
+            if (input && *input)
+                add_history(input);
+            exit(100);
+            // rl_clear_history();
+            // free(input);
         }
     }
     else
@@ -41,12 +46,16 @@ int main(int argc, char **argv, char **env)
     return 0;
 }
 
-// main for the test leak.
+// enum    token_numbers
+// {
+//     NUM1,
+//     NUM2,
+//     NUM3,
+//     NUM4,
+//     NUM5
+// };
+
 // int main()
 // {
-//     char *input;
-
-//     input = "pwd";
-//     pwd_cmd(input);
-
+//     printf("%d", NUM1);
 // }
