@@ -35,6 +35,25 @@
     the relative or absolute pathname specified in pathname (which is dereferenced if it
     is a symbolic link).
 
+## [stat]
+    give you the same thing about the access can do buit with extra info like -> type, size, permission, etc.
+
+## [lstat]
+    lstat() is used for symbolic links, while stat() follows the link.
+
+## [fstat]
+    fstat() works with file descriptors, while stat() works with file paths.
+
+## [unlink]
+    unlink() removes a file from the filesystem. If the file is open, its data remains accessible until all processes close it.
+
+## [perror && strerror]
+    perror(): Directly prints to stderr.
+    strerror(): Returns the error message string, and you must print it (typically using printf()), which will print to stdout.
+
+## [isatty]
+    You can use isatty() to check if the shell's input or output is connected to a terminal
+
 >>> structur example <<<
 minishell/
 │── includes/

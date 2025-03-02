@@ -9,16 +9,14 @@ int main(int argc, char **argv)
     input = NULL;
     if (argc == 1)
     {
-        // signal(SIGINT, handle_sigint);
+        signal(SIGINT, signals); // 'ctrl + c'
+        signal(SIGQUIT, signals); // 'ctrl + \'
         while (1)
         {
             input = readline("minishell$ "); // prompt && take input 
             if (input == NULL)
-            {
-                // free(input);
-                printf("minishell exit done\n");
                 break;
-            }
+
             // >>> parsing (tokenization)
                 // will start here.
                 // just to take an image.
@@ -33,9 +31,8 @@ int main(int argc, char **argv)
             // add_history(input); allocates memory for storing the command
             if (input && *input)
                 add_history(input);
-            exit(100);
             // rl_clear_history();
-            // free(input);
+            free(input);
         }
     }
     else
@@ -58,4 +55,16 @@ int main(int argc, char **argv)
 // int main()
 // {
 //     printf("%d", NUM1);
+// }
+
+
+// int main() {
+//     signal(SIGQUIT, do_nothing);
+
+//     while (1) {
+//         write(1, "minishell$ ", 11);
+//         sleep(1);
+//     }
+
+//     return 0;
 // }

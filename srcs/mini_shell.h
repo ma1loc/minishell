@@ -9,24 +9,24 @@
 # include <readline/history.h>
 # include <signal.h>
 
-# define HELLO "hello"
-
 // >>> libft
-size_t  ft_strlen(char *str);
+size_t	ft_strlen(char *str);
 char	**ft_split(char *str, char separator);
 char	*ft_strjoin(char *s1, char *s2);
-int     ft_strncmp(char *s1, char *s2, size_t n);
+int		ft_strncmp(char *s1, char *s2, size_t n);
 char	*ft_strdup(char *s1);
 void	ft_putstr_fd(char *s, int fd);
 
 // >>> built_in_cmds
 void	echo_cmd(char *input);               // the echo command fun.
-void    cd_cmd(char *args);                 // the cd command fun.
+void	cd_cmd(char *args);                 // the cd command fun.
 void	pwd_cmd(char *input);               // the pwd path print fun.
 void	exit_cmd(char *input);              // the exit command fun.
 void	env_cmd(char *input, char **env);   // the env command fun.    
 
 // >>> sig
-void    handle_sigint(int sig);
+void	signals(int signal);
+void	do_sigint();
+void	do_sigquit();
 
 # endif
