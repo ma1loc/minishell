@@ -22,11 +22,24 @@ void	echo_cmd(char *input);               // the echo command fun.
 void	cd_cmd(char *args);                 // the cd command fun.
 void	pwd_cmd(char *input);               // the pwd path print fun.
 void	exit_cmd(char *input);              // the exit command fun.
-void	env_cmd(char *input, char **env);   // the env command fun.    
+void	env_cmd(char *input, char **env);   // the env command fun. 
+
+// >>> export && unset
+// >>> struct for the env variables
+typedef struct s_env
+{
+    char    *key;
+    char    *value;
+    struct  s_env *next;
+} t_env;
+
+int		env_len(char **env);
+t_env	*env_split(char	**env);
 
 // >>> sig
 void	signals(int signal);
 void	do_sigint();
 void	do_sigquit();
+
 
 # endif

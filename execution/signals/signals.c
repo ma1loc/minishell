@@ -1,6 +1,10 @@
 #include "../../srcs/mini_shell.h"
 
 // Do-do signals
+// ctrl + z
+// minishell$ ^Z
+// [2]  + 871148 suspended  ./minishell
+
 // >>> ctrl + d >>> exit
 
 // >>> ctrl + c >>> new_prompte (SIGINT)
