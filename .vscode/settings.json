@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "mini_shell.h": "c",
-        "signal.h": "c",
-        "history.h": "c"
-    }
-}
