@@ -14,10 +14,11 @@ int		env_len(char **env)
 	return (env_count);
 }
 
-void	*fill_env(char *env);
+// void	*fill_env(char *env);
 
 t_env	*set_env(char *env, int key, int value)
 {
+	(void)env;
 	t_env	*new_env;
 
 	new_env = malloc(sizeof(t_env));
