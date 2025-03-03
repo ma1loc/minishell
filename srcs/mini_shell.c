@@ -23,11 +23,11 @@ int main(int argc, char **argv, char **env)
             // <<<
 
             // >>> just a command to test.
-            env_cmd(input, env);
             echo_cmd(input);
-            pwd_cmd(input);
-            cd_cmd(input);
-            exit_cmd(input);
+            env_cmd(input, env);
+            // pwd_cmd(input);
+            // cd_cmd(input);
+            // exit_cmd(input);
             
             // here >>> add the input from the readline in the history buffer
             // check for not include the enter lines in the history (just valid input)

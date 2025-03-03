@@ -34,27 +34,27 @@ t_env	*set_env(char *env, int key, int value)
 	return (new_env);
 }
 
-t_env	*env_split(char	**env)
-{
-	int		key_len;
-	int		value_len;
-	int		env_count;
-	t_env	*list_env;
-	int 	i;
+// t_env	*env_split(char	**env)
+// {
+// 	int		key_len;
+// 	int		value_len;
+// 	int		env_count;
+// 	t_env	*list_env;
+// 	int 	i;
 
-	key_len = 0;
-	value_len = 0;
-	while (env[key_len] && env[key_len] != '=')
-		key_len++;
-	while (env[key_len + value_len])
-		value_len++;
-	i = 0;
-	env_count = env_len(env);
-	while (i < env_count)
-	{
-		list_env = set_env(env[i], key_len, value_len);
-		list_env = list_env->next;
-		i++;
-	}
-	return (list_env);
-}
+// 	key_len = 0;
+// 	value_len = 0;
+// 	while (env[key_len] && env[key_len] != '=')
+// 		key_len++;
+// 	while (env[key_len + value_len])
+// 		value_len++;
+// 	i = 0;
+// 	env_count = env_len(env);
+// 	while (i < env_count)
+// 	{
+// 		list_env = set_env(env[i], key_len, value_len);
+// 		list_env = list_env->next;
+// 		i++;
+// 	}
+// 	return (list_env);
+// }

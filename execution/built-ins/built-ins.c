@@ -8,8 +8,9 @@ void	echo_cmd(char *input)
     
 	arg_len = 5;
 	str = NULL;
-	while (input[arg_len] && input[arg_len] == ' ')
-        arg_len++;
+
+	// while (input[arg_len] && input[arg_len] == ' ')
+        // arg_len++;
 	if (ft_strncmp(&input[arg_len], "-n", 2) == 0)
 	{
 		arg_len += 2;
