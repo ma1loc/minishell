@@ -8,6 +8,9 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <limits.h>
+
+// # define PATH_MAX 1024
 
 // >>> libft
 size_t	ft_strlen(char *str);
@@ -18,11 +21,12 @@ char	*ft_strdup(char *s1);
 void	ft_putstr_fd(char *s, int fd);
 
 // >>> built_in_cmds
-void	echo_cmd(char *input);               // the echo command fun.
+void	echo_cmd(char *input);               // the echo command fun. [done]
 void    execute_echo(char *input, int newline);
-
 int     cd_cmd(char *args);                 // the cd command fun. [done]
-void	pwd_cmd(char *input);               // the pwd path print fun.
+
+void	pwd_cmd();               // the pwd path print fun.
+
 void	exit_cmd(char *input);              // the exit command fun.
 void	env_cmd(char *input, char **env);   // the env command fun. 
 
