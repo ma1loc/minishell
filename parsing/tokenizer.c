@@ -88,6 +88,30 @@ t_token *tokenize(char *input)  // func to tokenize input string
       buff[1] = '\0';
       add_token(&tokens, buff, TOKEN_RED_OUT);
     }
+    else if(input[i] == '>' && input[i + 1] == '>')
+    {
+      if(j > 0)
+      {
+        buff[j] = '\0';
+        add_token(tokens, buff, TOKEN_APPEND);
+      }
+      buff[0] = '>';
+      buff[1] = '>';
+      buff[2] = '\0';
+      add_token(tokens, buff, TOKEN_APPEND);
+    }
+    else if(input[i] == '<' && input[i + 1] == '<')
+    {
+      if(j > 0)
+      {
+        buff[j] = '\0';
+        add_token(tokens, buff, TOKEN_HERDOC);
+      }
+      buff[0] = '<';
+      buff[1] = '<';
+      buff[2] = '\0';
+      add_token(tokens, buff, TOKEN_HERDOC);
+    }
     else
       buff[j++] = input[i];  // if normal character add them to the buffer
     i++;
@@ -115,12 +139,12 @@ void free_tokens(t_token *tokens) // fix it to free leaKS
   t_token *next;
 
   current = tokens;
-  next = tokens->next;
   while(current)
   {
-    free(current->value);
-    free(current);
-    current->next = current;
+    next = current->next;
+    free(current->value);  // free string
+    free(current);         // free token struct
+    current = current->next;
   }
 }
 
@@ -128,8 +152,9 @@ void free_tokens(t_token *tokens) // fix it to free leaKS
 
 int main()
 {
-  char *input = "ls -l | grep test > out.txt";
+  char *input = "ls -l | grep test >> out.txt";
   t_token *tokens = tokenize(input);
   print_tokens(tokens);
+  free_tokens(tokens);
 }
 
