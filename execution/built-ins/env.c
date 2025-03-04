@@ -1,38 +1,73 @@
 #include "../../srcs/mini_shell.h"
 
+
+// // Manage env variables (`export`, `unset`)
+// // copy the env to a structer
+
+// // first count how many env in the env
+// int		env_len(char **env)
+// {
+// 	int	env_count;
+
+// 	env_count = 0;
+// 	while (env[env_count])
+// 		env_count++;
+// 	return (env_count);
+// }
+
+// void	*fill_env(char *env);
+
+// t_env	*set_env(char *env, int key, int value)
+// {
+// 	t_env	*new_env;
+
+// 	new_env = malloc(sizeof(t_env));
+// 	if (!new_env)
+// 		return (NULL);
+// 	new_env->key = malloc(sizeof(key));
+// 	if (!new_env)
+// 		return (NULL);
+// 	new_env->value = malloc(sizeof(value));
+// 	if (!new_env)
+// 		return (NULL);
+	
+// 	return (new_env);
+// }
+
 // Manage env variables (`export`, `unset`)
 // copy the env to a structer
 
 // first count how many env in the env
-int		env_len(char **env)
-{
-	int	env_count;
+// int		env_len(char **env)
+// {
+// 	int	env_count;
 
-	env_count = 0;
-	while (env[env_count])
-		env_count++;
-	return (env_count);
-}
+// 	env_count = 0;
+// 	while (env[env_count])
+// 		env_count++;
+// 	return (env_count);
+// }
 
-// void	*fill_env(char *env);
+// // void	*fill_env(char *env);
 
-t_env	*set_env(char *env, int key, int value)
-{
-	(void)env;
-	t_env	*new_env;
+// t_env	*set_env(char *env, int key, int value)
+// {
+// 	(void)env;
+// 	t_env	*new_env;
 
-	new_env = malloc(sizeof(t_env));
-	if (!new_env)
-		return (NULL);
-	new_env->key = malloc(sizeof(key));
-	if (!new_env)
-		return (NULL);
-	new_env->value = malloc(sizeof(value));
-	if (!new_env)
-		return (NULL);
+// 	new_env = malloc(sizeof(t_env));
+// 	if (!new_env)
+// 		return (NULL);
+// 	new_env->key = malloc(sizeof(key));
+// 	if (!new_env)
+// 		return (NULL);
+// 	new_env->value = malloc(sizeof(value));
+// 	if (!new_env)
+// 		return (NULL);
 	
-	return (new_env);
-}
+// 	return (new_env);
+// }
+// >>>>>>> main
 
 // t_env	*env_split(char	**env)
 // {

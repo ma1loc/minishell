@@ -8,6 +8,9 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <limits.h>
+
+// # define PATH_MAX 1024
 
 // >>> libft
 size_t	ft_strlen(char *str);
@@ -18,11 +21,19 @@ char	*ft_strdup(char *s1);
 void	ft_putstr_fd(char *s, int fd);
 
 // >>> built_in_cmds
-void	echo_cmd(char *input);               // the echo command fun.
-void	cd_cmd(char *args);                 // the cd command fun.
-void	pwd_cmd(char *input);               // the pwd path print fun.
+void	echo_cmd(char *input);               // the echo command fun. [done]
+void    execute_echo(char *input, int newline);
+int     cd_cmd(char *args);                 // the cd command fun. [done]
+
+void	pwd_cmd();               // the pwd path print fun.
+
 void	exit_cmd(char *input);              // the exit command fun.
 void	env_cmd(char *input, char **env);   // the env command fun. 
+
+// >>> sig
+void	signals(int signal);
+void	do_sigint();
+void	do_sigquit();
 
 // >>> export && unset
 // >>> struct for the env variables
@@ -32,14 +43,5 @@ typedef struct s_env
     char    *value;
     struct  s_env *next;
 } t_env;
-
-int		env_len(char **env);
-t_env	*env_split(char	**env);
-
-// >>> sig
-void	signals(int signal);
-void	do_sigint();
-void	do_sigquit();
-
 
 # endif

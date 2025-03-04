@@ -23,6 +23,12 @@ int main(int argc, char **argv, char **env)
             // <<<
 
             // >>> just a command to test.
+
+            env_cmd(input, env);
+            cd_cmd(input);
+            pwd_cmd(input);
+
+
             echo_cmd(input);
             env_cmd(input, env);
             // pwd_cmd(input);
@@ -46,7 +52,6 @@ int main(int argc, char **argv, char **env)
 			// 	printf("%s", done_env->value);
 			// 	done_env = done_env->next;
 			// }
-
             free(input);
             // exit(111);
         }
@@ -58,29 +63,3 @@ int main(int argc, char **argv, char **env)
     }
     return 0;
 }
-
-// enum    token_numbers
-// {
-//     NUM1,
-//     NUM2,
-//     NUM3,
-//     NUM4,
-//     NUM5
-// };
-
-// int main()
-// {
-//     printf("%d", NUM1);
-// }
-
-
-// int main() {
-//     signal(SIGQUIT, do_nothing);
-
-//     while (1) {
-//         write(1, "minishell$ ", 11);
-//         sleep(1);
-//     }
-
-//     return 0;
-// }
