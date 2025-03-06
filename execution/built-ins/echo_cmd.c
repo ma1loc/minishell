@@ -1,25 +1,31 @@
 #include "../../srcs/mini_shell.h"
 
+// >>> echo -nnnnnnnnnnnnnnnnnnnnnnnnnnnnngnn hellllllloo your loser >>> to fix
 void    echo_cmd(char *input)
 {
 	int		arg_pos;
-	int		newline;
+    int     save_start;
 
 	arg_pos = 5;
-	newline = 1;
 	while (input[arg_pos] == ' ')
         arg_pos++;
 	while (input[arg_pos] == '-' && input[arg_pos + 1] == 'n')
     {
-		newline = 0;
+        save_start = arg_pos;
 		arg_pos += 2;
-		while (input[arg_pos] == 'n')
-			arg_pos++;
-		while (input[arg_pos] == ' ')
-			arg_pos++;
+        while (input[arg_pos])
+        {
+		    if (input[arg_pos] == 'n' || input[arg_pos + 1] == ' ')
+			    arg_pos++;
+            else
+            {
+                execute_echo(&input[save_start], 0);
+                return ;
+            }
+        }
 	}
 	input = &input[arg_pos];
-    execute_echo(input, newline);
+    execute_echo(input, 1);
 }
 
 void    execute_echo(char *input, int newline)
