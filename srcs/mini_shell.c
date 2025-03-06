@@ -1,4 +1,5 @@
-#include "mini_shell.h"
+# include "mini_shell.h"
+# include "../parsing/tokenizer.h"
 
 int main(int argc, char **argv, char **env)
 {
@@ -15,6 +16,7 @@ int main(int argc, char **argv, char **env)
             input = readline("minishell$ "); // prompt && take input 
             if (input == NULL)
                 break;
+            // parser
 
             // >>> build-ins.
             if (ft_strncmp(input, "echo", 4) == 0)
