@@ -73,41 +73,41 @@ t_command *pars_tokens(t_token *tokens)
   return(commandes);
 }
 
-void print_commands(t_command *commands)
-{
-    t_command *current = commands;
-    int cmd_num = 1;
+// void print_commands(t_command *commands)
+// {
+//     t_command *current = commands;
+//     int cmd_num = 1;
 
-    while (current) {
-        printf("Command %d:\n", cmd_num);
+//     while (current) {
+//         printf("Command %d:\n", cmd_num);
 
-        // Print command name
-        printf("  Name: %s\n", current->name ? current->name : "NULL");
+//         // Print command name
+//         printf("  Name: %s\n", current->name ? current->name : "NULL");
 
-        // Print arguments
-        printf("  Arguments:");
-        if (current->args && current->args[0]) {
-            for (int i = 0; current->args[i] != NULL; i++) {
-                printf(" %s", current->args[i]);
-            }
-            printf("\n");
-        } else {
-            printf(" (none)\n");
-        }
+//         // Print arguments
+//         printf("  Arguments:");
+//         if (current->args && current->args[0]) {
+//             for (int i = 0; current->args[i] != NULL; i++) {
+//                 printf(" %s", current->args[i]);
+//             }
+//             printf("\n");
+//         } else {
+//             printf(" (none)\n");
+//         }
 
-        // Print redirections
-        if (current->input_file)
-            printf("  Input File: %s\n", current->input_file);
-        if (current->output_file)
-            printf("  Output File: %s\n", current->output_file);
+//         // Print redirections
+//         if (current->input_file)
+//             printf("  Input File: %s\n", current->input_file);
+//         if (current->output_file)
+//             printf("  Output File: %s\n", current->output_file);
 
-        // Check for pipeline if `type` field exists
-        // (Assuming you added `type` to `t_command` structure)
-        if (current->type == TOKEN_PIPE)
-            printf("  Piped to next command\n");
+//         // Check for pipeline if `type` field exists
+//         // (Assuming you added `type` to `t_command` structure)
+//         if (current->type == TOKEN_PIPE)
+//             printf("  Piped to next command\n");
 
-        printf("\n"); // Better spacing between commands
-        current = current->next;
-        cmd_num++;
-    }
-}
+//         printf("\n"); // Better spacing between commands
+//         current = current->next;
+//         cmd_num++;
+//     }
+// }
