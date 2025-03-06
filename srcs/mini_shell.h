@@ -9,6 +9,7 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <limits.h>
+# include "../parsing/tokenizer.h"
 
 // # define PATH_MAX 1024
 
@@ -21,11 +22,11 @@ int		ft_strncmp(char *s1, char *s2, size_t n);
 char	*ft_strdup(char *s1);
 void	ft_putstr_fd(char *s, int fd);
 int     ft_strcmp(char *s1, char *s2);
-int     ft_isnum(int c);
+// int     ft_isnum(int c);
 void	*ft_memset(void *str, int c, size_t n);
 void	pwd_cmd();               // the pwd path print fun.
-void	exit_cmd(char *input);              // the exit command fun.
-void	env_cmd(char *input, char **env);   // the env command fun.
+// void	exit_cmd(char *input);              // the exit command fun.
+// void	env_cmd(char *input, char **env);   // the env command fun.
 
 // >>> sig
 void	signals(int signal);
@@ -46,7 +47,8 @@ t_env	*ft_lstlast(t_env *lst);
 void	ft_lstadd_back(t_env **lst, t_env *new);
 
 // >>> built_in_cmds
-void	echo_cmd(char *input);              // the echo command fun. [done]
+void    echo_cmd(t_command *cmd);           // the echo command fun. [done]
+
 void    execute_echo(char *input, int newline);
 int     cd_cmd(char *args);                 // the cd command fun. [done]
 void	pwd_cmd();                          // the pwd path print fun. [done]

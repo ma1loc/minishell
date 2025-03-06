@@ -1,56 +1,45 @@
 #include "../../srcs/mini_shell.h"
 
-// >>> echo -nnnnnnnnnnnnnnnnnnnnnnnnnnnnngnn hellllllloo your loser >>> to fix
-void    echo_cmd(char *input)
+int		is_option(char	*opt)
 {
-	int		arg_pos;
-    int     save_start;
-
-	arg_pos = 5;
-	while (input[arg_pos] == ' ')
-        arg_pos++;
-	while (input[arg_pos] == '-' && input[arg_pos + 1] == 'n')
-    {
-        save_start = arg_pos;
-		arg_pos += 2;
-        while (input[arg_pos])
-        {
-		    if (input[arg_pos] == 'n' || input[arg_pos + 1] == ' ')
-			    arg_pos++;
-            else
-            {
-                execute_echo(&input[save_start], 0);
-                return ;
-            }
-        }
-	}
-	input = &input[arg_pos];
-    execute_echo(input, 1);
-}
-
-void    execute_echo(char *input, int newline)
-{
-	int		i;
+	int	i;
 
 	i = 0;
-    while (input[i] == ' ')
-        i++;
-    int prev_space = 0;
-    while (input[i])
-    {
-        if (input[i] == ' ')
-        {
-            if (!prev_space)
-                write(1, " ", 1);
-            prev_space = 1;
-        }
-        else
-        {
-            write(1, &input[i], 1);
-            prev_space = 0;
-        }
-        i++;
-    }
-    if (newline)
-        write(1, "\n", 1);
+	if (opt[i] != '-')
+		return (1);
+	else
+		i++;
+	while (opt[i])
+	{
+		if (opt[i] == 'n')
+			i++;
+		else
+			return (1);
+	}
+	return (0);
+}
+
+void    echo_cmd(t_command *cmd)
+{
+	int	i;
+
+	i = 1;
+	if (is_option(cmd->args[i]) == 0)
+	{
+		i = 2;
+		while (cmd->args[i])
+		{
+			printf("%s", cmd->args[i]);
+			i++;
+		}
+	}
+	else
+	{
+		while (cmd->args[i])
+		{
+			printf("%s", cmd->args[i]);
+			i++;
+		}
+		printf("\n");
+	}
 }
