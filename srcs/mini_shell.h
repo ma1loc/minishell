@@ -19,6 +19,7 @@ char	*ft_strjoin(char *s1, char *s2);
 int		ft_strncmp(char *s1, char *s2, size_t n);
 char	*ft_strdup(char *s1);
 void	ft_putstr_fd(char *s, int fd);
+void	*ft_memset(void *str, int c, size_t n);
 
 // >>> built_in_cmds
 void	echo_cmd(char *input);               // the echo command fun. [done]
@@ -28,7 +29,7 @@ int     cd_cmd(char *args);                 // the cd command fun. [done]
 void	pwd_cmd();               // the pwd path print fun.
 
 void	exit_cmd(char *input);              // the exit command fun.
-void	env_cmd(char *input, char **env);   // the env command fun. 
+void	env_cmd(char *input, char **env);   // the env command fun.
 
 // >>> sig
 void	signals(int signal);
