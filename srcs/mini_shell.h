@@ -22,8 +22,10 @@ char	*ft_strdup(char *s1);
 void	ft_putstr_fd(char *s, int fd);
 int     ft_strcmp(char *s1, char *s2);
 int     ft_isnum(int c);
-
-
+void	*ft_memset(void *str, int c, size_t n);
+void	pwd_cmd();               // the pwd path print fun.
+void	exit_cmd(char *input);              // the exit command fun.
+void	env_cmd(char *input, char **env);   // the env command fun.
 
 // >>> sig
 void	signals(int signal);
