@@ -14,11 +14,10 @@ void	free_the_spliting(char	**split)
 }
 
 // >>> init the env
-t_env	*init_env(char **env)
+t_env	*init_env(char **env, t_set_env *set_env)
 {
     t_env   *env_list;
 	t_env	*new_node;
-    char    **env_split;
     int     i;
 
     i = 0;
@@ -28,30 +27,30 @@ t_env	*init_env(char **env)
 		new_node = malloc(sizeof(t_env));
 		if (!new_node)
 			return (NULL);
-		env_split = ft_split(env[i], '=');
-		if (!env_split)
-			return (free(new_node) ,NULL);
-		new_node->key = ft_strdup(env_split[0]);
-		if (env_split[1])
-			new_node->value = ft_strdup(env_split[1]);
+		set_env->env_split = ft_split(env[i], '=');
+		if (!set_env->env_split)
+			free(new_node);
+		new_node->key = ft_strdup(set_env->env_split[0]);
+		if (set_env->env_split[1])
+			new_node->value = ft_strdup(set_env->env_split[1]);
 		else
 			new_node->value = NULL;
 		new_node->next = NULL;
-		free_the_spliting(env_split);
+		free_the_spliting(set_env->env_split);
 		ft_lstadd_back(&env_list, new_node);
 		i++;
 	}
-    return env_list;
+	return (env_list);
 }
 
 // print all env
-void	env_cmd(t_env *env_list)
+void	env_cmd(t_set_env *built_in)
 {
-	if (!env_list)
+	if (!built_in->env_list)
 		return ;
-    while (env_list)
+    while (built_in->env_list)
 	{
-		printf("%s=%s\n", env_list->key, env_list->value);
-		env_list = env_list->next;
+		printf("%s=%s\n", built_in->env_list->key, built_in->env_list->value);
+		built_in->env_list = built_in->env_list->next;
 	}
 }

@@ -1,16 +1,20 @@
 #include "../../srcs/mini_shell.h"
 
-void	pwd_cmd()
+void	get_pwd(t_set_env *built_in)
 {
 	char	buf_path[PATH_MAX];
 	char	*path;
 
 	path = getcwd(buf_path, sizeof(buf_path));
 	if (path)
-	{
-		ft_putstr_fd(path, STDOUT_FILENO);
-		ft_putstr_fd("\n", STDOUT_FILENO);
-	}
+		built_in->pwd = path;
 	else
 		perror("pwd");
+}
+
+void	pwd_cmd(t_set_env *built_in)
+{
+	get_pwd(built_in);
+	printf("%s\n", built_in->pwd);
+	set_env(&built_in->env_list, "PWD", built_in->pwd);
 }

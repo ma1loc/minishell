@@ -19,27 +19,32 @@ int		is_option(char	*opt)
 	return (0);
 }
 
-void    echo_cmd(t_command *cmd)
+void	echo_print(t_command *cmd, int i)
+{
+	while (cmd->args[i])
+	{
+		printf("%s", cmd->args[i]);
+		if (cmd->args[i + 1] != NULL)
+			printf(" ");
+		i++;
+	}
+}
+
+void    echo_cmd(t_set_env *built_in)
 {
 	int	i;
 
 	i = 1;
-	if (is_option(cmd->args[i]) == 0)
+	if (!built_in->cmd->args[1])
+		printf("\n");
+	else if (is_option(built_in->cmd->args[i]) == 0)
 	{
 		i = 2;
-		while (cmd->args[i])
-		{
-			printf("%s", cmd->args[i]);
-			i++;
-		}
+		echo_print(built_in->cmd, i);
 	}
 	else
 	{
-		while (cmd->args[i])
-		{
-			printf("%s", cmd->args[i]);
-			i++;
-		}
+		echo_print(built_in->cmd, i);
 		printf("\n");
 	}
 }
