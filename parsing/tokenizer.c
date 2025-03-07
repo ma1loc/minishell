@@ -57,7 +57,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
       if(j > 0)
       {
         buff[j] = '\0';
-        add_token(&tokens, buff, TOKEN_PIPE);
+        add_token(&tokens, buff, TOKEN_WORD);
         j = 0;
       }
       buff[0] = '|';
@@ -171,10 +171,23 @@ t_token *tokenize(char *input)  // func to tokenize input string
 //     }
 //     return NULL; // No pipe found
 // }
+// char *quotes_getter(char *str)
+// {"ls |cat"
+
+//   //
+// }
+// Token get_token(char *str ,char **s1)
+// {
+//   if(*s1 = strnstr(str , ">", 1))
+//     return (REDIRECTION);
+//   else
+//     return ()
+
+// }
 
 // int main()
 // {
-//     char *input = "exit 6 6 6";
+//     char *input = "ls -la|cat >> test";
 
 //     // Tokenize the input
 //     t_token *tokens = tokenize(input);
@@ -182,6 +195,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
 //     // Print the tokens
 //     printf("Tokens:\n");
 //     print_tokens(tokens);
+//     // free_tokens(tokens);
 
 //     // Parse the tokens
 //     t_command *commands = pars_tokens(tokens);

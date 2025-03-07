@@ -8,7 +8,9 @@ typedef enum e_token_type
   TOKEN_RED_IN,
   TOKEN_RED_OUT,
   TOKEN_APPEND,
-  TOKEN_HERDOC
+  TOKEN_HERDOC,
+  TOKEN_INFILE,
+  TOKEN_OUTFILE
 } t_token_type;
 
 typedef struct s_token  // struct for tokenize input
@@ -18,6 +20,20 @@ typedef struct s_token  // struct for tokenize input
   struct s_token *next;
 
 } t_token;
+
+// typedef struct s_args_list
+// {
+//   char *value;
+//   t_token_type type;
+//   struct s_args_list *next;
+// } t_args_list;
+typedef struct s_args_list
+{
+  char *value;
+  t_token_type type;
+  struct s_args_list *next; 
+} t_args_list;
+
 
 typedef struct s_command // struct for parse tokens
 {
@@ -35,6 +51,7 @@ typedef struct s_tree
   t_token_type type;  // node command or pipe
   char *value; // command name
   char **args;
+  t_args_list args_list;
   char *input_file;   // if <
   char *out_putfile;  // if >
   struct s_tree *left; // left command
@@ -48,4 +65,10 @@ void print_commands(t_command *cmd);
 void free_tokens(t_token *tokens);
 //
 t_command *find_pipe_node(t_command *commands);
+t_args_list *add_args_to_list(t_args_list **list_head, t_token *token);
+int count_args_list(t_args_list *args);
+void fill_array(t_args_list *args_list, t_command *commads);
+void free_list_args(t_args_list *list_args);
+
+
 #endif
