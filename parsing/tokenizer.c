@@ -171,10 +171,10 @@ t_token *tokenize(char *input)  // func to tokenize input string
 //     }
 //     return NULL; // No pipe found
 // }
+
 // char *quotes_getter(char *str)
 // {"ls |cat"
 
-//   //
 // }
 // Token get_token(char *str ,char **s1)
 // {
@@ -185,9 +185,10 @@ t_token *tokenize(char *input)  // func to tokenize input string
 
 // }
 
+
 // int main()
 // {
-//     char *input = "ls -la|cat >> test";
+//     char *input = "echo hf gr gr gr gr gr g rgr hh";
 
 //     // Tokenize the input
 //     t_token *tokens = tokenize(input);
