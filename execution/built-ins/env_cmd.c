@@ -13,7 +13,6 @@ void	free_the_spliting(char	**split)
 	free(split);
 }
 
-// >>> init the env
 t_env	*init_env(char **env, t_set_env *set_env)
 {
     t_env   *env_list;
@@ -46,11 +45,14 @@ t_env	*init_env(char **env, t_set_env *set_env)
 // print all env
 void	env_cmd(t_set_env *built_in)
 {
+	t_env	*current;
+
+	current = built_in->env_list;
 	if (!built_in->env_list)
 		return ;
-    while (built_in->env_list)
+    while (current)
 	{
-		printf("%s=%s\n", built_in->env_list->key, built_in->env_list->value);
-		built_in->env_list = built_in->env_list->next;
+		printf("%s=%s\n", current->key, current->value);
+		current = current->next;
 	}
 }
