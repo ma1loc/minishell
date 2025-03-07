@@ -10,7 +10,7 @@ void    cd(t_set_env *built_in)
     {
         home = getenv("HOME");
         if (!home)
-            perror("cd: 'HOME' not set\n");
+            return (ft_putstr_fd("cd: 'HOME' not set\n", STDERR_FILENO), (void)0);
         status = chdir(home);
         if (status == -1)
             perror("cd");
@@ -23,8 +23,18 @@ void    cd(t_set_env *built_in)
     }
 }
 
+
 void    cd_cmd(t_set_env *built_in)
 {
+    if (built_in->oldpwd)
+        free(built_in->oldpwd);
+    get_oldpwd(built_in);
+    set_env(&built_in->env_list, "OLDPWD", built_in->oldpwd);
     cd(built_in);
+    free(built_in->pwd);
     get_pwd(built_in);
+    set_env(&built_in->env_list, "PWD", built_in->pwd);
 }
+
+
+
