@@ -23,7 +23,6 @@ void    cd(t_set_env *built_in)
     }
 }
 
-
 void    cd_cmd(t_set_env *built_in)
 {
     if (built_in->oldpwd)
@@ -35,6 +34,3 @@ void    cd_cmd(t_set_env *built_in)
     get_pwd(built_in);
     set_env(&built_in->env_list, "PWD", built_in->pwd);
 }
-
-
-

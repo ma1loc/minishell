@@ -65,14 +65,8 @@ void	unset_cmd(t_env **env_list, char *key);
 void	set_env(t_env **env_list, char *key, char *value);
 void	get_oldpwd(t_set_env *built_in);
 
+
 // void	env_cmd(t_env *env_list);
-
-
-
-
-
-
-
 
 // void	exit_cmd();              // the exit command fun.
 // >>> env command
