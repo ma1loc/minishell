@@ -29,7 +29,7 @@ t_command *pars_tokens(t_token *tokens)
       if(current_cmd->name == NULL)
         current_cmd->name = strdup(current->value);  // first word become the first command name
       else
-        list_args = add_args_to_list(&list_args, current);
+        add_args_to_list(&list_args, current);
     }
     else if(current->type == TOKEN_PIPE)
     {
@@ -39,6 +39,7 @@ t_command *pars_tokens(t_token *tokens)
         args_count = count_args_list(list_args);
         current_cmd->args = malloc((args_count + 2) * sizeof(char *));
         fill_array(list_args, current_cmd);
+        
         current_cmd->args[args_count + 1] = NULL;
         // free_list_args(list_args);
         list_args = NULL;
@@ -87,6 +88,7 @@ t_command *pars_tokens(t_token *tokens)
       return NULL;
 
     fill_array(list_args, current_cmd);
+    
     current_cmd->args[args_count + 1] = NULL;
     // free_list_args(list_args);
     list_args = NULL;
@@ -190,18 +192,19 @@ int count_args_list(t_args_list *args)
 void fill_array(t_args_list *list, t_command *cmd)
 {
     t_args_list *current;
-    current = list;
-
+    
     int i = 0;
-
+    
+    cmd->args[i++] = strdup(cmd->name);
+    current = list;
     if(current != NULL && strcmp(current->value, cmd->name) == 0)
       current = current->next;
-    cmd->args[i++] = strdup(cmd->name);
     while (current != NULL)
     {
         cmd->args[i++] = strdup(current->value);
         current = current->next;
     }
+    cmd->args[i] = NULL;
 }
 
 
