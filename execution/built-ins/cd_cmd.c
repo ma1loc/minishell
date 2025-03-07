@@ -1,28 +1,30 @@
 #include "../../srcs/mini_shell.h"
 
-int	cd_cmd(char *input)
+void    cd(t_set_env *built_in)
 {
-    int status;
-	char *home;
+    int     status;
+    char    *home;
 
     home = NULL;
-    while (*input && *input == ' ')
-        input++;
-    input+=2;
-    while (*input && *input == ' ')
-        input++;
-    if (*input == '\0') {
+    if (built_in->cmd->args[1] == NULL)
+    {
         home = getenv("HOME");
-        if (home == NULL) {
-            ft_putstr_fd("cd: 'HOME' not set\n", STDERR_FILENO);
-            return 1;
-        }
+        if (!home)
+            perror("cd: 'HOME' not set\n");
         status = chdir(home);
-    } else
-        status = chdir(input);
-    if (status == -1) {
-		perror("cd");
-        return 1;
+        if (status == -1)
+            perror("cd");
     }
-    return 0;
+    else
+    {
+        status = chdir(built_in->cmd->args[1]);
+        if (status == -1)
+            perror("cd");
+    }
+}
+
+void    cd_cmd(t_set_env *built_in)
+{
+    cd(built_in);
+    get_pwd(built_in);
 }
