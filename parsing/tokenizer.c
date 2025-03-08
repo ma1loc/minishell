@@ -31,18 +31,23 @@ t_token *add_token( t_token **head, char *value, t_token_type type) // function 
   return(new_token);
 }
 
+
+
 t_token *tokenize(char *input)  // func to tokenize input string
 {
   t_token *tokens;
   char buff[1024]; // buuffer to collect the characters
   int i;
   int j;
+  //int quout
 
   tokens = NULL;
   i = 0;
   j = 0;
   while(input[i] != '\0')
   {
+    if(input[i] == '\0')
+      return NULL;
     if(input[i] == ' ')
     {
       if(j > 0)  // if buffer has word save it
@@ -126,14 +131,14 @@ t_token *tokenize(char *input)  // func to tokenize input string
   return (tokens);
 }
 
-void print_tokens( t_token *tokens) // print tokens
-{
-  while(tokens != NULL)
-  {
-    printf("token => [%s], type => [%d]\n ", tokens->value, tokens->type);
-    tokens = tokens->next;
-  }
-}
+// void print_tokens( t_token *tokens) // print tokens
+// {
+//   while(tokens != NULL)
+//   {
+//     printf("token => [%s], type => [%d]\n ", tokens->value, tokens->type);
+//     tokens = tokens->next;
+//   }
+// }
 
 
 // void free_tokens(t_token *tokens)
@@ -188,7 +193,7 @@ void print_tokens( t_token *tokens) // print tokens
 
 // int main()
 // {
-//     char *input = "echo";
+//     char *input = "echo hello";
 
 //     // Tokenize the input
 //     t_token *tokens = tokenize(input);
