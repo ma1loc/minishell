@@ -52,6 +52,7 @@ typedef struct s_env
     struct  s_env *next;
 } t_env;
 
+<<<<<<< HEAD
 t_env	*ft_lstlast(t_env *lst);
 void	ft_lstadd_back(t_env **lst, t_env *new);
 
@@ -68,5 +69,14 @@ void	env_cmd(t_env *env_list);
 
 // >>> unset command
 void	unset_cmd(t_env **env_list, char *key);
+=======
+t_env   *init_env(char **env);
+void    print_env(t_env *env_list);
+t_env	*ft_lstlast(t_env *lst);
+void	ft_lstadd_back(t_env **lst, t_env *new);
+void	unset_env(t_env **env_list, char *key);
+void	env_cmd(char **env);
+
+>>>>>>> 4b13520 (update)
 
 # endif

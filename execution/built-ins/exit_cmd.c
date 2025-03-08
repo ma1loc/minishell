@@ -1,6 +1,7 @@
 #include "../../srcs/mini_shell.h"
 
 // exit with no options
+<<<<<<< HEAD
 int		arg_len(char **arg)
 {
 	int	len;
@@ -25,4 +26,10 @@ void	exit_cmd()
 		if ();
 	}
 
+=======
+void	exit_cmd()
+{
+	// >>> have to free all the allocation here before the exit 
+	exit(0);
+>>>>>>> 4b13520 (update)
 }

@@ -13,7 +13,12 @@ void	free_the_spliting(char	**split)
 	free(split);
 }
 
+<<<<<<< HEAD
 // >>> init the env
+=======
+// >>> unset && env 
+// >>> initilization of the env
+>>>>>>> 4b13520 (update)
 t_env	*init_env(char **env)
 {
     t_env   *env_list;
@@ -32,10 +37,14 @@ t_env	*init_env(char **env)
 		if (!env_split)
 			return (free(new_node) ,NULL);
 		new_node->key = ft_strdup(env_split[0]);
+<<<<<<< HEAD
 		if (env_split[1])
 			new_node->value = ft_strdup(env_split[1]);
 		else
 			new_node->value = NULL;
+=======
+		new_node->value = ft_strdup(env_split[1]);
+>>>>>>> 4b13520 (update)
 		new_node->next = NULL;
 		free_the_spliting(env_split);
 		ft_lstadd_back(&env_list, new_node);
@@ -45,7 +54,11 @@ t_env	*init_env(char **env)
 }
 
 // print all env
+<<<<<<< HEAD
 void	env_cmd(t_env *env_list)
+=======
+void	print_env(t_env *env_list)
+>>>>>>> 4b13520 (update)
 {
 	if (!env_list)
 		return ;
@@ -55,3 +68,14 @@ void	env_cmd(t_env *env_list)
 		env_list = env_list->next;
 	}
 }
+<<<<<<< HEAD
+=======
+
+void	env_cmd(char **env)
+{
+    t_env	*env_header;
+
+	env_header = init_env(env);
+	print_env(env_header);
+}
+>>>>>>> 4b13520 (update)
