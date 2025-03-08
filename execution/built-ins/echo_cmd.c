@@ -1,10 +1,5 @@
 #include "../../srcs/mini_shell.h"
 
-<<<<<<< HEAD
-int		is_option(char	*opt)
-{
-	int	i;
-=======
 // >>> echo -nnnnnnnnnnnnnnnnnnnnnnnnnnnnngnn hellllllloo your loser >>> to fix
 void    echo_cmd(char *input)
 {
@@ -36,7 +31,6 @@ void    echo_cmd(char *input)
 void    execute_echo(char *input, int newline)
 {
 	int		i;
->>>>>>> 0ce570e13e4b0b223063194c26e845647d18e9d8
 
 	i = 0;
 	if (opt[i] != '-')
