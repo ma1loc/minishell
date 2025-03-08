@@ -1,7 +1,7 @@
 #include "../../srcs/mini_shell.h"
 
 // >>> reomve the key, value from the env.
-void	unset_env(t_env **env_list, char *key)
+void	unset_cmd(t_env **env_list, char *key)
 {
     t_env	*current;
     t_env	*previous;
