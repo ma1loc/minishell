@@ -39,7 +39,7 @@ t_command *pars_tokens(t_token *tokens)
         args_count = count_args_list(list_args);
         current_cmd->args = malloc((args_count + 2) * sizeof(char *));
         fill_array(list_args, current_cmd);
-        
+
         current_cmd->args[args_count + 1] = NULL;
         // free_list_args(list_args);
         list_args = NULL;
@@ -88,18 +88,18 @@ t_command *pars_tokens(t_token *tokens)
       return NULL;
 
     fill_array(list_args, current_cmd);
-    
+
     current_cmd->args[args_count + 1] = NULL;
     // free_list_args(list_args);
     list_args = NULL;
   }
   else if (current_cmd->args == NULL)
   {
-    current_cmd->args = malloc(sizeof(char *));
+    current_cmd->args = malloc( 2 * sizeof(char *));
     if (!current_cmd->args)
       return NULL;
 
-    current_cmd->args[0] = NULL;
+    current_cmd->args[1] = NULL;
   }
   return(commandes);
 }
@@ -192,9 +192,9 @@ int count_args_list(t_args_list *args)
 void fill_array(t_args_list *list, t_command *cmd)
 {
     t_args_list *current;
-    
+
     int i = 0;
-    
+
     cmd->args[i++] = strdup(cmd->name);
     current = list;
     if(current != NULL && strcmp(current->value, cmd->name) == 0)
