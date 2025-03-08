@@ -23,11 +23,14 @@ t_set_env  *init_struct()
 void	built_ins(t_set_env *built_in)
 {
 	// >>> build-ins.
-	// while (built_in->env_list)
-	// {
-	// 	printf("%s\n", built_in->env_list->value);
-	// 	built_in->env_list = built_in->env_list->next;
-	// }
+    int i = 0;
+	while (built_in->cmd->args[i])
+	{
+		printf("%s\n", built_in->cmd->args[i]);
+        i++;
+	}
+    // printf("built_in->cmd->args[0] -> %s\n", built_in->cmd->args[0]);
+    // printf("built_in->cmd->args[1] -> %s\n", built_in->cmd->args[1]);
 	if (ft_strcmp(built_in->cmd->name, "echo") == 0)    // >>> [DONE]
 		echo_cmd(built_in);
 	else if (ft_strcmp(built_in->cmd->name, "cd") == 0)    // >>> [DONE]
@@ -41,11 +44,12 @@ void	built_ins(t_set_env *built_in)
 		else
 			unset_cmd(&built_in->env_list, built_in->cmd->args[1]);
 	}
-    else if (ft_strcmp(built_in->cmd->name, "env") == 0)
+    else if (ft_strcmp(built_in->cmd->name, "env") == 0)    // >>> [DONE]
 		env_cmd(built_in);
+	
+    // else if (ft_strncmp(built_in->cmd->name, "exit", 4) == 0)
+	//     exit_cmd(built_in);
 
-	// else if (ft_strncmp(input, "exit", 4) == 0)
-	//     exit_cmd();    
 }
 
 int		main(int argc, char **argv, char **env)
@@ -55,10 +59,11 @@ int		main(int argc, char **argv, char **env)
 
     // >>> setup the env
     setup_env = init_struct();
-    setup_env->env_list = init_env(env, setup_env);
+    setup_env->env_list = init_env(env, setup_env); // seg to fix
     get_pwd(setup_env);
     set_env(&setup_env->env_list, "OLDPWD", setup_env->pwd); // here a seg
-    
+    // <<<
+
     if (argc == 1)
     {
         while (1)
@@ -68,6 +73,8 @@ int		main(int argc, char **argv, char **env)
                 break;
             setup_env->token = tokenize(setup_env->input);
             setup_env->cmd = pars_tokens(setup_env->token);
+            printf("built_in->cmd->args[0] -> %s\n", setup_env->cmd->args[0]);
+            printf("built_in->cmd->args[1] -> %s\n", setup_env->cmd->args[1]);
 			built_ins(setup_env);
 			add_history(setup_env->input);
         }
