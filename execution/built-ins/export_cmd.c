@@ -13,7 +13,6 @@ char	*get_env(t_env *env_list, char *key)
 }
 
 // >>> set the new key and value of change key value in the env.
-<<<<<<< HEAD
 // void	set_env(t_env **env_list, char *key, char *value)
 // {
 // 	t_env	*current;
@@ -38,13 +37,10 @@ char	*get_env(t_env *env_list, char *key)
 // 	last_node->next = NULL;
 // }
 
-=======
->>>>>>> 0ce570e13e4b0b223063194c26e845647d18e9d8
 void	set_env(t_env **env_list, char *key, char *value)
 {
 	t_env	*current;
 	t_env	*last_node;
-<<<<<<< HEAD
 	t_env	*new_node;
 
 	if (!env_list)
@@ -81,24 +77,3 @@ void	set_env(t_env **env_list, char *key, char *value)
 	new_node->next = NULL;
 	last_node->next = new_node;
 }
-=======
-
-	current = *env_list;
-	last_node = NULL;
-	while (current)
-	{
-		if (ft_strcmp(current->key, key) == 0)
-			return (free(current->value), \
-			current->value = ft_strdup(value), (void)0);
-		current = current->next;
-	}
-	current = *env_list;
-	last_node = ft_lstlast(current);
-	last_node->next = malloc(sizeof(t_env));
-	if (!last_node)
-		return ;
-	last_node->key = ft_strdup(key);
-	last_node->value = ft_strdup(value);
-	last_node->next = NULL;
-}
->>>>>>> 0ce570e13e4b0b223063194c26e845647d18e9d8
