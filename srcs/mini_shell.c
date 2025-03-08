@@ -23,12 +23,12 @@ t_set_env  *init_struct()
 void	built_ins(t_set_env *built_in)
 {
 	// >>> build-ins.
-    int i = 0;
-	while (built_in->cmd->args[i])
-	{
-		printf("%s\n", built_in->cmd->args[i]);
-        i++;
-	}
+    // int i = 0;
+	// while (built_in->cmd->args[i])
+	// {
+	// 	printf("%s\n", built_in->cmd->args[i]);
+    //     i++;
+	// }
     // printf("built_in->cmd->args[0] -> %s\n", built_in->cmd->args[0]);
     // printf("built_in->cmd->args[1] -> %s\n", built_in->cmd->args[1]);
 	if (ft_strcmp(built_in->cmd->name, "echo") == 0)    // >>> [DONE]
@@ -73,8 +73,6 @@ int		main(int argc, char **argv, char **env)
                 break;
             setup_env->token = tokenize(setup_env->input);
             setup_env->cmd = pars_tokens(setup_env->token);
-            printf("built_in->cmd->args[0] -> %s\n", setup_env->cmd->args[0]);
-            printf("built_in->cmd->args[1] -> %s\n", setup_env->cmd->args[1]);
 			built_ins(setup_env);
 			add_history(setup_env->input);
         }
