@@ -28,7 +28,7 @@ t_command *pars_tokens(t_token *tokens)
   {
     if(current->type == TOKEN_WORD)  // if first token is word
     {
-      if(current_cmd->name == NULL)
+      if(current_cmd->name == NULL && current->value[0] != '\0')
         current_cmd->name = strdup(current->value);  // first word become the first command name
       else
         add_args_to_list(&list_args, current);
@@ -194,11 +194,13 @@ int count_args_list(t_args_list *args)
 void fill_array(t_args_list *list, t_command *cmd)
 {
     t_args_list *current;
+
     current = NULL;
     int i = 0;
-
-    cmd->args[i++] = strdup(cmd->name);
     current = list;
+    if(!current)
+      return;
+    cmd->args[i++] = strdup(cmd->name);
     if(current != NULL && strcmp(current->value, cmd->name) == 0)
       current = current->next;
     while (current != NULL)
