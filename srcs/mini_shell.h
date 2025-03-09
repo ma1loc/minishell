@@ -8,6 +8,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <sys/stat.h>
 # include "../parsing/tokenizer.h"
 
 # define PATH_MAX 4096
@@ -22,6 +23,7 @@ char	*ft_strdup(char *s1);
 void	ft_putstr_fd(char *s, int fd);
 int     ft_strcmp(char *s1, char *s2);
 void	*ft_memset(void *str, int c, size_t n);
+int     ft_isdigit(char *str);
 
 // >>> sig
 void	signals(int signal);

@@ -12,9 +12,17 @@
 
 #include "../srcs/mini_shell.h"
 
-int	ft_isdigit(int c)
+int	ft_isdigit(char *str)
 {
-	if (c >= 48 && c <= 57)
-		return (1);
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] >= 48 && str[i] <= 57)
+			i++;
+		else
+			return (1);
+	}
 	return (0);
 }
