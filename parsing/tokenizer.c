@@ -3,6 +3,33 @@
 #include <stdlib.h>
 #include <string.h>
 
+char *strip_quotes(char *str) // func remove quotes for str
+{
+  char *rslt;
+  int len;
+  int i;
+  int j;
+
+  if(!str)
+    return (NULL);
+  len = strlen(str);
+  rslt = malloc(len + 1);
+  if(!rslt)
+    return (NULL);
+  i = 0;
+  j = 0;
+  while(i < len)
+  {
+    if(str[i] != '"' && str[i] != '\'')
+    {
+      rslt[j] = str[i];
+      j++;
+    }
+    i++;
+  }
+  rslt[j] = '\0';
+  return(rslt);
+}
 t_token *add_token( t_token **head, char *value, t_token_type type) // function creat new token and add it to the linked list
 {
   t_token *new_token;
@@ -32,23 +59,48 @@ t_token *add_token( t_token **head, char *value, t_token_type type) // function 
 }
 
 
-
 t_token *tokenize(char *input)  // func to tokenize input string
 {
   t_token *tokens;
   char buff[1024]; // buuffer to collect the characters
   int i;
   int j;
-  //int quout
+  char quout_char;
+  char *stripped;
 
   tokens = NULL;
   i = 0;
   j = 0;
+  quout_char = 0;
+  if(!input)
+    return NULL;
   while(input[i] != '\0')
   {
-    if(input[i] == '\0')
-      return NULL;
-    if(input[i] == ' ')
+    if ((input[i] == '"' || input[i] == '\'') && quout_char == 0)  // this insure that if "ls -la" become single commande name
+    {
+      quout_char = input[i];
+      if(j > 0)
+      {
+        buff[j] = '\0';
+        add_token(&tokens, buff, TOKEN_WORD);
+        j = 0;
+      }
+      buff[j++] = input[i++];
+      while(input[i] != '\0' && input[i] != quout_char)
+      {
+
+          buff[j++] = input[i++];
+      }
+      if(input[i] != '\0')
+        buff[j++] = input[i++];
+      buff[j] = '\0';
+      stripped = strip_quotes(buff);  // remove quets from the buff before add token
+      add_token(&tokens, stripped, TOKEN_WORD);
+      free(stripped);
+      j = 0;
+      quout_char = 0;
+    }
+    else if(input[i] == ' ')
     {
       if(j > 0)  // if buffer has word save it
       {
@@ -56,6 +108,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
         add_token(&tokens, buff, TOKEN_WORD);
         j = 0;
       }
+      i++;
     }
     else if(input[i] == '|')
     {
@@ -68,6 +121,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
       buff[0] = '|';
       buff[1] = '\0';
       add_token(&tokens, buff, TOKEN_PIPE);
+      i++;
     }
     else if(input[i] == '>' && input[i + 1] == '>')
     {
@@ -80,7 +134,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
       buff[1] = '>';
       buff[2] = '\0';
       add_token(&tokens, buff, TOKEN_APPEND);
-      i++;
+      i += 2;
     }
     else if(input[i] == '<' && input[i + 1] == '<')
     {
@@ -93,7 +147,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
       buff[1] = '<';
       buff[2] = '\0';
       add_token(&tokens, buff, TOKEN_HERDOC);
-      i++;
+      i += 2;
     }
     else if(input[i] == '<')
     {
@@ -106,6 +160,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
       buff[0] = '<';
       buff[1] = '\0';
       add_token(&tokens, buff, TOKEN_RED_IN);
+      i++;
     }
     else if(input[i] == '>')
     {
@@ -118,10 +173,13 @@ t_token *tokenize(char *input)  // func to tokenize input string
       buff[0] = '>';
       buff[1] = '\0';
       add_token(&tokens, buff, TOKEN_RED_OUT);
+      i++;
     }
     else
-      buff[j++] = input[i];  // if normal character add them to the buffer
-    i++;
+    {
+      buff[j++] = input[i++];  // if normal character add them to the buffer
+      continue;
+    }
   }
   if( j > 0)
   {
@@ -193,7 +251,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
 
 // int main()
 // {
-//     char *input = "echo hello";
+//     char *input = "ls -la";
 
 //     // Tokenize the input
 //     t_token *tokens = tokenize(input);
@@ -217,6 +275,51 @@ t_token *tokenize(char *input)  // func to tokenize input string
 //     else
 //     printf("No pipe node found in the command list.\n");
 
+
+//     return 0;
+// }
+
+// int main()
+// {
+//     // char *input = "\"ls\" > out";
+//     // char *input = "\"\"\"ls -la\"\"\"";
+//     // char *input = "\"\'ls -la\'\"";
+//     // char *input = "\'\'ls -la\'\'";
+//     // char *input = "echo \"hello\"";
+//     char *input = "\"ls \" -lla > out";
+
+
+//     // char *input = """";
+
+
+//     // For debugging, print the actual raw input
+//     printf("Raw input: ");
+//     for (int i = 0; input[i] != '\0'; i++) {
+//         printf("%c[%d] ", input[i], input[i]);
+//     }
+//     printf("\n\n");
+//     fflush(stdout);
+//     // Tokenize the input
+//     t_token *tokens = tokenize(input);
+
+//     // Print the tokens with a clear separation
+//     printf("---------------------------------\n");
+//     printf("Tokens from tokenization:\n");
+//     printf("---------------------------------\n");
+//     print_tokens(tokens);
+//     printf("---------------------------------\n");
+
+//     // Rest of your code as before
+//     t_command *commands = pars_tokens(tokens);
+//     t_command *pipe_node = find_pipe_node(commands);
+
+//     printf("\nParsed Commands:\n");
+//     print_commands(commands);
+
+//     if (pipe_node)
+//         printf("Found a pipe node in the command list!\n");
+//     else
+//         printf("No pipe node found in the command list.\n");
 
 //     return 0;
 // }
