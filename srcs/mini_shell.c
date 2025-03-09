@@ -33,7 +33,7 @@ void	built_ins(t_set_env *built_in)
     // printf("built_in->cmd->args[1] -> %s\n", built_in->cmd->args[1]);
 	if (ft_strcmp(built_in->cmd->name, "echo") == 0)    // >>> [DONE]
 		echo_cmd(built_in);
-	else if (ft_strcmp(built_in->cmd->name, "cd") == 0)    // >>> [DONE]
+	else if (ft_strcmp(built_in->cmd->name, "cd") == 0)    // >>> [DONE] > to fix
 		cd_cmd(built_in);
 	else if (ft_strcmp(built_in->cmd->name, "pwd") == 0)  // >>> [DONE]
 		pwd_cmd(built_in);
@@ -47,8 +47,8 @@ void	built_ins(t_set_env *built_in)
     else if (ft_strcmp(built_in->cmd->name, "env") == 0)    // >>> [DONE]
 		env_cmd(built_in);
 	
-    // else if (ft_strncmp(built_in->cmd->name, "exit", 4) == 0)
-	//     exit_cmd(built_in);
+    else if (ft_strcmp(built_in->cmd->name, "exit") == 0)   // >>> [NOT DONE]
+	    exit_cmd(built_in);
 
 }
 

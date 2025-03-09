@@ -7,19 +7,11 @@ void	get_pwd(t_set_env *built_in)
 
 	path = getcwd(buf_path, sizeof(buf_path));
 	if (path)
+	{
+		if (built_in->pwd)
+			free(built_in->pwd);
 		built_in->pwd = ft_strdup(path);
-	else
-		perror("pwd");
-}
-
-void	get_oldpwd(t_set_env *built_in)
-{
-	char	buf_path[PATH_MAX];
-	char	*path;
-
-	path = getcwd(buf_path, sizeof(buf_path));
-	if (path)
-		built_in->oldpwd = ft_strdup(path);
+	}
 	else
 		perror("pwd");
 }

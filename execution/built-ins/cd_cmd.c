@@ -1,5 +1,22 @@
 #include "../../srcs/mini_shell.h"
 
+void	get_pwd(t_set_env *built_in)
+{
+	char	buf_path[PATH_MAX];
+	char	*path;
+
+	path = getcwd(buf_path, sizeof(buf_path));
+	if (path)
+	{
+		if (built_in->pwd)
+			free(built_in->pwd);
+		built_in->pwd = ft_strdup(path);
+	}
+	else
+		perror("pwd");
+}
+
+// cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
 void    cd(t_set_env *built_in)
 {
     int     status;
@@ -27,7 +44,6 @@ void    cd_cmd(t_set_env *built_in)
 {
     if (built_in->oldpwd)
         free(built_in->oldpwd);
-    get_oldpwd(built_in);
     set_env(&built_in->env_list, "OLDPWD", built_in->oldpwd);
     cd(built_in);
     free(built_in->pwd);
