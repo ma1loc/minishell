@@ -8,6 +8,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <sys/stat.h>
 # include "../parsing/tokenizer.h"
 
 # define PATH_MAX 4096
@@ -22,6 +23,7 @@ char	*ft_strdup(char *s1);
 void	ft_putstr_fd(char *s, int fd);
 int     ft_strcmp(char *s1, char *s2);
 void	*ft_memset(void *str, int c, size_t n);
+int     ft_isdigit(char *str);
 
 // >>> sig
 void	signals(int signal);
@@ -63,8 +65,11 @@ t_env	*init_env(char **env, t_set_env *set_env);
 void	env_cmd(t_set_env *built_in);
 void	unset_cmd(t_env **env_list, char *key);
 void	set_env(t_env **env_list, char *key, char *value);
-void	get_oldpwd(t_set_env *built_in);
+
+void    cd(t_set_env *built_in);
+// void	get_oldpwd(t_set_env *built_in);
 void	exit_cmd(t_set_env  *built_in);
+
 
 // void	env_cmd(t_env *env_list);
 

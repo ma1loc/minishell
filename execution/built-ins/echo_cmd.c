@@ -29,7 +29,7 @@ void	echo_print(t_command *cmd, int i)
 		i++;
 	}
 }
-
+// >>> echo -n -n -n -n helo case to fix
 void    echo_cmd(t_set_env *built_in)
 {
 	int	i;
