@@ -24,6 +24,7 @@ void	ft_putstr_fd(char *s, int fd);
 int     ft_strcmp(char *s1, char *s2);
 void	*ft_memset(void *str, int c, size_t n);
 int     ft_isdigit(char *str);
+int     ft_atoi(const char *str);
 
 // >>> sig
 void	signals(int signal);
@@ -54,6 +55,7 @@ typedef struct s_set_env
     char        *oldpwd;
     char        **env_split;
     t_env       *env_list;
+    int         exit_status;
 }   t_set_env;
 
 // >>> built_in_cmds

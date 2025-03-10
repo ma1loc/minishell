@@ -16,6 +16,7 @@ t_set_env  *init_struct()
     set_env->oldpwd = NULL;
     set_env->env_split = NULL;
     set_env->env_list = NULL;
+    set_env->exit_status = 0;
 
     return (set_env);
 }
@@ -71,9 +72,20 @@ int		main(int argc, char **argv, char **env)
             setup_env->input = readline("minishell$ ");
             if (setup_env->input == NULL)
                 break;
+            if (setup_env->input[0] == '\0')
+                continue;
             setup_env->token = tokenize(setup_env->input);
             setup_env->cmd = pars_tokens(setup_env->token);
+            // if (!setup_env->cmd)
+            //     printf("synatx errro\n");
 			built_ins(setup_env);
+            // if (!setup_env->cmd->name)
+            // {
+            //     printf("NULL");
+            //     break;
+            // }
+            // else
+            //     printf("%s", setup_env->cmd->name);
 			add_history(setup_env->input);
         }
     }

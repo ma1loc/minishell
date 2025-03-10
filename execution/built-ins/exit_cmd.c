@@ -2,16 +2,26 @@
 
 void	exit_cmd(t_set_env  *built_in)
 {
-	// >>> have to free all the allocation here before the exit 
-	// exit: numeric argument required
-	// exit: too many arguments" and not exit
-	
+	int input;
+
     if (!built_in->cmd->args[1])
-		exit(0);
-	else if (built_in->cmd->args[2]) // >>> exit status (1) too many arguments
-		printf("minishell: exit: too many arguments\n");
+		exit(built_in->exit_status);
+	else if (built_in->cmd->args[2])
+	{
+		built_in->exit_status = 1;
+		ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
+		// exit(built_in->exit_status);
+	}
 	else if (ft_isdigit(built_in->cmd->args[1]) == 0)
 	{
-		printf("yes is a number\n");
+		input = ft_atoi(built_in->cmd->args[1]);
+		built_in->exit_status = input;
+		exit(input);
+	}
+	else
+	{
+		built_in->exit_status = 2;
+		ft_putstr_fd("minishell: exit: numeric argument required", STDERR_FILENO);
+		// exit(built_in->exit_status);
 	}
 }
