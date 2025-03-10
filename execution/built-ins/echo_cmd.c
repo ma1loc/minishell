@@ -5,7 +5,7 @@ int		is_option(char	*opt)
 	int	i;
 
 	i = 0;
-	if (opt[i] != '-')
+	if (opt[i] != '-' && opt[i + 1] != 'n')
 		return (1);
 	else
 		i++;
@@ -30,6 +30,8 @@ void	echo_print(t_command *cmd, int i)
 	}
 }
 // >>> echo -n -n -n -n helo case to fix
+// >>> have to fix "$?"
+
 void    echo_cmd(t_set_env *built_in)
 {
 	int	i;
@@ -37,6 +39,9 @@ void    echo_cmd(t_set_env *built_in)
 	i = 1;
 	if (!built_in->cmd->args[1])
 		printf("\n");
+	else if ((ft_strcmp(built_in->cmd->args[1], "$?") == 0) \
+	&& built_in->cmd->args[2] == NULL)
+		printf("%d", built_in->exit_status);
 	else if (is_option(built_in->cmd->args[i]) == 0)
 	{
 		i = 2;
