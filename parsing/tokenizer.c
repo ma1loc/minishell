@@ -28,8 +28,51 @@ char *strip_quotes(char *str) // func remove quotes for str
     i++;
   }
   rslt[j] = '\0';
+  if(j == 0)  // ensure that not return empy string
+  {
+    // printf("strip_quotes: empty string detected\n");  // debugging msg
+    free(rslt);
+    return(NULL);
+  }
   return(rslt);
 }
+
+int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or no
+{
+  int i;
+  int in_quoets;
+  char quoest_char;
+
+  i = 0;
+  in_quoets = 0;
+  quoest_char = 0;
+
+  while(input[i] != '\0')
+  {
+    if(input[i] == '"' || input[i] == '\'' && quoest_char == input[i] || in_quoets == 0)
+    {
+      if(!in_quoets)
+      {
+        in_quoets = 1;
+        quoest_char = input[i];
+      }
+      else
+      {
+        in_quoets = 0;
+        quoest_char = 0;
+      }
+    }
+    i++;
+  }
+  if(in_quoets)
+  {
+    printf("syntax error\n");
+    return(1);
+  }
+  return(0);
+}
+
+
 t_token *add_token( t_token **head, char *value, t_token_type type) // function creat new token and add it to the linked list
 {
   t_token *new_token;
@@ -74,6 +117,8 @@ t_token *tokenize(char *input)  // func to tokenize input string
   quout_char = 0;
   if(!input)
     return NULL;
+  if(check_quotes_syntax(input) != 0)
+    return (NULL);
   while(input[i] != '\0')
   {
     if ((input[i] == '"' || input[i] == '\'') && quout_char == 0)  // this insure that if "ls -la" become single commande name
@@ -91,12 +136,21 @@ t_token *tokenize(char *input)  // func to tokenize input string
 
           buff[j++] = input[i++];
       }
-      if(input[i] != '\0')
+      if(input[i] == '\0')
+      {
+        printf("syntax error\n");
+        NULL;
+      }
+      // if(input[i] != '\0')
+      else
         buff[j++] = input[i++];
       buff[j] = '\0';
       stripped = strip_quotes(buff);  // remove quets from the buff before add token
-      add_token(&tokens, stripped, TOKEN_WORD);
-      free(stripped);
+      if(stripped != NULL && *stripped != '\0') // ensure ttripped not NULL or empty
+      {
+        add_token(&tokens, stripped, TOKEN_WORD);
+        free(stripped);
+      }
       j = 0;
       quout_char = 0;
     }
@@ -286,14 +340,17 @@ t_token *tokenize(char *input)  // func to tokenize input string
 //     // char *input = "\"\'ls -la\'\"";
 //     // char *input = "\'\'ls -la\'\'";
 //     // char *input = "echo \"hello\"";
-//     char *input = "\"ls \" -lla > out";
+//     // char *input = "\"ls\" -lla > out";
+//     // char *input = "\echo -ls\" \"  \"";
+//     char *input = "\"echo hello\"\"";
+
 
 
 //     // char *input = """";
 
 
 //     // For debugging, print the actual raw input
-//     printf("Raw input: ");
+//     printf("Raw input: %s\n", input);
 //     for (int i = 0; input[i] != '\0'; i++) {
 //         printf("%c[%d] ", input[i], input[i]);
 //     }
