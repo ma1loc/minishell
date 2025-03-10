@@ -49,7 +49,7 @@ int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or
 
   while(input[i] != '\0')
   {
-    if(input[i] == '"' || input[i] == '\'' && quoest_char == input[i] || in_quoets == 0)
+    if((input[i] == '"' || input[i] == '\'') && (quoest_char == input[i] || in_quoets == 0))
     {
       if(!in_quoets)
       {
@@ -342,7 +342,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
 //     // char *input = "echo \"hello\"";
 //     // char *input = "\"ls\" -lla > out";
 //     // char *input = "\echo -ls\" \"  \"";
-//     char *input = "\"echo hello\"\"";
+//     char *input = "\"\"echo hello\"\"";
 
 
 
