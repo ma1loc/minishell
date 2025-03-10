@@ -6,7 +6,7 @@ void	unset_cmd(t_env **env_list, char *key)
     t_env	*current;
     t_env	*previous;
 
-    if (!*env_list)
+    if (!*env_list || !key)
 		return;
     current = *env_list;
     previous = NULL;

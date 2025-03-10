@@ -1,5 +1,5 @@
-CC = cc -g
-CFLAGS = -Wall -Wextra -Werror # -fsanitize=address
+CC = gcc -g ############ >>>>>>> cc
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address
 
 SRC = srcs/mini_shell.c libft/ft_strlen.c libft/ft_split.c libft/ft_strjoin.c libft/ft_strdup.c libft/ft_strncmp.c \
 	libft/ft_putstr_fd.c execution/signals/signals.c execution/built-ins/echo_cmd.c \
