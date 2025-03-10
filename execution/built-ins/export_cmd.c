@@ -23,7 +23,7 @@ char	*get_env(t_env *env_list, char *key)
 // 	while (current)
 // 	{
 // 		if (ft_strcmp(current->key, key) == 0)
-// 			return (free(current->value), \
+// 			return (free(current->value),
 // 			current->value = ft_strdup(value), (void)0);
 // 		current = current->next;
 // 	}
