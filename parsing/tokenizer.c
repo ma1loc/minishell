@@ -9,6 +9,7 @@ char *strip_quotes(char *str) // func remove quotes for str
   int len;
   int i;
   int j;
+  char quoest_type;
 
   if(!str)
     return (NULL);
@@ -18,9 +19,17 @@ char *strip_quotes(char *str) // func remove quotes for str
     return (NULL);
   i = 0;
   j = 0;
+  if(len > 0 && (str[0] == '"' || str[0] == '\''))   // identify outer quote type (first character)
+    quoest_type = str[0];
+  else
+    quoest_type = 0;
   while(i < len)
   {
-    if(str[i] != '"' && str[i] != '\'')
+    if(str[i] == quoest_type && ( i == 0 || i == len - 1))    // only strip quotes that match the outer quote type and are at the beginning or end
+    {
+        //skeep this character
+    }
+    else
     {
       rslt[j] = str[i];
       j++;
@@ -324,31 +333,37 @@ t_token *tokenize(char *input)  // func to tokenize input string
 //     print_commands(commands);
 //     //
 
-//     if (pipe_node)
-//     printf("Found a pipe node in the command list!\n");
-//     else
-//     printf("No pipe node found in the command list.\n");
+    // if (pipe_node)
+    // printf("Found a pipe node in the command list!\n");
+    // else
+    // printf("No pipe node found in the command list.\n");
 
 
 //     return 0;
 // }
 
-// int main()
+// int main(int argc , char **argv)
 // {
 //     // char *input = "\"ls\" > out";
 //     // char *input = "\"\"\"ls -la\"\"\"";
 //     // char *input = "\"\'ls -la\'\"";
 //     // char *input = "\'\'ls -la\'\'";
 //     // char *input = "echo \"hello\"";
+//     char *input = "echo \"'\"";
 //     // char *input = "\"ls\" -lla > out";
 //     // char *input = "\echo -ls\" \"  \"";
-//     char *input = "\"\"echo hello\"\"";
+//   //char *input = "\"\"echo hello\"\"";
+//   // char *input = "\"'\"";
+//   // char *input = """";
 
-
-
-//     // char *input = """";
-
-
+//     // if (argc < 2)
+//     // {
+//     //     printf("Usage: %s \"command to tokenize\"\n", argv[0]);
+//     //     printf("Example: %s \"ls -la | grep .c\"\n", argv[0]);
+//     //     return 1;
+//     // }
+//     // // Use the first argument as input
+//     // input = argv[1];
 //     // For debugging, print the actual raw input
 //     printf("Raw input: %s\n", input);
 //     for (int i = 0; input[i] != '\0'; i++) {
