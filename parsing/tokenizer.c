@@ -37,6 +37,8 @@ char *strip_quotes(char *str) // func remove quotes for str
     i++;
   }
   rslt[j] = '\0';
+  if(j == 0 && (quoest_type == '"' || quoest_type == '\''))
+    return(rslt);
   if(j == 0)  // ensure that not return empy string
   {
     // printf("strip_quotes: empty string detected\n");  // debugging msg
@@ -148,13 +150,14 @@ t_token *tokenize(char *input)  // func to tokenize input string
       if(input[i] == '\0')
       {
         printf("syntax error\n");
-        NULL;
+        return(NULL);
       }
       // if(input[i] != '\0')
       else
         buff[j++] = input[i++];
       buff[j] = '\0';
       stripped = strip_quotes(buff);  // remove quets from the buff before add token
+      printf("buff --->%s\n", buff);
       if(stripped != NULL && *stripped != '\0') // ensure ttripped not NULL or empty
       {
         add_token(&tokens, stripped, TOKEN_WORD);
@@ -298,18 +301,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
 //     return NULL; // No pipe found
 // }
 
-// char *quotes_getter(char *str)
-// {"ls |cat"
 
-// }
-// Token get_token(char *str ,char **s1)
-// {
-//   if(*s1 = strnstr(str , ">", 1))
-//     return (REDIRECTION);
-//   else
-//     return ()
-
-// }
 
 
 // int main()
@@ -349,11 +341,12 @@ t_token *tokenize(char *input)  // func to tokenize input string
 //     // char *input = "\"\'ls -la\'\"";
 //     // char *input = "\'\'ls -la\'\'";
 //     // char *input = "echo \"hello\"";
-//     char *input = "echo \"'\"";
+//     // char *input = "echo \"\"\'\"\"\'\"\"\'\'";
 //     // char *input = "\"ls\" -lla > out";
 //     // char *input = "\echo -ls\" \"  \"";
-//   //char *input = "\"\"echo hello\"\"";
-//   // char *input = "\"'\"";
+//   // char *input = "echo \'\"\'\'\"\'";
+//   char *input = "echo \"'\"";
+//   // char *input = "echo \'\"\'";
 //   // char *input = """";
 
 //     // if (argc < 2)

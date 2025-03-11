@@ -194,8 +194,9 @@ int count_args_list(t_args_list *args)
 void fill_array(t_args_list *list, t_command *cmd)
 {
     t_args_list *current;
+    char combined_args[1024] = {0};
 
-    current = NULL;
+    // current = NULL;
     int i = 0;
     current = list;
     if(!current)
@@ -203,10 +204,21 @@ void fill_array(t_args_list *list, t_command *cmd)
     cmd->args[i++] = strdup(cmd->name);
     if(current != NULL && strcmp(current->value, cmd->name) == 0)
       current = current->next;
-    while (current != NULL)
+    // printf("========>%s", current->next->value);
+    while (current != NULL )
     {
-        cmd->args[i++] = strdup(current->value);
-        current = current->next;
+        if((current->value[0] == '"' || current->value[0] == '\'') && (strlen(current->value) == 1) && current->next && (current->next->value[0] == '"' || current->next->value[0] == '\'') && strlen(current->next->value) == 1)
+        {
+          strcpy(combined_args, current->value);
+          strcat(combined_args, current->next->value);
+          cmd->args[i++] = strdup(combined_args);
+          current = current->next->next;  // Skip the next token since we've already used it
+        }
+        else
+        {
+          cmd->args[i++] = strdup(current->value);
+          current = current->next;
+        }
     }
     cmd->args[i] = NULL;
 }
