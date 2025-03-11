@@ -1,4 +1,4 @@
-#include "../../srcs/mini_shell.h"
+#include "mini_shell.h"
 
 // >>> reomve the key, value from the env.
 void	unset_cmd(t_env **env_list, char *key)

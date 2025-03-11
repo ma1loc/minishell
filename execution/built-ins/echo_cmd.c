@@ -1,4 +1,4 @@
-#include "../../srcs/mini_shell.h"
+#include "mini_shell.h"
 
 int		is_option(char	*opt)
 {
@@ -34,17 +34,18 @@ void	echo_print(t_command *cmd, int i)
 	}
 }
 
-// >>> fix echo '$?' hello 
-void    echo_cmd(t_set_env *built_in)
+// >>> set the exit status to 0 if success <<<
+void    echo_cmd(t_setup *built_in)
 {
 	int	i;
 
 	i = 1;
 	if (!built_in->cmd->args[1])
 		printf("\n");
+	// >>> fix echo '$?' hello <<<
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	else if (ft_strcmp(built_in->cmd->args[1], "$?") == 0)
-		printf("%d\n", built_in->exit_status);
+	// else if (ft_strcmp(built_in->cmd->args[1], "$?") == 0)
+		// printf("%d\n", built_in->exit_status);
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	else if (is_option(built_in->cmd->args[i]) == 0)
 	{

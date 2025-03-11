@@ -1,4 +1,4 @@
-#include "../srcs/mini_shell.h"
+#include "mini_shell.h"
 
 void	ft_lstadd_back(t_env **lst, t_env *new)
 {

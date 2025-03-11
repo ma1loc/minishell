@@ -1,4 +1,4 @@
-#include "../../srcs/mini_shell.h"
+#include "mini_shell.h"
 
 void	free_the_spliting(char	**split)
 {
@@ -13,7 +13,7 @@ void	free_the_spliting(char	**split)
 	free(split);
 }
 
-t_env	*init_env(char **env, t_set_env *set_env)
+t_env	*init_env(char **env, t_setup *set_env)
 {
     t_env   *env_list;
 	t_env	*new_node;
@@ -43,7 +43,7 @@ t_env	*init_env(char **env, t_set_env *set_env)
 }
 
 // print all env
-void	env_cmd(t_set_env *built_in)
+void	env_cmd(t_setup *built_in)
 {
 	t_env	*current;
 

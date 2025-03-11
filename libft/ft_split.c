@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
+#include "mini_shell.h"
 
 int	delim_count(char *str, char separator)
 {
