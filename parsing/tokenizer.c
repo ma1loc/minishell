@@ -3,50 +3,111 @@
 #include <stdlib.h>
 #include <string.h>
 
-char *strip_quotes(char *str) // func remove quotes for str
-{
-  char *rslt;
-  int len;
-  int i;
-  int j;
-  char quoest_type;
+// char *strip_quotes(char *str) // func remove quotes for str  my func
+// {
+//   char *rslt;
+//   int len;
+//   int i;
+//   int j;
+//   char quoest_type;
 
-  if(!str)
-    return (NULL);
-  len = strlen(str);
-  rslt = malloc(len + 1);
-  if(!rslt)
-    return (NULL);
-  i = 0;
-  j = 0;
-  if(len > 0 && (str[0] == '"' || str[0] == '\''))   // identify outer quote type (first character)
-    quoest_type = str[0];
-  else
-    quoest_type = 0;
-  while(i < len)
-  {
-    if(str[i] == quoest_type && ( i == 0 || i == len - 1))    // only strip quotes that match the outer quote type and are at the beginning or end
+//   if(!str)
+//     return (NULL);
+//   len = strlen(str);
+//   rslt = malloc(len + 1);
+//   if(!rslt)
+//     return (NULL);
+//   i = 0;
+//   j = 0;
+//   if(len > 0 && (str[0] == '"' || str[0] == '\''))   // identify outer quote type (first character)
+//     quoest_type = str[0];
+//   else
+//     quoest_type = 0;
+//   while(i < len)
+//   {
+//     if(str[i] == quoest_type && ( i == 0 || i == len - 1))    // only strip quotes that match the outer quote type and are at the beginning or end
+//     {
+//         //skeep this character
+//     }
+//     else
+//     {
+//       rslt[j] = str[i];
+//       j++;
+//     }
+//     i++;
+//   }
+//   rslt[j] = '\0';
+//   if(j == 0 && (quoest_type == '"' || quoest_type == '\''))
+//     return(rslt);
+//   if(j == 0)  // ensure that not return empy string
+//   {
+//     // printf("strip_quotes: empty string detected\n");  // debugging msg
+//     free(rslt);
+//     return(NULL);
+//   }
+//   return(rslt);
+// }
+
+
+char *strip_quotes(char *str)  //test
+{
+    char *result;
+    int len;
+    int i, j;
+    int in_dquote = 0;
+    int in_squote = 0;
+    
+    if (!str)
+        return NULL;
+    
+    len = strlen(str);
+    result = malloc(len + 1);
+    if (!result)
+        return NULL;
+    
+    i = 0;  // index for original string
+    j = 0;  // index for result string
+    
+    // Process the string character by character
+    while (i < len)
     {
-        //skeep this character
+        if (str[i] == '"' && !in_squote)
+        {
+            // Toggle double quote state if not inside single quotes
+            in_dquote = !in_dquote;
+        }
+        else if (str[i] == '\'' && !in_dquote)
+        {
+            // Toggle single quote state if not inside double quotes
+            in_squote = !in_squote;
+        }
+        else
+        {
+            // Copy any character that's not an opening/closing quote
+            result[j++] = str[i];
+        }
+        i++;
     }
-    else
+    
+    result[j] = '\0';
+    
+    // If the result is empty but the original wasn't just quotes
+    // (like for "" or '' or ""), return an empty string
+    if (j == 0 && len > 0)
+        return result;
+    
+    // For truly empty input
+    if (j == 0 && len == 0)
     {
-      rslt[j] = str[i];
-      j++;
+        free(result);
+        return NULL;
     }
-    i++;
-  }
-  rslt[j] = '\0';
-  if(j == 0 && (quoest_type == '"' || quoest_type == '\''))
-    return(rslt);
-  if(j == 0)  // ensure that not return empy string
-  {
-    // printf("strip_quotes: empty string detected\n");  // debugging msg
-    free(rslt);
-    return(NULL);
-  }
-  return(rslt);
+    
+    return result;
 }
+
+
+
 
 int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or no
 {
@@ -113,146 +174,312 @@ t_token *add_token( t_token **head, char *value, t_token_type type) // function 
 }
 
 
-t_token *tokenize(char *input)  // func to tokenize input string
-{
-  t_token *tokens;
-  char buff[1024]; // buuffer to collect the characters
-  int i;
-  int j;
-  char quout_char;
-  char *stripped;
+// t_token *tokenize(char *input)
+// {
+//   t_token *tokens = NULL;
+//   char buff[1024];
+//   int i = 0;
+//   int j = 0;
+//   char quote_char = 0;
+  
+//   if(!input)
+//     return NULL;
+//   if(check_quotes_syntax(input) != 0)
+//     return NULL;
+    
+//   while(input[i] != '\0')
+//   {
+//     // Handle quoted text
+//     if((input[i] == '"' || input[i] == '\'') && quote_char == 0)
+//     {
+//       // If we have content in the buffer, add it as a token
+//       if(j > 0)
+//       {
+//         buff[j] = '\0';
+//         add_token(&tokens, buff, TOKEN_WORD);
+//         j = 0;
+//       }
+      
+//       // Start the new token with the opening quote
+//       quote_char = input[i];
+//       buff[j++] = input[i++];
+      
+//       // Copy everything inside the quotes
+//       while(input[i] != '\0' && input[i] != quote_char)
+//       {
+//         buff[j++] = input[i++];
+//       }
+      
+//       // Handle the closing quote if present
+//       if(input[i] == '\0')
+//       {
+//         printf("syntax error\n");
+//         return NULL;
+//       }
+//       buff[j++] = input[i++]; // Add closing quote
+      
+//       // Important: After a quoted string, continue collecting characters
+//       // until we hit a space or special character
+//       while(input[i] != '\0' && input[i] != ' ' && 
+//             input[i] != '|' && input[i] != '<' && input[i] != '>')
+//       {
+//         // If we encounter another quote, process it
+//         if((input[i] == '"' || input[i] == '\''))
+//         {
+//           quote_char = input[i];
+//           buff[j++] = input[i++];
+          
+//           while(input[i] != '\0' && input[i] != quote_char)
+//           {
+//             buff[j++] = input[i++];
+//           }
+          
+//           if(input[i] == '\0')
+//           {
+//             printf("syntax error\n");
+//             return NULL;
+//           }
+//           buff[j++] = input[i++]; // Add closing quote
+//           quote_char = 0;
+//         }
+//         else
+//         {
+//           // Regular character
+//           buff[j++] = input[i++];
+//         }
+//       }
+      
+//       // Now save the complete token
+//       buff[j] = '\0';
+//       char *stripped = strip_quotes(buff);
+//       printf("buff --->%s\n", buff);
+//       if(stripped != NULL && *stripped != '\0')
+//       {
+//         add_token(&tokens, stripped, TOKEN_WORD);
+//         free(stripped);
+//       }
+//       j = 0;
+//       quote_char = 0;
+//     }
+//     else if(input[i] == ' ')
+//     {
+//       if(j > 0)
+//       {
+//         buff[j] = '\0';
+//         add_token(&tokens, buff, TOKEN_WORD);
+//         j = 0;
+//       }
+//       i++;
+//     }
+//     else if(input[i] == '|')
+//     {
+//       if(j > 0)
+//       {
+//         buff[j] = '\0';
+//         add_token(&tokens, buff, TOKEN_WORD);
+//         j = 0;
+//       }
+//       buff[0] = '|';
+//       buff[1] = '\0';
+//       add_token(&tokens, buff, TOKEN_PIPE);
+//       i++;
+//     }
+//     // Handle other special characters (>, >>, <, <<) as before
+//     else if(input[i] == '>' && input[i + 1] == '>')
+//     {
+//       if(j > 0)
+//       {
+//         buff[j] = '\0';
+//         add_token(&tokens, buff, TOKEN_WORD);
+//         j = 0;
+//       }
+//       buff[0] = '>';
+//       buff[1] = '>';
+//       buff[2] = '\0';
+//       add_token(&tokens, buff, TOKEN_APPEND);
+//       i += 2;
+//     }
+//     else if(input[i] == '<' && input[i + 1] == '<')
+//     {
+//       if(j > 0)
+//       {
+//         buff[j] = '\0';
+//         add_token(&tokens, buff, TOKEN_WORD);
+//         j = 0;
+//       }
+//       buff[0] = '<';
+//       buff[1] = '<';
+//       buff[2] = '\0';
+//       add_token(&tokens, buff, TOKEN_HERDOC);
+//       i += 2;
+//     }
+//     else if(input[i] == '<')
+//     {
+//       if(j > 0)
+//       {
+//         buff[j] = '\0';
+//         add_token(&tokens, buff, TOKEN_WORD);
+//         j = 0;
+//       }
+//       buff[0] = '<';
+//       buff[1] = '\0';
+//       add_token(&tokens, buff, TOKEN_RED_IN);
+//       i++;
+//     }
+//     else if(input[i] == '>')
+//     {
+//       if(j > 0)
+//       {
+//         buff[j] = '\0';
+//         add_token(&tokens, buff, TOKEN_WORD);
+//         j = 0;
+//       }
+//       buff[0] = '>';
+//       buff[1] = '\0';
+//       add_token(&tokens, buff, TOKEN_RED_OUT);
+//       i++;
+//     }
+//     else
+//     {
+//       buff[j++] = input[i++];
+//     }
+//   }
+  
+//   // Don't forget any remaining text
+//   if(j > 0)
+//   {
+//     buff[j] = '\0';
+//     add_token(&tokens, buff, TOKEN_WORD);
+//   }
+  
+//   return tokens;
+// }
 
-  tokens = NULL;
-  i = 0;
-  j = 0;
-  quout_char = 0;
+
+t_token *tokenize(char *input)
+{
+  t_token *tokens = NULL;
+  char buff[1024];
+  int i = 0;
+  int j = 0;
+  // int in_word = 0;
+  
   if(!input)
     return NULL;
   if(check_quotes_syntax(input) != 0)
-    return (NULL);
+    return NULL;
+    
   while(input[i] != '\0')
   {
-    if ((input[i] == '"' || input[i] == '\'') && quout_char == 0)  // this insure that if "ls -la" become single commande name
+    // Skip spaces between tokens
+    if(input[i] == ' ')
     {
-      quout_char = input[i];
+      if(j > 0)
+      {
+        // End of a word token
+        buff[j] = '\0';
+        char *stripped = strip_quotes(buff);
+        if(stripped != NULL)
+        {
+          add_token(&tokens, stripped, TOKEN_WORD);
+          free(stripped);
+        }
+        j = 0;
+        // in_word = 0;
+      }
+      i++;
+      continue;
+    }
+    
+    // Handle special tokens (pipe, redirections)
+    if(input[i] == '|' || input[i] == '<' || input[i] == '>')
+    {
+      // Save any buffered word first
       if(j > 0)
       {
         buff[j] = '\0';
-        add_token(&tokens, buff, TOKEN_WORD);
+        char *stripped = strip_quotes(buff);
+        if(stripped != NULL)
+        {
+          add_token(&tokens, stripped, TOKEN_WORD);
+          free(stripped);
+        }
         j = 0;
+        // in_word = 0;
       }
-      buff[j++] = input[i++];
-      while(input[i] != '\0' && input[i] != quout_char)
+      
+      // Handle the special token
+      if(input[i] == '|')
       {
-
-          buff[j++] = input[i++];
+        add_token(&tokens, "|", TOKEN_PIPE);
+        i++;
       }
+      else if(input[i] == '>' && input[i + 1] == '>')
+      {
+        add_token(&tokens, ">>", TOKEN_APPEND);
+        i += 2;
+      }
+      else if(input[i] == '<' && input[i + 1] == '<')
+      {
+        add_token(&tokens, "<<", TOKEN_HERDOC);
+        i += 2;
+      }
+      else if(input[i] == '>')
+      {
+        add_token(&tokens, ">", TOKEN_RED_OUT);
+        i++;
+      }
+      else if(input[i] == '<')
+      {
+        add_token(&tokens, "<", TOKEN_RED_IN);
+        i++;
+      }
+      continue;
+    }
+    
+    // We're now processing a word token (could contain quotes)
+    // in_word = 1;
+    
+    // Handle quoted sections within a word
+    if(input[i] == '"' || input[i] == '\'')
+    {
+      char quote_char = input[i];
+      buff[j++] = input[i++]; // Add opening quote
+      
+      // Copy everything inside quotes
+      while(input[i] != '\0' && input[i] != quote_char)
+      {
+        buff[j++] = input[i++];
+      }
+      
       if(input[i] == '\0')
       {
         printf("syntax error\n");
-        return(NULL);
+        return NULL;
       }
-      // if(input[i] != '\0')
-      else
-        buff[j++] = input[i++];
-      buff[j] = '\0';
-      stripped = strip_quotes(buff);  // remove quets from the buff before add token
-      printf("buff --->%s\n", buff);
-      if(stripped != NULL && *stripped != '\0') // ensure ttripped not NULL or empty
-      {
-        add_token(&tokens, stripped, TOKEN_WORD);
-        free(stripped);
-      }
-      j = 0;
-      quout_char = 0;
-    }
-    else if(input[i] == ' ')
-    {
-      if(j > 0)  // if buffer has word save it
-      {
-        buff[j] = '\0';
-        add_token(&tokens, buff, TOKEN_WORD);
-        j = 0;
-      }
-      i++;
-    }
-    else if(input[i] == '|')
-    {
-      if(j > 0)
-      {
-        buff[j] = '\0';
-        add_token(&tokens, buff, TOKEN_WORD);
-        j = 0;
-      }
-      buff[0] = '|';
-      buff[1] = '\0';
-      add_token(&tokens, buff, TOKEN_PIPE);
-      i++;
-    }
-    else if(input[i] == '>' && input[i + 1] == '>')
-    {
-      if(j > 0)
-      {
-        buff[j] = '\0';
-        add_token(&tokens, buff, TOKEN_APPEND);
-      }
-      buff[0] = '>';
-      buff[1] = '>';
-      buff[2] = '\0';
-      add_token(&tokens, buff, TOKEN_APPEND);
-      i += 2;
-    }
-    else if(input[i] == '<' && input[i + 1] == '<')
-    {
-      if(j > 0)
-      {
-        buff[j] = '\0';
-        add_token(&tokens, buff, TOKEN_HERDOC);
-      }
-      buff[0] = '<';
-      buff[1] = '<';
-      buff[2] = '\0';
-      add_token(&tokens, buff, TOKEN_HERDOC);
-      i += 2;
-    }
-    else if(input[i] == '<')
-    {
-      if(j > 0)
-      {
-        buff[j] = '\0';
-        add_token(&tokens, buff, TOKEN_RED_IN);
-        j = 0;
-      }
-      buff[0] = '<';
-      buff[1] = '\0';
-      add_token(&tokens, buff, TOKEN_RED_IN);
-      i++;
-    }
-    else if(input[i] == '>')
-    {
-      if(j > 0)
-      {
-        buff[j] = '\0';
-        add_token(&tokens, buff, TOKEN_RED_OUT);
-        j = 0;
-      }
-      buff[0] = '>';
-      buff[1] = '\0';
-      add_token(&tokens, buff, TOKEN_RED_OUT);
-      i++;
+      
+      buff[j++] = input[i++]; // Add closing quote
     }
     else
     {
-      buff[j++] = input[i++];  // if normal character add them to the buffer
-      continue;
+      // Just a regular character in a word
+      buff[j++] = input[i++];
     }
   }
-  if( j > 0)
+  
+  // Don't forget any remaining text in the buffer
+  if(j > 0)
   {
     buff[j] = '\0';
-    add_token(&tokens, buff, TOKEN_WORD);
+    char *stripped = strip_quotes(buff);
+    if(stripped != NULL)
+    {
+      add_token(&tokens, stripped, TOKEN_WORD);
+      free(stripped);
+    }
   }
-  return (tokens);
+  
+  return tokens;
 }
 
 // void print_tokens( t_token *tokens) // print tokens
@@ -345,7 +572,7 @@ t_token *tokenize(char *input)  // func to tokenize input string
 //     // char *input = "\"ls\" -lla > out";
 //     // char *input = "\echo -ls\" \"  \"";
 //   // char *input = "echo \'\"\'\'\"\'";
-//   char *input = "echo \"'\"";
+//   char *input = "echo \"hello\"\" word\"";
 //   // char *input = "echo \'\"\'";
 //   // char *input = """";
 

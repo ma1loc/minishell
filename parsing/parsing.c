@@ -204,7 +204,6 @@ void fill_array(t_args_list *list, t_command *cmd)
     cmd->args[i++] = strdup(cmd->name);
     if(current != NULL && strcmp(current->value, cmd->name) == 0)
       current = current->next;
-    // printf("========>%s", current->next->value);
     while (current != NULL )
     {
         if((current->value[0] == '"' || current->value[0] == '\'') && (strlen(current->value) == 1) && current->next && (current->next->value[0] == '"' || current->next->value[0] == '\'') && strlen(current->next->value) == 1)
