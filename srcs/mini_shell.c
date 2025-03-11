@@ -1,5 +1,5 @@
 # include "mini_shell.h"
-# include "tokenizer.h"
+# include "../parsing/tokenizer.h" // to change
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // void print_minishell(void)
@@ -44,7 +44,7 @@ void	built_ins(t_setup *built_in)
 {
 	if (ft_strcmp(built_in->cmd->name, "echo") == 0)    // >>> [Done]
 		echo_cmd(built_in);
-	else if (ft_strcmp(built_in->cmd->name, "cd") == 0)    // >>> [D] > to fix seg
+	else if (ft_strcmp(built_in->cmd->name, "cd") == 0)    // >>> [Done]
 		cd_cmd(built_in);
 	else if (ft_strcmp(built_in->cmd->name, "pwd") == 0)  // >>> [Done]
 		pwd_cmd(built_in);
