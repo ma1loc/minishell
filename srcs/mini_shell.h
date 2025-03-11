@@ -13,6 +13,15 @@
 
 # define PATH_MAX 4096
 
+// >>> exit status define
+#define EXIT_SUCCESS 0
+#define EXIT_FAIL 1
+#define SYNTAX_ERROR 2
+#define CMD_NOT_FOUND 127
+#define CMD_NOT_EXEC 126
+// #define EXIT_SEVERE 128
+// >>>>>>>>>>>>>>>>>>>>>>>
+
 // >>> libft
 size_t	ft_strlen(char *str);
 char	**ft_split(char *str, char separator);
@@ -45,7 +54,7 @@ t_env	*ft_lstlast(t_env *lst);
 void	ft_lstadd_back(t_env **lst, t_env *new);
 
 // >>> start init all the env
-typedef struct s_set_env
+typedef struct s_setup
 {
     char        *input;
     t_env       *env;
@@ -56,21 +65,21 @@ typedef struct s_set_env
     char        **env_split;
     t_env       *env_list;
     int         exit_status;
-}   t_set_env;
+}   t_setup;
 
 // >>> built_in_cmds
-void    echo_cmd(t_set_env *built_in);       // the echo command fun. [done]
-void    cd_cmd(t_set_env *built_in);         // the cd command fun. [done]
-void	pwd_cmd(t_set_env *built_in);        // the pwd path print fun. [done]
-void	get_pwd(t_set_env *built_in);
-t_env	*init_env(char **env, t_set_env *set_env);
-void	env_cmd(t_set_env *built_in);
+void    echo_cmd(t_setup *built_in);       // the echo command fun. [done]
+void    cd_cmd(t_setup *built_in);         // the cd command fun. [done]
+void	pwd_cmd(t_setup *built_in);        // the pwd path print fun. [done]
+void	get_pwd(t_setup *built_in);
+t_env	*init_env(char **env, t_setup *set_env);
+void	env_cmd(t_setup *built_in);
 void	unset_cmd(t_env **env_list, char *key);
 void	set_env(t_env **env_list, char *key, char *value);
 
-void    cd(t_set_env *built_in);
+void    cd(t_setup *built_in);
 // void	get_oldpwd(t_set_env *built_in);
-void	exit_cmd(t_set_env  *built_in);
+void	exit_cmd(t_setup  *built_in);
 
 
 // void	env_cmd(t_env *env_list);

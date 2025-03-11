@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
+#include "mini_shell.h"
 
 size_t	ft_strlen(char *str)
 {

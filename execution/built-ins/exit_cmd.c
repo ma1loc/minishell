@@ -1,6 +1,6 @@
-#include "../../srcs/mini_shell.h"
+#include "mini_shell.h"
 
-void	exit_cmd(t_set_env  *built_in)
+void	exit_cmd(t_setup *built_in)
 {
 	int input;
 

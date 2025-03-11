@@ -1,30 +1,30 @@
 # include "mini_shell.h"
-# include "../parsing/tokenizer.h"
+# include "tokenizer.h"
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-void print_minishell(void)
-{
-    printf("███╗   ███╗██╗███╗  ██╗██╗ ██████╗\
-     ██╗  ██╗███████╗██╗     ██╗     \n");
-    printf("████╗ ████║██║████╗ ██║██║██╔════╝ \
-    ██║  ██║██╔════╝██║     ██║     \n");
-    printf("██╔████╔██║██║██╔██╗██║██║███████╗ \
-    ███████║█████╗  ██║     ██║          by:\n");
-    printf("██║╚██╔╝██║██║██║╚████║██║╚════██╗ \
-    ██╔══██║██╔══╝  ██║     ██║          @ma1loc\n");
-    printf("██║ ╚═╝ ██║██║██║ ╚███║██║███████╔╝\
-    ██║  ██║███████╗███████╗███████╗     @X-Hunter\n");
-    printf("╚═╝     ╚═╝╚═╝╚═╝  ╚══╝╚═╝╚══════╝ \
-    ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"\
-    "     date: March 10, 2025\n");
-}
+// void print_minishell(void)
+// {
+//     printf("███╗   ███╗██╗███╗  ██╗██╗ ██████╗"\/
+//     "  ██╗  ██╗███████╗██╗     ██╗     \n");
+//     printf("████╗ ████║██║████╗ ██║██║██╔════╝" \/
+//     " ██║  ██║██╔════╝██║     ██║     \n");
+//     printf("██╔████╔██║██║██╔██╗██║██║███████╗ "\/
+//     " ███████║█████╗  ██║     ██║          by:\n");
+//     printf("██║╚██╔╝██║██║██║╚████║██║╚════██╗ "\/
+//     " ██╔══██║██╔══╝  ██║     ██║          @ma1loc\n");
+//     printf("██║ ╚═╝ ██║██║██║ ╚███║██║███████╔╝"\/
+//     " ██║  ██║███████╗███████╗███████╗     @X-Hunter\n");
+//     printf("╚═╝     ╚═╝╚═╝╚═╝  ╚══╝╚═╝╚══════╝ "\/
+//     " ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"\/
+//     "     date: March 10, 2025\n");
+// }
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-t_set_env  *init_struct()
+t_setup  *init_struct()
 {
-    t_set_env  *set_env;
+    t_setup  *set_env;
 
-    set_env = malloc(sizeof(t_set_env));
+    set_env = malloc(sizeof(t_setup));
     if (!set_env)
         return (NULL);
     set_env->input = NULL;
@@ -40,19 +40,19 @@ t_set_env  *init_struct()
     return (set_env);
 }
 
-void	built_ins(t_set_env *built_in)
+void	built_ins(t_setup *built_in)
 {
-	if (ft_strcmp(built_in->cmd->name, "echo") == 0)    // >>> [DONE]
+	if (ft_strcmp(built_in->cmd->name, "echo") == 0)    // >>> [D] > exit status to fix
 		echo_cmd(built_in);
-	else if (ft_strcmp(built_in->cmd->name, "cd") == 0)    // >>> [DONE] > to fix seg
+	else if (ft_strcmp(built_in->cmd->name, "cd") == 0)    // >>> [] > to fix seg
 		cd_cmd(built_in);
-	else if (ft_strcmp(built_in->cmd->name, "pwd") == 0)  // >>> [DONE]
+	else if (ft_strcmp(built_in->cmd->name, "pwd") == 0)  // >>> []
 		pwd_cmd(built_in);
-    else if (ft_strcmp(built_in->cmd->name, "unset") == 0)   // >>> [DONE]
+    else if (ft_strcmp(built_in->cmd->name, "unset") == 0)   // >>> []
 			unset_cmd(&built_in->env_list, built_in->cmd->args[1]);
-    else if (ft_strcmp(built_in->cmd->name, "env") == 0)    // >>> [DONE]
+    else if (ft_strcmp(built_in->cmd->name, "env") == 0)    // >>> []
 		env_cmd(built_in);
-    else if (ft_strcmp(built_in->cmd->name, "exit") == 0)   // >>> [NOT DONE]
+    else if (ft_strcmp(built_in->cmd->name, "exit") == 0)   // >>> []
 	    exit_cmd(built_in);
 
 }
@@ -60,10 +60,9 @@ void	built_ins(t_set_env *built_in)
 int		main(int argc, char **argv, char **env)
 {
     (void)argv;
-    t_set_env  *setup_env;
+    t_setup  *setup_env;
 
     // >>> setup the env of the minishell
-    print_minishell();
     setup_env = init_struct();
     setup_env->env_list = init_env(env, setup_env); // seg to fix
     get_pwd(setup_env);

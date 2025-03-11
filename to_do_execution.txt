@@ -86,3 +86,58 @@ minishell/
 ## links to read form
 Bash Reference Manual -> https://www.gnu.org/software/bash/manual/bash.html
 Shell Command Language -> https://pubs.opengroup.org/onlinepubs/9699919799.2013edition/utilities/V3_chap02.html#tag_18
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Here's a list of error messages and exit status codes based specifically on how bash handles errors:
+
+1. **Command Not Found** - Exit status: 127
+   - "bash: [command]: command not found"
+
+2. **Permission Denied** - Exit status: 126
+   - "bash: [command/file]: Permission denied"
+
+3. **No Such File or Directory** - Exit status: 127
+   - "bash: [path]: No such file or directory"
+
+4. **Is a Directory** - Exit status: 126
+   - "bash: [command]: Is a directory"
+
+5. **Not a Directory** - Exit status: 1
+   - "bash: cd: [path]: Not a directory"
+
+6. **Too Many Arguments** - Exit status: 1
+   - "bash: [command]: too many arguments"
+
+7. **Syntax Error** - Exit status: 2
+   - "bash: syntax error near unexpected token `[token]'"
+
+8. **Ambiguous Redirect** - Exit status: 1
+   - "bash: [word]: ambiguous redirect"
+
+9. **Bad Substitution** - Exit status: 1
+   - "bash: [expression]: bad substitution"
+
+10. **No Home Directory** - Exit status: 1
+    - "bash: cd: HOME not set"
+
+11. **Numeric Argument Required** - Exit status: 2
+    - "bash: exit: [argument]: numeric argument required"
+
+12. **Invalid Option** - Exit status: 2
+    - "bash: [command]: -[option]: invalid option"
+
+13. **Cannot Execute Binary File** - Exit status: 126
+    - "bash: [file]: cannot execute binary file: Exec format error"
+
+14. **Resource Temporarily Unavailable** - Exit status: 1
+    - "bash: fork: Resource temporarily unavailable"
+
+15. **File Descriptor Out of Range** - Exit status: 1
+    - "bash: [fd]: Bad file descriptor"
+
+16. **Variable Not Set** - Exit status: 1
+    - "bash: [variable]: unbound variable" (with set -u)
+
+Remember that in bash, general errors typically return exit status 1, permission/execution issues return 126, command not found returns 127, and syntax errors return 2. Signal terminations result in exit codes of 128 plus the signal number (e.g., 130 for Ctrl+C/SIGINT).
+
+When implementing these in your minishell, you should print error messages to stderr (using `fprintf(stderr, "message")` or similar) and set the appropriate exit status with your shell's global status variable.

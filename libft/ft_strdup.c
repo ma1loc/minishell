@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
+#include "mini_shell.h"
 
 char	*ft_strdup(char *s1)
 {

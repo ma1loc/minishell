@@ -1,6 +1,6 @@
-#include "../../srcs/mini_shell.h"
+#include "mini_shell.h"
 
-void	get_pwd(t_set_env *built_in)
+void	get_pwd(t_setup *built_in)
 {
 	char	buf_path[PATH_MAX];
 	char	*path;
@@ -16,7 +16,7 @@ void	get_pwd(t_set_env *built_in)
 		perror("pwd");
 }
 
-void	pwd_cmd(t_set_env *built_in)
+void	pwd_cmd(t_setup *built_in)
 {
 	get_pwd(built_in);
 	printf("%s\n", built_in->pwd);

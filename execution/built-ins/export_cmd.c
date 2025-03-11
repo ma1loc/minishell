@@ -1,4 +1,4 @@
-#include "../../srcs/mini_shell.h"
+#include "mini_shell.h"
 
 // >>> geting the value of a key in the env (i thing we don't not need it?)
 char	*get_env(t_env *env_list, char *key)

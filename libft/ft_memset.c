@@ -1,4 +1,4 @@
-#include "../srcs/mini_shell.h"
+#include "mini_shell.h"
 
 void	*ft_memset(void *str, int c, size_t n)
 {

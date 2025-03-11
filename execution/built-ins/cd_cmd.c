@@ -1,24 +1,9 @@
-#include "../../srcs/mini_shell.h"
+#include "mini_shell.h"
 
-// void	get_pwd(t_set_env *built_in)
-// {
-// 	char	buf_path[PATH_MAX];
-// 	char	*path;
-
-// 	path = getcwd(buf_path, sizeof(buf_path));
-// 	if (path)
-// 	{
-// 		if (built_in->pwd)
-// 			free(built_in->pwd);
-// 		built_in->pwd = ft_strdup(path);
-// 	}
-// 	else
-// 		perror("pwd");
-// }
-
-// have to fix (i'm in a dir that have ben deleted and have to do cd .. without any seg or undifind behaver like the bash)
-// cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
-void    cd(t_set_env *built_in)
+// >>> cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+// >>> have to set the exit status here
+// >>> "cd ." to fix
+void    cd(t_setup *built_in)
 {
     int     status;
     char    *home;
@@ -47,7 +32,7 @@ void    cd(t_set_env *built_in)
     }
 }
 
-void    cd_cmd(t_set_env *built_in)
+void    cd_cmd(t_setup *built_in)
 {
     cd(built_in);
     get_pwd(built_in);
