@@ -9,7 +9,7 @@ void	exit_cmd(t_setup *built_in)
 	else if (built_in->cmd->args[2])
 	{
 		built_in->exit_status = 1;
-		ft_perror("minishell: exit: too many arguments\n", FAIL); // >>> use the ft_perror
+		ft_perror("exit: too many arguments\n", FAIL); // >>> use the ft_perror
 	}
 	else if (ft_isdigit(built_in->cmd->args[1]))
 	{
@@ -20,6 +20,6 @@ void	exit_cmd(t_setup *built_in)
 	else
 	{
 		built_in->exit_status = 2;
-		ft_putstr_fd("minishell: exit: numeric argument required\n", STDERR_FILENO);
+		ft_perror("exit: numeric argument required\n", STDERR_FILENO);
 	}
 }
