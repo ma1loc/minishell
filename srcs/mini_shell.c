@@ -42,19 +42,19 @@ t_setup  *init_struct()
 
 void	built_ins(t_setup *built_in)
 {
-	if (ft_strcmp(built_in->cmd->name, "echo") == 0)    // >>> [D] > exit status to fix
+	if (ft_strcmp(built_in->cmd->name, "echo") == 0)    // >>> [Done]
 		echo_cmd(built_in);
-	else if (ft_strcmp(built_in->cmd->name, "cd") == 0)    // >>> [] > to fix seg
+	else if (ft_strcmp(built_in->cmd->name, "cd") == 0)    // >>> [D] > to fix seg
 		cd_cmd(built_in);
-	else if (ft_strcmp(built_in->cmd->name, "pwd") == 0)  // >>> []
+	else if (ft_strcmp(built_in->cmd->name, "pwd") == 0)  // >>> [Done]
 		pwd_cmd(built_in);
-    else if (ft_strcmp(built_in->cmd->name, "unset") == 0)   // >>> []
+    else if (ft_strcmp(built_in->cmd->name, "unset") == 0)   // >>> [Done]
 			unset_cmd(&built_in->env_list, built_in->cmd->args[1]);
-    else if (ft_strcmp(built_in->cmd->name, "env") == 0)    // >>> []
+    else if (ft_strcmp(built_in->cmd->name, "env") == 0)    // >>> [Done]
 		env_cmd(built_in);
-    else if (ft_strcmp(built_in->cmd->name, "exit") == 0)   // >>> []
+    else if (ft_strcmp(built_in->cmd->name, "exit") == 0)   // >>> [D]
 	    exit_cmd(built_in);
-    // else if (ft_strcmp(built_in->cmd->name, "Export") == 0)
+    // else if (ft_strcmp(built_in->cmd->name, "Export") == 0) // >>> [D]
         // >>> export latter on <<<
 
 }

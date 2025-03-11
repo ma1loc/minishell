@@ -13,17 +13,15 @@ void    cd(t_setup *built_in)
     home = NULL;
     if (built_in->cmd->args[1] == NULL)
     {
-        home = getenv("HOME");
+        home = getenv("HOME"); // >>> getenv returns a pointer to the environment variable (not dynamically allocated memory),
         if (!home)
-            ft_perror("cd: 'HOME' not seting in env\n", FAIL); // >>> exit status (1);
+            ft_perror("cd: HOME not set\n", FAIL); // >>> exit status (1);
         status = chdir(home);
         if (status == -1)
             perror("cd"); // >>> here call the custem ft_perror just reminder 
     }
     else
     {
-        if (strcmp(built_in->cmd->args[1], ".") == 0)
-            return ;
         status = chdir(built_in->cmd->args[1]);
         if (status == -1)
             perror("cd"); // >>> here to
@@ -35,8 +33,8 @@ void    cd_cmd(t_setup *built_in)
     char    *pwd;
 
     pwd = ft_strdup(built_in->pwd);
-    // if NULL i know i have to do it just skeep it
-
+    if (!pwd)   // >>> if NULL i know i have to do it just skeep it
+        ft_perror("cd: memory allocation failed\n", FAIL);
     cd(built_in);
     get_pwd(built_in);
     set_env(&built_in->env_list, "PWD", built_in->pwd);

@@ -1,16 +1,16 @@
 #include "mini_shell.h"
 
 // >>> geting the value of a key in the env (i thing we don't not need it?)
-char	*get_env(t_env *env_list, char *key)
-{
-	while (env_list)
-	{
-		if (ft_strncmp(env_list->key, key, ft_strlen(key)) == 0)
-			return(env_list->value);
-		env_list = env_list->next;
-	}
-	return (NULL);
-}
+// char	*get_env(t_env *env_list, char *key)
+// {
+// 	while (env_list)
+// 	{
+// 		if (ft_strncmp(env_list->key, key, ft_strlen(key)) == 0)
+// 			return(env_list->value);
+// 		env_list = env_list->next;
+// 	}
+// 	return (NULL);
+// }
 
 // >>> set the new key and value of change key value in the env.
 // void	set_env(t_env **env_list, char *key, char *value)

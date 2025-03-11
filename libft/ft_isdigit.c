@@ -22,7 +22,7 @@ int	ft_isdigit(char *str)
 		if (str[i] >= 48 && str[i] <= 57)
 			i++;
 		else
-			return (1);
+			return (0);
 	}
-	return (0);
+	return (1);
 }

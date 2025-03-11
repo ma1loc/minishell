@@ -42,7 +42,7 @@ t_env	*init_env(char **env, t_setup *set_env)
 	return (env_list);
 }
 
-// print all env
+
 void	env_cmd(t_setup *built_in)
 {
 	t_env	*current;

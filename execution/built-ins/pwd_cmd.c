@@ -13,7 +13,7 @@ void	get_pwd(t_setup *built_in)
 		built_in->pwd = ft_strdup(path);
 	}
 	else
-		perror("pwd");
+		perror("pwd"); // >>> update with ft_perror
 }
 
 void	pwd_cmd(t_setup *built_in)
