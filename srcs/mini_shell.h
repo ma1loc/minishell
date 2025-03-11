@@ -9,7 +9,7 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <sys/stat.h>
-# include "../parsing/tokenizer.h"
+# include "tokenizer.h"
 
 # define PATH_MAX 4096
 

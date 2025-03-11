@@ -16,7 +16,7 @@ void    cd(t_setup *built_in)
         home = getenv("HOME"); // >>> getenv returns a pointer to the environment variable (not dynamically allocated memory),
         if (!home)
             ft_perror("cd: HOME not set\n", FAIL); // >>> exit status (1);
-        status = chdir(home);
+        status = chdir(home);   // >>> to fix litter (no error for no reason)
         if (status == -1)
             perror("cd"); // >>> here call the custem ft_perror just reminder 
     }
