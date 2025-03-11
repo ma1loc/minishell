@@ -14,8 +14,8 @@
 # define PATH_MAX 4096
 
 // >>> exit status define
-#define EXIT_SUCCESS 0
-#define EXIT_FAIL 1
+#define SUCCESS 0
+#define FAIL 1
 #define SYNTAX_ERROR 2
 #define CMD_NOT_FOUND 127
 #define CMD_NOT_EXEC 126
@@ -76,10 +76,12 @@ t_env	*init_env(char **env, t_setup *set_env);
 void	env_cmd(t_setup *built_in);
 void	unset_cmd(t_env **env_list, char *key);
 void	set_env(t_env **env_list, char *key, char *value);
-
 void    cd(t_setup *built_in);
-// void	get_oldpwd(t_set_env *built_in);
 void	exit_cmd(t_setup  *built_in);
+
+// hellping functions
+void    ft_perror(char *msg, int exit_status);
+
 
 
 // void	env_cmd(t_env *env_list);

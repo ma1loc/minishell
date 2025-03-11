@@ -1,19 +1,6 @@
 {
-    "configurations": [
-      {
-        "name": "Linux",
-        "includePath": [
-          "${workspaceFolder}/include",
-          "${workspaceFolder}/include/utils",
-          "${workspaceFolder}/some/other/folder"
-        ],
-        "defines": [],
-        "compilerPath": "/usr/bin/gcc",
-        "cStandard": "c11",
-        "cppStandard": "c++17",
-        "intelliSenseMode": "linux-gcc-x64"
-      }
-    ],
-    "version": 4
-  }
-  
+    "files.associations": {
+        "mini_shell.h": "c"
+    }
+}
+
