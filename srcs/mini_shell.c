@@ -35,7 +35,7 @@ t_setup  *init_struct()
     set_env->oldpwd = NULL;
     set_env->env_split = NULL;
     set_env->env_list = NULL;
-    set_env->exit_status = 0;
+    set_env->exit_status = 0;   // >>> to see litter on
 
     return (set_env);
 }
@@ -54,6 +54,8 @@ void	built_ins(t_setup *built_in)
 		env_cmd(built_in);
     else if (ft_strcmp(built_in->cmd->name, "exit") == 0)   // >>> []
 	    exit_cmd(built_in);
+    // else if (ft_strcmp(built_in->cmd->name, "Export") == 0)
+        // >>> export latter on <<<
 
 }
 
@@ -64,9 +66,9 @@ int		main(int argc, char **argv, char **env)
 
     // >>> setup the env of the minishell
     setup_env = init_struct();
-    setup_env->env_list = init_env(env, setup_env); // seg to fix
+    setup_env->env_list = init_env(env, setup_env);
     get_pwd(setup_env);
-    set_env(&setup_env->env_list, "OLDPWD", setup_env->pwd); // here a seg
+    set_env(&setup_env->env_list, "OLDPWD", setup_env->pwd);
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     if (argc == 1)
@@ -75,7 +77,7 @@ int		main(int argc, char **argv, char **env)
         {
             setup_env->input = readline("minishell$ ");
             if (setup_env->input == NULL)
-                break;  // >>> for segnal case
+                break;  // >>> for segnal case litter on
             if (setup_env->input[0] == '\0')
                 continue;
             setup_env->token = tokenize(setup_env->input);
@@ -87,9 +89,6 @@ int		main(int argc, char **argv, char **env)
         }
     }
     else
-    {
-        printf("RUN './minishell' with no extra args, please ;)\n");
-        exit(1);
-    }
+        ft_perror("No extra args, please ;)\n", FAIL);
     return 0;
 }

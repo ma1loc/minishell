@@ -138,6 +138,8 @@ Here's a list of error messages and exit status codes based specifically on how 
 16. **Variable Not Set** - Exit status: 1
     - "bash: [variable]: unbound variable" (with set -u)
 
+Not a directory -> exit status = 1
+
 Remember that in bash, general errors typically return exit status 1, permission/execution issues return 126, command not found returns 127, and syntax errors return 2. Signal terminations result in exit codes of 128 plus the signal number (e.g., 130 for Ctrl+C/SIGINT).
 
 When implementing these in your minishell, you should print error messages to stderr (using `fprintf(stderr, "message")` or similar) and set the appropriate exit status with your shell's global status variable.
