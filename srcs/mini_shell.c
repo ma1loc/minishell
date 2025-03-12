@@ -39,6 +39,10 @@ t_setup  *init_setup_struct()
 
     return (set_env);
 }
+// int command_type(t_setup *cmd)
+// {
+
+// }
 
 void	built_ins(t_setup *built_in)
 {
@@ -54,7 +58,7 @@ void	built_ins(t_setup *built_in)
 		env_cmd(built_in);
     else if (ft_strcmp(built_in->cmd->name, "exit") == 0)   // >>> [D]
 	    exit_cmd(built_in);
-    // else if (ft_strcmp(built_in->cmd->name, "Export") == 0) // >>> [D]
+    // else if (ft_strcmp(built_in->cmd->name, "Export") == 0) // >>> []
         // >>> export latter on <<<
 
 }
@@ -98,6 +102,8 @@ int		main(int argc, char **argv, char **env)
             setup_env->cmd = pars_tokens(setup_env->token);
             // here i have to know the command type.
 			built_ins(setup_env); // just for the test the built_ins
+            if (setup_env->cmd->type == TOKEN_APPEND)
+                printf("append -> %u\n", TOKEN_APPEND);
 			add_history(setup_env->input);
         }
     }

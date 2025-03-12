@@ -77,3 +77,10 @@ void	set_env(t_env **env_list, char *key, char *value)
 	new_node->next = NULL;
 	last_node->next = new_node;
 }
+
+void	export_cmd(t_setup	*built_in)
+{
+	if (!built_in->cmd->args[1])
+		env_cmd(built_in);
+	
+}
