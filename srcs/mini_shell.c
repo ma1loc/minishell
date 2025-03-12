@@ -20,7 +20,7 @@
 // }
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-t_setup  *init_struct()
+t_setup  *init_setup_struct()
 {
     t_setup  *set_env;
 
@@ -59,32 +59,45 @@ void	built_ins(t_setup *built_in)
 
 }
 
+// >>> setup the env of the minishell
+t_setup *shell_env_setup(char **env)
+{
+    t_setup  *setup_env;
+
+    setup_env = init_setup_struct();
+    if (!setup_env)
+        ft_perror("memory allocation failed\n", FAIL);
+    setup_env->env_list = init_env(env, setup_env);
+    if (!setup_env->env_list)
+        ft_perror("cd: memory allocation failed\n", FAIL); // to free latter on
+    get_pwd(setup_env);
+    set_env(&setup_env->env_list, "OLDPWD", setup_env->pwd);
+
+    return (setup_env);
+}
+
 int		main(int argc, char **argv, char **env)
 {
     (void)argv;
     t_setup  *setup_env;
 
-    // >>> setup the env of the minishell
-    setup_env = init_struct();
-    setup_env->env_list = init_env(env, setup_env);
-    get_pwd(setup_env);
-    set_env(&setup_env->env_list, "OLDPWD", setup_env->pwd);
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
+    setup_env = NULL;
     if (argc == 1)
     {
         while (1)
         {
+            setup_env = shell_env_setup(env);
             setup_env->input = readline("minishell$ ");
             if (setup_env->input == NULL)
-                break;  // >>> for segnal case litter on
+                break;  // >>> for segnal case to free litter on
             if (setup_env->input[0] == '\0')
                 continue;
             setup_env->token = tokenize(setup_env->input);
             if (!setup_env->token)
                 exit(1);
             setup_env->cmd = pars_tokens(setup_env->token);
-			built_ins(setup_env);
+            // here i have to know the command type.
+			built_ins(setup_env); // just for the test the built_ins
 			add_history(setup_env->input);
         }
     }
