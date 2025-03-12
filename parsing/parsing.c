@@ -1,6 +1,43 @@
 #include "tokenizer.h"
 #include "../srcs/mini_shell.h"
 
+t_redirections *new_redirection(char *file_name, t_token_type type)
+{
+  t_redirections *redir;
+  redir = malloc(sizeof(t_redirections));
+  if(!redir)
+    return(NULL);
+  if(file_name != NULL)
+    redir->file_name = strdup(file_name);
+  else
+    redir->file_name = NULL;
+  redir->type = type;
+  redir->next = NULL;
+  return(redir);
+}
+void add_redirection_to_list( t_command *cmd, char *file_name, t_token_type type)
+{
+  t_redirections *current_redir;
+  t_redirections *new_redir;
+  if(!cmd)
+    return;
+  new_redir = new_redirection(file_name, type);
+  if(!new_redir)
+    return;
+  if(!cmd->redirections)
+  {
+    cmd->redirections = new_redir;
+    return;
+  }
+  current_redir = cmd->redirections;
+  while(current_redir->next != NULL)
+  {
+    current_redir = current_redir->next;
+  }
+  current_redir->next = new_redir;
+  // new_redir->next = NULL;
+}
+
 t_command *pars_tokens(t_token *tokens)
 {
   t_command *commandes;
@@ -15,8 +52,10 @@ t_command *pars_tokens(t_token *tokens)
 
   commandes->name = NULL;
   commandes->args = NULL;
-  commandes->input_file = NULL;
-  commandes->output_file = NULL;
+  // commandes->input_file = NULL;
+  // commandes->output_file = NULL;
+  commandes->redirections = NULL;
+  commandes->type = 0;
   commandes->next = NULL;
 
   current_cmd = commandes;
@@ -55,8 +94,10 @@ t_command *pars_tokens(t_token *tokens)
 
       new_cmd->name = NULL;
       new_cmd->args = NULL;
-      new_cmd->input_file = NULL;
-      new_cmd->output_file = NULL;
+      // new_cmd->input_file = NULL;
+      // new_cmd->output_file = NULL;
+      new_cmd->redirections = NULL;
+      new_cmd->type = 0;
       new_cmd->next = NULL;
 
       current_cmd->next = new_cmd;
@@ -67,28 +108,29 @@ t_command *pars_tokens(t_token *tokens)
     {
       if(current->next && current->next->type == TOKEN_WORD) // next token shoud be the input filename
       {
-        current_cmd->input_file = strdup(current->next->value);
+        add_redirection_to_list(current_cmd, current->next->value, current->type);
         current = current->next; // skip filename token
       }
     }
-    else if(current->type == TOKEN_RED_OUT)
+    else if(current->type == TOKEN_RED_OUT || current->type == TOKEN_APPEND)
     {
       if(current->next && current->next->type == TOKEN_WORD)
       {
-        current_cmd->output_file = strdup(current->next->value);
-        current_cmd->type = current->type;
+        // current_cmd->output_file = strdup(current->next->value);
+        // current_cmd->type = current->type;
+        add_redirection_to_list(current_cmd, current->next->value, current->type);
         current = current->next;
       }
     }
-    else if(current->type == TOKEN_APPEND)
-    {
-      if(current->next && current->next->type == TOKEN_WORD)
-      {
-        current_cmd->output_file = strdup(current->next->value);
-        current_cmd->type = current->type;
-        current = current->next;
-      }
-    }
+    // else if(current->type == TOKEN_APPEND)
+    // {
+    //   if(current->next && current->next->type == TOKEN_WORD)
+    //   {
+    //     current_cmd->output_file = strdup(current->next->value);
+    //     current_cmd->type = current->type;
+    //     current = current->next;
+    //   }
+    // }
     current = current->next;
   }
 
@@ -107,11 +149,15 @@ t_command *pars_tokens(t_token *tokens)
   }
   else if (current_cmd->args == NULL)
   {
-    current_cmd->args = malloc( 2 * sizeof(char *));
-    if (!current_cmd->args)
-      return NULL;
-    fill_array(list_args, current_cmd);
-    current_cmd->args[1] = NULL;
+      current_cmd->args = malloc(2 * sizeof(char *));
+      if (!current_cmd->args)
+          return NULL;
+      if (current_cmd->name)  // Add this check
+          current_cmd->args[0] = strdup(current_cmd->name);
+      else
+          current_cmd->args[0] = NULL;
+      current_cmd->args[1] = NULL;
+      // Don't call fill_array here since list_args is NULL
   }
   return(commandes);
 }
@@ -201,6 +247,74 @@ t_command *pars_tokens(t_token *tokens)
 //     }
 // }
 
+// void print_commands(t_command *commands)
+// {
+//     t_command *current = commands;
+//     int cmd_num = 1;
+
+//     if (!commands) {
+//         printf("No commands to print\n");
+//         return;
+//     }
+
+//     while (current) {
+//         printf("Command %d:\n", cmd_num);
+
+//         // Print command name
+//         printf("  Name: %s\n", current->name ? current->name : "NULL");
+
+//         // Print arguments
+//         printf("  Arguments:");
+//         if (current->args) {
+//             int i = 0;
+//             while (current->args[i]) {
+//                 printf(" %s", current->args[i]);
+//                 i++;
+//             }
+//             printf("\n");
+//         } else {
+//             printf(" (none)\n");
+//         }
+
+//         // Print redirections
+//         printf("  Redirections:\n");
+//         if (current->redirections) {
+//             t_redirections *redir = current->redirections;
+//             int redir_num = 1;
+
+//             while (redir) {
+//                 printf("    Redirection %d: ", redir_num);
+
+//                 // Check for NULL file_name
+//                 const char *filename = redir->file_name ? redir->file_name : "NULL";
+
+//                 if (redir->type == TOKEN_RED_IN)
+//                     printf("Input from '%s'\n", filename);
+//                 else if (redir->type == TOKEN_RED_OUT)
+//                     printf("Output to '%s'\n", filename);
+//                 else if (redir->type == TOKEN_APPEND)
+//                     printf("Append to '%s'\n", filename);
+//                 else
+//                     printf("Unknown type %d, file: '%s'\n", redir->type, filename);
+
+//                 redir = redir->next;
+//                 redir_num++;
+//             }
+//         } else {
+//             printf("    None\n");
+//         }
+
+//         // Check for pipe
+//         if (current->type == TOKEN_PIPE)
+//             printf("  Piped to next command\n");
+
+//         printf("\n");
+//         current = current->next;
+//         cmd_num++;
+//     }
+// }
+
+
 t_args_list *add_args_to_list(t_args_list **list_head, t_token *token)
 {
   t_args_list *current_arg;
@@ -257,6 +371,8 @@ void fill_array(t_args_list *list, t_command *cmd)
     current = list;
     if(!current)
       return;
+    if(!cmd || !cmd->name)
+      return;
     cmd->args[i++] = strdup(cmd->name);
     if(current != NULL && strcmp(current->value, cmd->name) == 0)
       current = current->next;
@@ -292,3 +408,4 @@ void fill_array(t_args_list *list, t_command *cmd)
 //   }
 
 // }
+

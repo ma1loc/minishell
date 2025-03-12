@@ -9,8 +9,8 @@ typedef enum e_token_type
   TOKEN_RED_OUT,
   TOKEN_APPEND,
   TOKEN_HERDOC,
-  TOKEN_INFILE,
-  TOKEN_OUTFILE
+  // TOKEN_INFILE,
+  // TOKEN_OUTFILE
 } t_token_type;
 
 typedef struct s_token  // struct for tokenize input
@@ -21,30 +21,31 @@ typedef struct s_token  // struct for tokenize input
 
 } t_token;
 
-// typedef struct s_args_list
-// {
-//   char *value;
-//   t_token_type type;
-//   struct s_args_list *next;
-// } t_args_list;
 typedef struct s_args_list
 {
   char *value;
   t_token_type type;
-  struct s_args_list *next; 
+  struct s_args_list *next;
 } t_args_list;
 
+typedef struct s_redirections
+{
+  char *file_name;
+  t_token_type type;
+  struct s_redirections *next;
+} t_redirections;
 
 typedef struct s_command // struct for parse tokens
 {
   char *name;    // main commande (like "ls")
   char **args;   // list args for the commande
-  char *input_file; // file to red input <
-  char *output_file; // file to red output
-  // int piped;   // commande part of pipe
+  // char *input_file; // file to red input <
+  // char *output_file; // file to red output
+  t_redirections *redirections;
   t_token_type type;
   struct s_command *next;
 } t_command;
+
 
 typedef struct s_tree
 {
