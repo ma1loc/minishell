@@ -14,13 +14,17 @@
 # define PATH_MAX 4096
 
 // >>> exit status define
-#define SUCCESS 0
-#define FAIL 1
-#define SYNTAX_ERROR 2
-#define CMD_NOT_FOUND 127
-#define CMD_NOT_EXEC 126
-// #define EXIT_SEVERE 128
+# define SUCCESS 0
+# define FAIL 1
+# define SYNTAX_ERROR 2
+# define CMD_NOT_FOUND 127
+# define CMD_NOT_EXEC 126
+// # define EXIT_SEVERE 128
 // >>>>>>>>>>>>>>>>>>>>>>>
+
+// >>> define the built_in and external cmd
+# define BUILT_IN 1
+# define EXTERNAL 0
 
 // >>> libft
 size_t	ft_strlen(char *str);
@@ -79,9 +83,15 @@ void	set_env(t_env **env_list, char *key, char *value);
 void    cd(t_setup *built_in);
 void	exit_cmd(t_setup  *built_in);
 
-// hellping functions
+// >>> hellping functions
 void    ft_perror(char *msg, int exit_status);
 
+// >>> the execution will start here
+int     command_type(char *name);
+int     is_built_in(char *name);
+void	built_ins(t_setup *built_in);
+t_setup *shell_env_setup(char **env);
+t_setup *init_setup_struct();
 
 
 // void	env_cmd(t_env *env_list);
