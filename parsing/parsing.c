@@ -71,11 +71,21 @@ t_command *pars_tokens(t_token *tokens)
         current = current->next; // skip filename token
       }
     }
-    else if(current->type == TOKEN_RED_OUT || current->type == TOKEN_APPEND)
+    else if(current->type == TOKEN_RED_OUT)
     {
       if(current->next && current->next->type == TOKEN_WORD)
       {
         current_cmd->output_file = strdup(current->next->value);
+        current_cmd->type = current->type;
+        current = current->next;
+      }
+    }
+    else if(current->type == TOKEN_APPEND)
+    {
+      if(current->next && current->next->type == TOKEN_WORD)
+      {
+        current_cmd->output_file = strdup(current->next->value);
+        current_cmd->type = current->type;
         current = current->next;
       }
     }
@@ -140,6 +150,52 @@ t_command *pars_tokens(t_token *tokens)
 //             printf("  Piped to next command\n");
 
 //         printf("\n"); // Better spacing between commands
+//         current = current->next;
+//         cmd_num++;
+//     }
+// }
+
+// void print_commands(t_command *commands)
+// {
+//     t_command *current = commands;
+//     int cmd_num = 1;
+
+//     while (current) {
+//         printf("Command %d:\n", cmd_num);
+
+//         // Print command name
+//         printf("  Name: %s\n", current->name ? current->name : "NULL");
+
+//         // Print arguments
+//         printf("  Arguments:");
+//         if (current->args && current->args[0]) {
+//             for (int i = 0; current->args[i] != NULL; i++) {
+//                 printf(" %s", current->args[i]);
+//             }
+//             printf("\n");
+//         } else {
+//             printf(" (none)\n");
+//         }
+
+//         // Print redirections with their types
+//         if (current->input_file)
+//             printf("  Input Redirection (<): %s\n", current->input_file);
+
+//         if (current->output_file) {
+//             // Check type of output redirection
+//             if (current->type == 5) // For >>
+//                 printf("  Output Redirection (>>): %s\n", current->output_file);
+//             else if (current->type == 3) // For > (assuming type 3)
+//                 printf("  Output Redirection (>): %s\n", current->output_file);
+//             else
+//                 printf("  Output Redirection (type %d): %s\n", current->type, current->output_file);
+//         }
+
+//         // Check for pipe
+//         if (current->type == 2) // Pipe is type 2
+//             printf("  Piped to next command (|)\n");
+
+//         printf("\n");
 //         current = current->next;
 //         cmd_num++;
 //     }
