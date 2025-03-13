@@ -1,22 +1,24 @@
 #include "mini_shell.h"
 
-// char    *get_path(t_setup)
-// {
-    
-// }
+#include "mini_shell.h"
 
-// void    execution(t_setup   *setup)
-// {
-//     int     pid;
-//     char    *path;
+void    execution(t_setup *setup)
+{
+    // int     pid;
+    char    *path;
 
-//     pid = fork();
-//     if (pid == -1)
-//         ft_perror("fork: failed", FAIL);
-//     else if (pid == 0)
-//     {}
-//     else
-//     {
-//         // here the paren have to with the child.
-//     }
-// }
+    path = get_path(setup->cmd->name, setup->env_split);
+    if (path)
+        printf("path -> %s\n", path);
+    else
+        printf("NULL\n");
+    // if (command_type(setup->cmd->name) == BUILT_IN)
+    //     built_ins(setup); // just for the test the built_ins
+    // else
+    // {
+    //     // execution(setup_env);
+    //     if (setup->cmd->redirections->type == TOKEN_HERDOC)
+    //         heredoc(setup);
+    //     // else if if (setup_env->cmd->type == TOKEN_HERDOC)
+    // }
+}
