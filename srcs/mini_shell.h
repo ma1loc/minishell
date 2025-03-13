@@ -40,6 +40,7 @@ int     ft_strcmp(char *s1, char *s2);
 void	*ft_memset(void *str, int c, size_t n);
 int     ft_isdigit(char *str);
 int     ft_atoi(const char *str);
+char	*ft_strnstr(char *str, char *to_find, size_t n);
 
 // >>> sig
 // void	signals(int signal);
@@ -94,8 +95,10 @@ int     is_built_in(char *name);
 void	built_ins(t_setup *built_in);
 t_setup *shell_env_setup(char **env);
 t_setup *init_setup_struct();
-void    execution(t_setup   *setup);
+void    execution(t_setup *setup);
 void    heredoc(t_setup *setup);
+char	*get_path(char *cmd, char **env);
+char	*split_path(char *path, char *cmd);
 
 
 // void	env_cmd(t_env *env_list);
