@@ -104,7 +104,7 @@ t_command *pars_tokens(t_token *tokens)
       current_cmd = new_cmd;
       // list_args = NULL;
     }
-    else if(current->type == TOKEN_RED_IN)
+    else if(current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC)
     {
       if(current->next && current->next->type == TOKEN_WORD) // next token shoud be the input filename
       {
@@ -294,6 +294,8 @@ t_command *pars_tokens(t_token *tokens)
 //                     printf("Output to '%s'\n", filename);
 //                 else if (redir->type == TOKEN_APPEND)
 //                     printf("Append to '%s'\n", filename);
+//                 else if (redir->type == TOKEN_HERDOC)
+//                     printf("herdoc to '%s'\n", filename);
 //                 else
 //                     printf("Unknown type %d, file: '%s'\n", redir->type, filename);
 

@@ -322,7 +322,7 @@ t_token *tokenize(char *input)
 // int main()
 // {
 //     // char *input = "echo        \"hello \'\'      \" \"world\"";
-//     char *input = "\"\"";
+//     char *input = "<< dewf cat";
 
 
 //     printf("Raw input: %s\n", input);
