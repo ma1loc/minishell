@@ -49,9 +49,9 @@ typedef struct s_command // struct for parse tokens
 
 typedef struct s_tree
 {
-  t_token_type type;  // node command or pipe
-  char *value; // command name
+  t_command *cmd;
   char **args;
+  t_token_type type;  // node command or pipe
   t_args_list args_list;
   char *input_file;   // if <
   char *out_putfile;  // if >
