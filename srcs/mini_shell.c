@@ -21,17 +21,7 @@ int		main(int argc, char **argv, char **env)
             if (!setup_env->token)
                 exit(1);
             setup_env->cmd = pars_tokens(setup_env->token);
-            if (command_type(setup_env->cmd->name) == BUILT_IN)
-                built_ins(setup_env); // just for the test the built_ins
-            else
-            {
-                // execution(setup_env);
-                
-                if (setup_env->cmd->redirections->type == TOKEN_HERDOC)
-                    heredoc(setup_env);
-                // else if if (setup_env->cmd->type == TOKEN_HERDOC)
-            }
-            printf("%s", setup_env->cmd->name);
+            execution(setup_env);
 			add_history(setup_env->input);
         }
     }
