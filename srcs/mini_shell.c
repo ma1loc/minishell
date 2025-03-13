@@ -26,8 +26,12 @@ int		main(int argc, char **argv, char **env)
             else
             {
                 // execution(setup_env);
-                heredoc(setup_env);
+                
+                if (setup_env->cmd->redirections->type == TOKEN_HERDOC)
+                    heredoc(setup_env);
+                // else if if (setup_env->cmd->type == TOKEN_HERDOC)
             }
+            printf("%s", setup_env->cmd->name);
 			add_history(setup_env->input);
         }
     }

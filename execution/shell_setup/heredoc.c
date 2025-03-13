@@ -12,7 +12,7 @@ void    heredoc(t_setup *setup)
     while (1)
     {
         input = readline("heredoc> ");
-        if (input == NULL || ft_strcmp(input, setup->cmd->args[0]) == 0) // delimiter)
+        if (input == NULL || ft_strcmp(input, setup->cmd->redirections->file_name) == 0) // delimiter)
         {
             close(in_file);
             break;
@@ -20,6 +20,6 @@ void    heredoc(t_setup *setup)
         write(in_file, input, ft_strlen(input));
         write(in_file, "\n", 1);
     }
-    // >>> unlink to remove the heredoc.txt file when finishing
+    // >>> unlink to remove the heredoc.txt file when finishing, to do litter
     return ;
 }
