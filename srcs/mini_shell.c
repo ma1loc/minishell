@@ -1,8 +1,6 @@
 # include "mini_shell.h"
 # include "../parsing/tokenizer.h" // to change
 
-void    execution();
-
 int		main(int argc, char **argv, char **env)
 {
     (void)argv;
@@ -26,7 +24,10 @@ int		main(int argc, char **argv, char **env)
             if (command_type(setup_env->cmd->name) == BUILT_IN)
                 built_ins(setup_env); // just for the test the built_ins
             else
-                printf(">>> not a built_in command\n");
+            {
+                // execution(setup_env);
+                heredoc(setup_env);
+            }
 			add_history(setup_env->input);
         }
     }

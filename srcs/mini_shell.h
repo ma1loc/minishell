@@ -9,6 +9,7 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <sys/stat.h>
+#include  <fcntl.h>
 # include "../parsing/tokenizer.h"
 
 # define PATH_MAX 4096
@@ -20,6 +21,7 @@
 # define CMD_NOT_FOUND 127
 # define CMD_NOT_EXEC 126
 // # define EXIT_SEVERE 128
+// # define EXIT_SEVERE 130 for the ctrl + c (heredoc case)
 // >>>>>>>>>>>>>>>>>>>>>>>
 
 // >>> define the built_in and external cmd
@@ -40,9 +42,9 @@ int     ft_isdigit(char *str);
 int     ft_atoi(const char *str);
 
 // >>> sig
-void	signals(int signal);
-void	do_sigint();
-void	do_sigquit();
+// void	signals(int signal);
+// void	do_sigint();
+// void	do_sigquit();
 
 // >>> export && unset
 
@@ -92,6 +94,8 @@ int     is_built_in(char *name);
 void	built_ins(t_setup *built_in);
 t_setup *shell_env_setup(char **env);
 t_setup *init_setup_struct();
+void    execution(t_setup   *setup);
+void    heredoc(t_setup *setup);
 
 
 // void	env_cmd(t_env *env_list);
