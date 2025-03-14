@@ -3,7 +3,7 @@
 // >>> here i have to get the path of the command, i mean the path the 
 // will the cmd will be there and executed.
 
-void	split_path_free(char **split_path)
+void	free_spliting(char **split_path)
 {
 	int	i;
 
@@ -30,28 +30,32 @@ char	*split_path(char *path, char *cmd)
 		full_path = ft_strjoin(add_to_path, cmd);
 		free(add_to_path);
 		if (access(full_path, F_OK | X_OK) == 0)
-			return (split_path_free(split_path), full_path);
+			return (free_spliting(split_path), full_path);
 		free(full_path);
 		i++;
 	}
-	return (split_path_free(split_path), NULL);
+	return (free_spliting(split_path), NULL);
 }
 
-char	*get_path(char *cmd, char **env)
+char	*get_path(t_setup *setup)
 {
-	int		i;
 	char	*path;
+	char	*cmd;
+	t_env	*env_list;
 
-	if (ft_strnstr(cmd, "/", ft_strlen(cmd)) != NULL)
+
+	cmd = setup->cmd->name;
+	env_list = setup->env_list;
+	// >>> in this if condition i check absolute path
+	if (ft_strchr(cmd, '/') != NULL)
 		return (ft_strdup(cmd));
+	// >>> and here i check if it relative path
 	else if (access(cmd, F_OK | X_OK) == 0)
 		return (ft_strdup(cmd));
-	i = 0;
-	// while (env[i] && ft_strnstr(env[i], "PATH", 4) == 0)
-    while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
-		i++;
-	if (!env[i])
+    while (env_list && ft_strcmp(env_list->key, "PATH") != 0)
+		env_list = env_list->next;
+	if (!env_list)
 		return (NULL);
-	path = split_path(env[i], cmd);
+	path = split_path(env_list->value, cmd);
 	return (path);
 }

@@ -20,6 +20,10 @@ void    ft_perror(char *msg, int exit_status)
 {
     // >>> garbage collector have to create and call here <<<
     if (msg)
+    {
         ft_putstr_fd(msg, STDERR_FILENO);
-    ft_exit(exit_status);
+        
+    }
+    if (exit_status != 999)
+        ft_exit(exit_status);
 }

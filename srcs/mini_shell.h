@@ -28,6 +28,10 @@
 # define BUILT_IN 1
 # define EXTERNAL 0
 
+// >>> true or false (readable)
+#define true	1
+#define false	0
+
 // >>> libft
 size_t	ft_strlen(char *str);
 char	**ft_split(char *str, char separator);
@@ -40,7 +44,7 @@ int     ft_strcmp(char *s1, char *s2);
 void	*ft_memset(void *str, int c, size_t n);
 int     ft_isdigit(char *str);
 int     ft_atoi(const char *str);
-char	*ft_strnstr(char *str, char *to_find, size_t n);
+char	*ft_strchr(char *s, int c);
 
 // >>> sig
 // void	signals(int signal);
@@ -85,9 +89,11 @@ void	unset_cmd(t_env **env_list, char *key);
 void	set_env(t_env **env_list, char *key, char *value);
 void    cd(t_setup *built_in);
 void	exit_cmd(t_setup  *built_in);
+void	export_cmd(t_setup	*built_in);
 
 // >>> hellping functions
 void    ft_perror(char *msg, int exit_status);
+void	free_spliting(char **split_path);
 
 // >>> the execution will start here
 int     command_type(char *name);
@@ -97,7 +103,7 @@ t_setup *shell_env_setup(char **env);
 t_setup *init_setup_struct();
 void    execution(t_setup *setup);
 void    heredoc(t_setup *setup);
-char	*get_path(char *cmd, char **env);
+char	*get_path(t_setup *setup);
 char	*split_path(char *path, char *cmd);
 
 

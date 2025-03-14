@@ -7,13 +7,17 @@ void    execution(t_setup *setup)
     // int     pid;
     char    *path;
 
-    path = get_path(setup->cmd->name, setup->env_split);
-    if (path)
-        printf("path -> %s\n", path);
+    if (command_type(setup->cmd->name))
+        built_ins(setup); // >>> just for the test the built_ins
     else
-        printf("NULL\n");
+    {
+        path = get_path(setup);
+        if (!path)
+            ft_perror("command not found.\n", 999); // >>> exit status litter on.
+        // external();  // >>> this is the execution part
+    }
+
     // if (command_type(setup->cmd->name) == BUILT_IN)
-    //     built_ins(setup); // just for the test the built_ins
     // else
     // {
     //     // execution(setup_env);

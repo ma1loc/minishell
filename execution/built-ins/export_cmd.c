@@ -50,6 +50,8 @@ void	set_env(t_env **env_list, char *key, char *value)
 	{
 		if (ft_strcmp(current->key, key) == 0)
 		{
+			if (value == NULL)
+				return ;
 			free(current->value);
 			current->value = ft_strdup(value);
 			return ;
@@ -78,9 +80,39 @@ void	set_env(t_env **env_list, char *key, char *value)
 	last_node->next = new_node;
 }
 
+// void	export_cmd(t_setup	*built_in)
+// {
+// 	if (!built_in->cmd->args[1])
+// 		env_cmd(built_in);
+	
+// }
+
 void	export_cmd(t_setup	*built_in)
 {
-	if (!built_in->cmd->args[1])
+	char	**args;
+	int		i;
+	char	**dividing_args;
+
+	i = 1;
+	args = built_in->cmd->args;
+	dividing_args = NULL;
+	if (!args[i])
 		env_cmd(built_in);
-	
+	// >>> here i have to split = in the args and set them ot the env
+	else if (args[i])
+	{
+		// printf("arg -> %s\n", args[i]);
+		while (args[i])
+		{
+			if (ft_strchr(args[i], '='))
+			{	// update the export variable to fix litter on
+				dividing_args = ft_split(args[i], '=');
+				set_env(&built_in->env_list, dividing_args[0], dividing_args[1]);
+				free_spliting(dividing_args);
+			}
+			else
+				set_env(&built_in->env_list, args[i], NULL);
+			i++;
+		}
+	}
 }
