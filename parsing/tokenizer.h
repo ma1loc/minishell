@@ -3,7 +3,7 @@
 
 typedef enum e_token_type
 {
-  TOKEN_WORD = 1,
+  TOKEN_WORD = 0,
   TOKEN_PIPE,
   TOKEN_RED_IN,
   TOKEN_RED_OUT,
@@ -49,12 +49,12 @@ typedef struct s_command // struct for parse tokens
 
 typedef struct s_tree
 {
-  t_command *cmd;
+  char *name;
   char **args;
+  t_command *cmd;
   t_token_type type;  // node command or pipe
-  t_args_list args_list;
-  char *input_file;   // if <
-  char *out_putfile;  // if >
+  // t_args_list args_list;
+  t_redirections *redirections;
   struct s_tree *left; // left command
   struct s_tree *right; // right command
 } t_tree;
@@ -65,6 +65,7 @@ void print_tokens(t_token *tokens);
 void print_commands(t_command *cmd);
 void free_tokens(t_token *tokens);
 //
+t_tree *build_tree_commande(t_command *commandes);
 t_command *find_pipe_node(t_command *commands);
 t_args_list *add_args_to_list(t_args_list **list_head, t_token *token);
 int count_args_list(t_args_list *args);

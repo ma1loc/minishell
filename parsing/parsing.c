@@ -38,6 +38,21 @@ void add_redirection_to_list( t_command *cmd, char *file_name, t_token_type type
   // new_redir->next = NULL;
 }
 
+void free_redirections(t_redirections *redir)
+{
+  t_redirections *current_redir;
+  t_redirections *next_redir;
+
+  current_redir = redir;
+  while(current_redir != NULL)
+  {
+    next_redir = current_redir->next;
+    free(current_redir->file_name);
+    free(current_redir);
+    current_redir = next_redir;
+  }
+}
+
 t_command *pars_tokens(t_token *tokens)
 {
   t_command *commandes;
@@ -74,7 +89,7 @@ t_command *pars_tokens(t_token *tokens)
     }
     else if(current->type == TOKEN_PIPE)
     {
-      current_cmd->type = current->type;
+      // current_cmd->type = current->type;
       if(list_args != NULL)
       {
         args_count = count_args_list(list_args);
@@ -91,18 +106,27 @@ t_command *pars_tokens(t_token *tokens)
         current_cmd->args[0] = NULL;
       }
       new_cmd = malloc(sizeof(t_command));
+      new_cmd->name = strdup("|");
+      new_cmd->args = NULL;
+      new_cmd->redirections = NULL;
+      new_cmd->type = TOKEN_PIPE;
+      new_cmd->next = NULL;
 
+      current_cmd->next = new_cmd;  // link the pip node
+      current_cmd = new_cmd;
+      // list_args = NULL;
+      new_cmd = malloc(sizeof(t_command));
+      if(!new_cmd)  // creat new node for the next commande
+        return(NULL);
       new_cmd->name = NULL;
       new_cmd->args = NULL;
-      // new_cmd->input_file = NULL;
-      // new_cmd->output_file = NULL;
       new_cmd->redirections = NULL;
       new_cmd->type = 0;
       new_cmd->next = NULL;
 
       current_cmd->next = new_cmd;
       current_cmd = new_cmd;
-      // list_args = NULL;
+
     }
     else if(current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC)
     {
@@ -122,15 +146,6 @@ t_command *pars_tokens(t_token *tokens)
         current = current->next;
       }
     }
-    // else if(current->type == TOKEN_APPEND)
-    // {
-    //   if(current->next && current->next->type == TOKEN_WORD)
-    //   {
-    //     current_cmd->output_file = strdup(current->next->value);
-    //     current_cmd->type = current->type;
-    //     current = current->next;
-    //   }
-    // }
     current = current->next;
   }
 
@@ -247,6 +262,8 @@ t_command *pars_tokens(t_token *tokens)
 //     }
 // }
 
+//
+
 // void print_commands(t_command *commands)
 // {
 //     t_command *current = commands;
@@ -259,6 +276,25 @@ t_command *pars_tokens(t_token *tokens)
 
 //     while (current) {
 //         printf("Command %d:\n", cmd_num);
+
+//         // Print command type with better clarity
+//         printf("  Type: ");
+//         if (current->type == TOKEN_WORD)
+//             printf("WORD\n");
+//         else if (current->type == TOKEN_PIPE)
+//             printf("PIPE (command followed by pipe)\n");
+//         else if (current->type == TOKEN_RED_IN)
+//             printf("REDIRECT_IN\n");
+//         else if (current->type == TOKEN_RED_OUT)
+//             printf("REDIRECT_OUT\n");
+//         else if (current->type == TOKEN_APPEND)
+//             printf("REDIRECT_APPEND\n");
+//         else if (current->type == TOKEN_HERDOC)
+//             printf("HEREDOC\n");
+//         else if (current->type == 0)
+//             printf("SIMPLE (end of pipeline)\n");
+//         else
+//             printf("UNKNOWN (%d)\n", current->type);
 
 //         // Print command name
 //         printf("  Name: %s\n", current->name ? current->name : "NULL");
@@ -410,4 +446,8 @@ void fill_array(t_args_list *list, t_command *cmd)
 //   }
 
 // }
+
+
+
+
 
