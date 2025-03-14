@@ -42,6 +42,7 @@ void    echo_cmd(t_setup *built_in)
 	i = 1;
 	if (!built_in->cmd->args[1])
 		printf("\n");
+	// >>> Expansion <<<
 	// >>> fix echo '$?' hello <<<
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	// else if (ft_strcmp(built_in->cmd->args[1], "$?") == 0)

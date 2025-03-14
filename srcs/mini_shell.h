@@ -19,7 +19,7 @@
 # define FAIL 1
 # define SYNTAX_ERROR 2
 # define CMD_NOT_FOUND 127
-# define CMD_NOT_EXEC 126
+# define CMD_NOT_EXEC 126   
 // # define EXIT_SEVERE 128
 // # define EXIT_SEVERE 130 for the ctrl + c (heredoc case)
 // >>>>>>>>>>>>>>>>>>>>>>>

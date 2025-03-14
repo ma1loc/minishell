@@ -1,19 +1,29 @@
 #include "mini_shell.h"
 
-#include "mini_shell.h"
-
+// check if there's a pipe and then check the rediraction
 void    execution(t_setup *setup)
 {
     // int     pid;
     char    *path;
 
-    if (command_type(setup->cmd->name))
-        built_ins(setup); // >>> just for the test the built_ins
+    // printf("cmd -> %u\n", setup->cmd->type);    // -> 0
+    // printf("word_token -> %u\n", TOKEN_WORD);   // -> 1
+    // if (is_built_in(setup->cmd->name))
+    if (is_built_in(setup->cmd->name) && setup->cmd->type == TOKEN_WORD)
+        built_ins(setup);
     else
     {
+        // printf("else\n");
+        if (setup->cmd->type == TOKEN_PIPE)
+        {
+            printf("there pipe\n");
+            printf("%s\n", setup->cmd->name);
+            printf("%s\n", setup->cmd->next->name);
+            return ;
+        }
         path = get_path(setup);
         if (!path)
-            ft_perror("command not found.\n", 999); // >>> exit status litter on.
+            return ;
         // external();  // >>> this is the execution part
     }
 
