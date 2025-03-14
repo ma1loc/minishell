@@ -87,6 +87,10 @@ void	set_env(t_env **env_list, char *key, char *value)
 	
 // }
 
+// >>> Key must start with letter or underscore
+// >>> bash: export: `5': not a valid identifier
+// >>> bash: export: `h-ello': not a valid identifier
+
 void	export_cmd(t_setup	*built_in)
 {
 	char	**args;

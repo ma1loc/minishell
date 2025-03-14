@@ -37,20 +37,45 @@ char	*split_path(char *path, char *cmd)
 	return (free_spliting(split_path), NULL);
 }
 
+// >>> executable verification <<<
+// >>> check if path is a directory
+// 		bash exe/
+// 		exe/: exe/: Is a directory <<< exit status 126
+//		Command not found	127
+// 		Permission denied	
+// 		Is a directory		126
+int		is_directory(char	*cmd_path)
+{
+	int	status;
+	struct stat st;
+
+	status = stat(cmd_path, &st);  // Pass the address of the struct
+	if (status == 0 && S_ISDIR(st.st_mode))
+	{
+		// >>> here i have to set the exit status of 126 litter on
+		ft_perror("is a directory\n", 999);
+		return (false);
+	}
+	return (true);
+}
+
 char	*get_path(t_setup *setup)
 {
 	char	*path;
 	char	*cmd;
 	t_env	*env_list;
 
-
+	path = NULL;
 	cmd = setup->cmd->name;
 	env_list = setup->env_list;
+	if (is_directory(cmd) == false)
+		return (NULL);
 	// >>> in this if condition i check absolute path
-	if (ft_strchr(cmd, '/') != NULL)
+	else if (ft_strchr(cmd, '/') != NULL)
 		return (ft_strdup(cmd));
 	// >>> and here i check if it relative path
-	else if (access(cmd, F_OK | X_OK) == 0)
+	// >>> file exestence check
+	else if (access(cmd, F_OK | X_OK) == 0)	
 		return (ft_strdup(cmd));
     while (env_list && ft_strcmp(env_list->key, "PATH") != 0)
 		env_list = env_list->next;

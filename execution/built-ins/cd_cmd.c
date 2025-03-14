@@ -4,6 +4,11 @@
 // >>> have to set the exit status here
 // >>> "cd ." to fix
 // >>> have to use the stat think so to check if the file exist to put error msg if not depand on the access of the file (no such file vs. not a directory).
+// >>> handle cases where PWD/OLDPWD don't exist in environment
+
+
+
+
 
 void    cd(t_setup *built_in)
 {

@@ -1,5 +1,6 @@
 # include "mini_shell.h"
 
+// >>> signal handler here to
 void    heredoc(t_setup *setup)
 {
     int     in_file;
