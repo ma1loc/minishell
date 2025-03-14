@@ -1,6 +1,5 @@
 # include "mini_shell.h"
 
-// >>> i have here the delimiter
 void    heredoc(t_setup *setup)
 {
     int     in_file;
@@ -9,7 +8,7 @@ void    heredoc(t_setup *setup)
     in_file = open("heredoc.txt", O_CREAT | O_RDWR, 0644);
     if (in_file == -1)
         ft_perror("open: failed\n", FAIL);
-    while (1)
+    while (true)
     {
         input = readline("heredoc> ");
         if (input == NULL || ft_strcmp(input, setup->cmd->redirections->file_name) == 0) // delimiter)
@@ -23,3 +22,4 @@ void    heredoc(t_setup *setup)
     // >>> unlink to remove the heredoc.txt file when finishing, to do litter
     return ;
 }
+// recursive descent parsing

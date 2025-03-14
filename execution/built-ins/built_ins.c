@@ -14,8 +14,8 @@ void	built_ins(t_setup *built_in)
 		env_cmd(built_in);
     else if (ft_strcmp(built_in->cmd->name, "exit") == 0)   // >>> [D]
 	    exit_cmd(built_in);
-    // else if (ft_strcmp(built_in->cmd->name, "Export") == 0) // >>> []
-        // >>> export latter on <<<
+    else if (ft_strcmp(built_in->cmd->name, "export") == 0) // >>> []
+        export_cmd(built_in);
 }
 
 int is_built_in(char *name)

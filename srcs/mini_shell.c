@@ -9,7 +9,7 @@ int		main(int argc, char **argv, char **env)
     setup_env = NULL;
     if (argc == 1)
     {
-        while (1)
+        while (true)
         {
             setup_env = shell_env_setup(env);
             setup_env->input = readline("minishell$ ");
@@ -26,6 +26,6 @@ int		main(int argc, char **argv, char **env)
         }
     }
     else
-        ft_perror("No extra args, please ;)\n", FAIL);
+        ft_perror("No extra args, please ;)\n", 999); // exit status litter on
     return 0;
 }

@@ -52,7 +52,13 @@ void	env_cmd(t_setup *built_in)
 		return ;
     while (current)
 	{
-		printf("%s=%s\n", current->key, current->value);
+		if (ft_strcmp(built_in->cmd->name, "export") == 0)
+		{
+			printf("declare -x ");
+			printf("%s=\"%s\"\n", current->key, current->value);
+		}
+		else
+			printf("%s=%s\n", current->key, current->value);
 		current = current->next;
 	}
 }
