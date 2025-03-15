@@ -1,50 +1,3 @@
-#include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
-// #include <errno.h>
-
-
-// int g_exit_status = 0;
-
-// void	ft_error(char *cmd, char *arg, char *msg, int status)
-// {
-// 	g_exit_status = status;
-	
-// 	if (cmd && arg && msg)
-// 		fprintf(stderr, "minishell: %s: %s: %s\n", cmd, arg, msg);
-// 	else if (cmd && msg)
-// 		fprintf(stderr, "minishell: %s: %s\n", cmd, msg);
-// 	else if (msg)
-// 		fprintf(stderr, "minishell: %s\n", msg);
-	
-	
-
-// }
-
-
-// void	cmd_not_found(char *cmd)
-// {
-// 	ft_error(cmd, NULL, "command not found", 127);
-// }
-
-// void	permission_denied(char *path)
-// {
-// 	ft_error(path, NULL, "Permission denied", 126);
-// }
-
-// void	no_such_file(char *cmd, char *file)
-// {
-// 	ft_error(cmd, file, "No such file or directory", 127);
-// }
-
-// void	syntax_error(char *token)
-// {
-// 	char error_msg[100];
-	
-// 	sprintf(error_msg, "syntax error near unexpected token `%s'", token);
-// 	ft_error(NULL, NULL, error_msg, 2);
-// }
-
 #include "mini_shell.h"
 
 int execute_command(t_setup *setup)
@@ -72,3 +25,39 @@ int execute_command(t_setup *setup)
     free(cmd_path);
     return (status);
 }
+
+
+// int execute_command_tree(t_command *cmd, int input_fd, int output_fd)
+// {
+//     if (!cmd)
+//         return (SUCCESS);
+        
+//     if (cmd->type == TOKEN_CMD) {
+//         // Execute simple command, checking if built-in
+//         if (is_builtin(cmd->content))
+//             return (execute_builtin(cmd->content, input_fd, output_fd));
+//         else
+//             return (execute_external(cmd->content, input_fd, output_fd));
+//     }
+//     else if (cmd->type == TOKEN_PIPE) {
+//         int pipe_fd[2];
+//         if (pipe(pipe_fd) == -1)
+//             return (ERROR);
+            
+//         // Execute left side of pipe, output goes to pipe
+//         int ret = execute_command_tree(cmd->left, input_fd, pipe_fd[1]);
+//         close(pipe_fd[1]);
+        
+//         if (ret != SUCCESS)
+//             return (ret);
+            
+//         // Execute right side of pipe, input comes from pipe
+//         ret = execute_command_tree(cmd->right, pipe_fd[0], output_fd);
+//         close(pipe_fd[0]);
+        
+//         return (ret);
+//     }
+//     // Add other token types as needed
+    
+//     return (SUCCESS);
+// }

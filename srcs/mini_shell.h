@@ -9,7 +9,8 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <sys/stat.h>
-#include  <fcntl.h>
+# include <fcntl.h>
+# include <sys/wait.h>
 # include "../parsing/tokenizer.h"
 
 # define PATH_MAX 4096
@@ -54,6 +55,7 @@ char	*ft_strchr(char *s, int c);
 // >>> export && unset
 
 // >>> struct for the env variables
+
 typedef struct s_env
 {
     char    *key;
@@ -73,8 +75,8 @@ typedef struct s_setup
     t_command   *cmd;
     char        *pwd;
     char        *oldpwd;
-    char        **env_split;
-    t_env       *env_list;
+    char        *cmd_path;
+    char        **env_list;
     int         exit_status;
 }   t_setup;
 
@@ -83,7 +85,7 @@ void    echo_cmd(t_setup *built_in);       // the echo command fun. [done]
 void    cd_cmd(t_setup *built_in);         // the cd command fun. [done]
 void	pwd_cmd(t_setup *built_in);        // the pwd path print fun. [done]
 void	get_pwd(t_setup *built_in);
-t_env	*init_env(char **env, t_setup *set_env);
+t_env	*init_env(char **env, t_env *env_list);
 void	env_cmd(t_setup *built_in);
 void	unset_cmd(t_env **env_list, char *key);
 void	set_env(t_env **env_list, char *key, char *value);
@@ -98,12 +100,12 @@ void	free_spliting(char **split_path);
 // >>> the execution will start here
 int     command_type(char *name);
 int     is_built_in(char *name);
-void	built_ins(t_setup *built_in);
+void	built_ins_cmd(t_setup *built_in);
 t_setup *shell_env_setup(char **env);
 t_setup *init_setup_struct();
 void    execution(t_setup *setup);
 void    heredoc(t_setup *setup);
-char	*get_path(t_setup *setup);
+char	*path_resolver(t_setup *setup);
 char	*split_path(char *path, char *cmd);
 
 

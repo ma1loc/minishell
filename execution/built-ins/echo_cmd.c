@@ -40,15 +40,16 @@ void    echo_cmd(t_setup *built_in)
 	int	i;
 
 	i = 1;
-	if (!built_in->cmd->args[1])
-		printf("\n");
+	// if (!built_in->cmd->args[1])
+	// 	printf("\n");
 	// >>> Expansion <<<
 	// >>> fix echo '$?' hello <<<
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	// else if (ft_strcmp(built_in->cmd->args[1], "$?") == 0)
 		// printf("%d\n", built_in->exit_status);
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	else if (is_option(built_in->cmd->args[i]) == 0)
+	// else if (is_option(built_in->cmd->args[i]) == 0)
+	if (is_option(built_in->cmd->args[i]) == 0)
 	{
 		i = 2;
 		while (is_option(built_in->cmd->args[i]) == 0)

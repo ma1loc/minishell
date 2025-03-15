@@ -1,5 +1,5 @@
 # include "mini_shell.h"
-# include "../parsing/tokenizer.h" // to change
+# include "../parsing/tokenizer.h"
 
 int		main(int argc, char **argv, char **env)
 {
