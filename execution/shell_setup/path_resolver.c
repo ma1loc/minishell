@@ -38,22 +38,23 @@ char	*split_path(char *path, char *cmd)
 }
 
 // >>> executable verification <<<
-// >>> check if path is a directory
 // 		bash exe/
 // 		exe/: exe/: Is a directory <<< exit status 126
 //		Command not found	127
 // 		Permission denied	
 // 		Is a directory		126
+
+// >>> check if path is a directory
 int		is_directory(char	*cmd_path)
 {
 	int	status;
 	struct stat st;
 
-	status = stat(cmd_path, &st);  // Pass the address of the struct
+	status = stat(cmd_path, &st);
 	if (status == 0 && S_ISDIR(st.st_mode))
 	{
 		// >>> here i have to set the exit status of 126 litter on
-		ft_perror("is a directory\n", 999);
+		ft_perror("minishell: Is a directory\n", 999);
 		return (false);
 	}
 	return (true);
@@ -67,7 +68,7 @@ char	*get_path(t_setup *setup)
 
 	path = NULL;
 	cmd = setup->cmd->name;
-	env_list = setup->env_list;
+	env_list = setup->env;
 	if (is_directory(cmd) == false)
 		return (NULL);
 	// >>> in this if condition i check absolute path

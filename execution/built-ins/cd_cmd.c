@@ -42,7 +42,7 @@ void    cd_cmd(t_setup *built_in)
         ft_perror("cd: memory allocation failed\n", FAIL);
     cd(built_in);
     get_pwd(built_in);
-    set_env(&built_in->env_list, "PWD", built_in->pwd);
-    set_env(&built_in->env_list, "OLDPWD", pwd);
+    set_env(&built_in->env, "PWD", built_in->pwd);
+    set_env(&built_in->env, "OLDPWD", pwd);
     free(pwd);
 }
