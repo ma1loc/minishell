@@ -122,7 +122,7 @@ void print_tree(t_tree *root, int level)
 
 //     // Create tokens manually or with your tokenizer
 //     // t_token *tokens = tokenize("ls -l | grep \"file\" > output.txt");
-//     t_token *tokens = tokenize("ls -l | cat | wc");
+//     t_token *tokens = tokenize("ls");
 
 
 //     // Parse tokens into commands

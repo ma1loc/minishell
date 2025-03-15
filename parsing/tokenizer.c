@@ -92,14 +92,20 @@ int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or
   int i;
   int in_quoets;
   char quoest_char;
+  char len;
 
   i = 0;
   in_quoets = 0;
   quoest_char = 0;
-
+  len = strlen(input);
   while(input[i] != '\0')
   {
-    if((input[i] == '"' || input[i] == '\'') && (quoest_char == input[i] || in_quoets == 0))
+    if(input[0] == '|' || input[len - 1] == '|')
+    {
+      in_quoets = 1;
+      break;
+    }
+    else if ((input[i] == '"' || input[i] == '\'') && (quoest_char == input[i] || in_quoets == 0))
     {
       if(!in_quoets)
       {
@@ -322,7 +328,7 @@ t_token *tokenize(char *input)
 // int main()
 // {
 //     // char *input = "echo        \"hello \'\'      \" \"world\"";
-//     char *input = "ls -la | cat | wc";
+//     char *input = "ls | cat | wc";
 
 
 //     printf("Raw input: %s\n", input);

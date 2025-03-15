@@ -71,6 +71,7 @@ t_args_list *add_args_to_list(t_args_list **list_head, t_token *token);
 int count_args_list(t_args_list *args);
 void fill_array(t_args_list *args_list, t_command *commads);
 void free_list_args(t_args_list *list_args);
+void print_tree(t_tree *root, int level);
 
 
 #endif
