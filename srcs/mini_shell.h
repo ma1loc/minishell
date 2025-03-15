@@ -9,7 +9,7 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <sys/stat.h>
-# include  <fcntl.h>
+# include <fcntl.h>
 # include <sys/wait.h>
 # include "../parsing/tokenizer.h"
 
@@ -55,6 +55,7 @@ char	*ft_strchr(char *s, int c);
 // >>> export && unset
 
 // >>> struct for the env variables
+
 typedef struct s_env
 {
     char    *key;
@@ -69,13 +70,13 @@ void	ft_lstadd_back(t_env **lst, t_env *new);
 typedef struct s_setup
 {
     char        *input;
-    t_env       *env;           // have to remove ???
+    t_env       *env;
     t_token     *token;
     t_command   *cmd;
     char        *pwd;
     char        *oldpwd;
-    // char        **env_split;    // have to remove ???
-    // t_env       *env_list;      // have to remove ???
+    char        *cmd_path;
+    char        **env_list;
     int         exit_status;
 }   t_setup;
 
@@ -99,12 +100,12 @@ void	free_spliting(char **split_path);
 // >>> the execution will start here
 int     command_type(char *name);
 int     is_built_in(char *name);
-void	built_ins(t_setup *built_in);
+void	built_ins_cmd(t_setup *built_in);
 t_setup *shell_env_setup(char **env);
 t_setup *init_setup_struct();
 void    execution(t_setup *setup);
 void    heredoc(t_setup *setup);
-char	*get_path(t_setup *setup);
+char	*path_resolver(t_setup *setup);
 char	*split_path(char *path, char *cmd);
 
 

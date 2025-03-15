@@ -13,8 +13,7 @@ t_setup  *init_setup_struct()
     set_env->cmd = NULL;
     set_env->pwd = NULL;
     set_env->oldpwd = NULL;
-    // set_env->env_split = NULL;
-    // set_env->env_list = NULL;
+    set_env->cmd_path = NULL;
     set_env->exit_status = 0;   // >>> to see litter on
     return (set_env);
 }

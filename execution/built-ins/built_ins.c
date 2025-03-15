@@ -1,6 +1,6 @@
 #include "mini_shell.h"
 
-void	built_ins(t_setup *built_in)
+void	built_ins_cmd(t_setup *built_in)
 {
 	if (ft_strcmp(built_in->cmd->name, "echo") == 0)    // >>> [Done]
 		echo_cmd(built_in);

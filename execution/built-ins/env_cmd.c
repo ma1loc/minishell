@@ -19,6 +19,7 @@ t_env	*init_env(char **env, t_env *env_list)
     // t_env   *env_list;
 	t_env	*new_node;
 	char	**split_env;
+
     int     i;
 
     i = 0;
@@ -43,6 +44,19 @@ t_env	*init_env(char **env, t_env *env_list)
 	return (env_list);
 }
 
+// void	set_env_list(t_setup *setup)
+// {
+// 	int		i;
+// 	t_env	*env;
+
+// 	i = 0;
+// 	env = setup->env;
+// 	while (env)
+// 	{
+		
+
+// 	}
+// }
 
 void	env_cmd(t_setup *built_in)
 {

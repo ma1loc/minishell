@@ -60,7 +60,7 @@ int		is_directory(char	*cmd_path)
 	return (true);
 }
 
-char	*get_path(t_setup *setup)
+char	*path_resolver(t_setup *setup)
 {
 	char	*path;
 	char	*cmd;
@@ -71,11 +71,8 @@ char	*get_path(t_setup *setup)
 	env_list = setup->env;
 	if (is_directory(cmd) == false)
 		return (NULL);
-	// >>> in this if condition i check absolute path
 	else if (ft_strchr(cmd, '/') != NULL)
 		return (ft_strdup(cmd));
-	// >>> and here i check if it relative path
-	// >>> file exestence check
 	else if (access(cmd, F_OK | X_OK) == 0)	
 		return (ft_strdup(cmd));
     while (env_list && ft_strcmp(env_list->key, "PATH") != 0)
@@ -83,5 +80,7 @@ char	*get_path(t_setup *setup)
 	if (!env_list)
 		return (NULL);
 	path = split_path(env_list->value, cmd);
+	if (!path)
+		return (ft_perror("minishell: command not found\n", 999), NULL);
 	return (path);
 }
