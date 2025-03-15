@@ -9,7 +9,8 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <sys/stat.h>
-#include  <fcntl.h>
+# include  <fcntl.h>
+# include <sys/wait.h>
 # include "../parsing/tokenizer.h"
 
 # define PATH_MAX 4096
@@ -68,13 +69,13 @@ void	ft_lstadd_back(t_env **lst, t_env *new);
 typedef struct s_setup
 {
     char        *input;
-    t_env       *env;
+    t_env       *env;           // have to remove ???
     t_token     *token;
     t_command   *cmd;
     char        *pwd;
     char        *oldpwd;
-    char        **env_split;
-    t_env       *env_list;
+    // char        **env_split;    // have to remove ???
+    // t_env       *env_list;      // have to remove ???
     int         exit_status;
 }   t_setup;
 
@@ -83,7 +84,7 @@ void    echo_cmd(t_setup *built_in);       // the echo command fun. [done]
 void    cd_cmd(t_setup *built_in);         // the cd command fun. [done]
 void	pwd_cmd(t_setup *built_in);        // the pwd path print fun. [done]
 void	get_pwd(t_setup *built_in);
-t_env	*init_env(char **env, t_setup *set_env);
+t_env	*init_env(char **env, t_env *env_list);
 void	env_cmd(t_setup *built_in);
 void	unset_cmd(t_env **env_list, char *key);
 void	set_env(t_env **env_list, char *key, char *value);

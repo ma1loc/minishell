@@ -1,6 +1,21 @@
 #include "mini_shell.h"
 
 // check if there's a pipe and then check the rediraction
+// void    execute_cmd(t_setup *setup)
+void    execute_cmd(t_setup *setup, char *path)
+{
+    int pid;
+
+    pid = fork();
+    if (pid == -1)
+        return ;
+    if (pid > 0)
+        wait(&pid);
+    if (execve(path, setup->cmd->args, NULL) == -1)
+        printf("execute cmd will be done here\n");
+    // if (execve(path, setup->cmd->args, setup->) == -1)
+}
+
 void    execution(t_setup *setup)
 {
     // int     pid;
@@ -8,31 +23,17 @@ void    execution(t_setup *setup)
 
     // printf("cmd -> %u\n", setup->cmd->type);    // -> 0
     // printf("word_token -> %u\n", TOKEN_WORD);   // -> 1
-    // if (is_built_in(setup->cmd->name))
-    if (is_built_in(setup->cmd->name) && setup->cmd->type == TOKEN_WORD)
+    // // if (is_built_in(setup->cmd->name))
+    // if (is_built_in(setup->cmd->name) && setup->cmd->type == TOKEN_WORD)
+    //     built_ins(setup);
+    if (setup->cmd->type == TOKEN_WORD && is_built_in(setup->cmd->name))
         built_ins(setup);
     else
     {
-        // printf("else\n");
-        if (setup->cmd->type == TOKEN_PIPE)
-        {
-            printf("there pipe\n");
-            printf("%s\n", setup->cmd->name);
-            printf("%s\n", setup->cmd->next->name);
-            return ;
-        }
         path = get_path(setup);
         if (!path)
-            return ;
-        // external();  // >>> this is the execution part
+            ft_perror("minishell: command not found\n", 999);
+        // else
+        //     execute_cmd(setup, path);
     }
-
-    // if (command_type(setup->cmd->name) == BUILT_IN)
-    // else
-    // {
-    //     // execution(setup_env);
-    //     if (setup->cmd->redirections->type == TOKEN_HERDOC)
-    //         heredoc(setup);
-    //     // else if if (setup_env->cmd->type == TOKEN_HERDOC)
-    // }
 }
