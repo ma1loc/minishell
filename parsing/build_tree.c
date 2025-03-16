@@ -60,5 +60,5 @@ t_tree *build_tree_commande(t_command *commandes)
   else
     root->right = NULL;
     ////?
-    return(root);
+  return(root);
   }
