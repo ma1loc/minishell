@@ -1,21 +1,21 @@
 #include "mini_shell.h"
 
-void	built_ins_cmd(t_setup *built_in)
+void	execute_internal(t_command *cmd, t_setup *setup)
 {
-	if (ft_strcmp(built_in->cmd->name, "echo") == 0)    // >>> [Done]
-		echo_cmd(built_in);
-	else if (ft_strcmp(built_in->cmd->name, "cd") == 0)    // >>> [Done]
-		cd_cmd(built_in);
-	else if (ft_strcmp(built_in->cmd->name, "pwd") == 0)  // >>> [Done]
-		pwd_cmd(built_in);
-    else if (ft_strcmp(built_in->cmd->name, "unset") == 0)   // >>> [Done]
-			unset_cmd(&built_in->env, built_in->cmd->args[1]);
-    else if (ft_strcmp(built_in->cmd->name, "env") == 0)    // >>> [Done]
-		env_cmd(built_in);
-    else if (ft_strcmp(built_in->cmd->name, "exit") == 0)   // >>> [D]
-	    exit_cmd(built_in);
-    else if (ft_strcmp(built_in->cmd->name, "export") == 0) // >>> []
-        export_cmd(built_in);
+	if (ft_strcmp(cmd->name, "echo") == 0)    // >>> [Done]
+		echo_cmd(setup);
+	else if (ft_strcmp(cmd->name, "cd") == 0)    // >>> [Done]
+		cd_cmd(setup);
+	else if (ft_strcmp(cmd->name, "pwd") == 0)  // >>> [Done]
+		pwd_cmd(setup);
+    else if (ft_strcmp(cmd->name, "unset") == 0)   // >>> [Done]
+			unset_cmd(&setup->env, cmd->args[1]);
+    else if (ft_strcmp(cmd->name, "env") == 0)    // >>> [Done]
+		env_cmd(setup);
+    else if (ft_strcmp(cmd->name, "exit") == 0)   // >>> [D]
+	    exit_cmd(setup);
+    else if (ft_strcmp(cmd->name, "export") == 0) // >>> []
+        export_cmd(setup);
 }
 
 int is_built_in(char *name)

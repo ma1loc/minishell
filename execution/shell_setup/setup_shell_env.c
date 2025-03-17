@@ -24,6 +24,7 @@ t_setup *shell_env_setup(char **env)
     t_setup  *setup_env;
 
     setup_env = init_setup_struct();
+    setup_env->envp = env;  // to check litter on.
     if (!setup_env)
         ft_perror("memory allocation failed\n", FAIL);
     setup_env->env = init_env(env, setup_env->env);
