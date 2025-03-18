@@ -1,4 +1,5 @@
 #include "tokenizer.h"
+#include "../srcs/mini_shell.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,47 +9,25 @@ char *strip_quotes(char *str)  //test
 {
     char *result;
     int len;
-    int i, j;
-    int in_dquote = 0;
-    int in_squote = 0;
+    int i;
+    int j;
+    int in_dquote;
+    int in_squote;
 
+    in_dquote = 0;
+    in_squote = 0;
     if (!str)
         return NULL;
-
     len = strlen(str);
     result = malloc(len + 1);
     if (!result)
         return NULL;
-
     i = 0;  // index for original string
     j = 0;  // index for result string
-
-    // Process the string character by character
-    // while (i < len)                                     ////////////////// original while bigging
-    // {
-    //     if (str[i] == '"' && !in_squote)
-    //     {
-
-    //         in_dquote = !in_dquote;         // if " true mean 0 become falsw 1
-    //     }
-    //     else if (str[i] == '\'' && !in_dquote)
-    //     {
-
-    //         in_squote = !in_squote;    // if ' true become false
-    //     }
-    //     else
-    //     {
-
-    //         result[j++] = str[i];    // copy charachter
-    //     }
-    //     i++;
-    // }
-
-    while (i < len)
+    while (i < len)  // process the string character by character
     {
         if (str[i] == '"' && in_squote == 0)
         {
-
             if (in_dquote == 0)
                 in_dquote = 1;   // now we are on duble
             else
@@ -57,32 +36,22 @@ char *strip_quotes(char *str)  //test
         else if (str[i] == '\'' && in_dquote == 0)
         {
             if (in_squote == 0)
-                in_squote = 1;  // Now we're inside single quotes
+                in_squote = 1;  // now we're inside single quotes
             else
-                in_squote = 0;  // Now we're outside single quotes
+                in_squote = 0;  // now we're outside single quotes
         }
         else
-        {
-            // Copy any character that's not an opening/closing quote
-            result[j++] = str[i];
-        }
+            result[j++] = str[i];  // copy any character that's not an opening/closing quote
         i++;
     }
-
     result[j] = '\0';
-
-    // If the result is empty but the original wasn't just quotes
-    // (like for "" or '' or ""), return an empty string
-    if (j == 0 && len > 0)
+    if (j == 0 && len > 0)  // If the result is empty but the original wasn't just quotes (like for "" or '' or ""), return an empty string
         return result;
-
-    // For truly empty input
-    if (j == 0 && len == 0)
+    if (j == 0 && len == 0)   // For truly empty input
     {
         free(result);
         return NULL;
     }
-
     return result;
 }
 
@@ -123,10 +92,12 @@ int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or
   if(in_quoets)
   {
     printf("syntax error\n");
+   // ft_perror()   put later the msg and exit status with this func
     return(1);
   }
   return(0);
 }
+
 
 
 t_token *add_token( t_token **head, char *value, t_token_type type) // function creat new token and add it to the linked list
@@ -160,138 +131,41 @@ t_token *add_token( t_token **head, char *value, t_token_type type) // function 
 
 t_token *tokenize(char *input)
 {
-  t_token *tokens = NULL;
-  char buff[1024];
-  int i = 0;
-  int j = 0;
-  // int in_word = 0;
+  t_tokinizer_state *state;
+  t_token *tokens;
 
-  if(!input)
+  tokens = NULL;
+  state = malloc(sizeof(t_tokinizer_state));
+  if(!state)
     return NULL;
-  if(check_quotes_syntax(input) != 0)
-    return NULL;
-
-  while(input[i] != '\0')
+  state->i = 0;
+  state->j = 0;
+  memset(state->buff, 0, sizeof(state->buff));
+  if(!input || check_quotes_syntax(input) != 0)
+    return (free(state), NULL);
+  while(input[state->i] != '\0')
   {
-    // Skip spaces between tokens
-    if(input[i] == ' ')
-    {
-      if(j > 0)
-      {
-        // End of a word token
-        buff[j] = '\0';
-        char *stripped = strip_quotes(buff);
-        if(stripped != NULL)
-        {
-          add_token(&tokens, stripped, TOKEN_WORD);
-          free(stripped);
-        }
-        j = 0;
-        // in_word = 0;
-      }
-      i++;
-      continue;
-    }
-
-    // Handle special tokens (pipe, redirections)
-    if(input[i] == '|' || input[i] == '<' || input[i] == '>')
-    {
-      // Save any buffered word first
-      if(j > 0)
-      {
-        buff[j] = '\0';
-        char *stripped = strip_quotes(buff);
-        if(stripped != NULL)
-        {
-          add_token(&tokens, stripped, TOKEN_WORD);
-          free(stripped);
-        }
-        j = 0;
-        // in_word = 0;
-      }
-
-      // Handle the special token
-      if(input[i] == '|')
-      {
-        add_token(&tokens, "|", TOKEN_PIPE);
-        i++;
-      }
-      else if(input[i] == '>' && input[i + 1] == '>')
-      {
-        add_token(&tokens, ">>", TOKEN_APPEND);
-        i += 2;
-      }
-      else if(input[i] == '<' && input[i + 1] == '<')
-      {
-        add_token(&tokens, "<<", TOKEN_HERDOC);
-        i += 2;
-      }
-      else if(input[i] == '>')
-      {
-        add_token(&tokens, ">", TOKEN_RED_OUT);
-        i++;
-      }
-      else if(input[i] == '<')
-      {
-        add_token(&tokens, "<", TOKEN_RED_IN);
-        i++;
-      }
-      continue;
-    }
-
-    // We're now processing a word token (could contain quotes)
-    // in_word = 1;
-
-    // Handle quoted sections within a word
-    if(input[i] == '"' || input[i] == '\'')
-    {
-      char quote_char = input[i];
-      buff[j++] = input[i++]; // Add opening quote
-
-      // Copy everything inside quotes
-      while(input[i] != '\0' && input[i] != quote_char)
-      {
-        buff[j++] = input[i++];
-      }
-
-      if(input[i] == '\0')
-      {
-        printf("syntax error\n");
-        return NULL;
-      }
-
-      buff[j++] = input[i++]; // Add closing quote
-    }
+    if(input[state->i] == ' ')    // skip spaces between tokens
+      process_spaces(input, state, &tokens);
+    else if(input[state->i] == '|' || input[state->i] == '<' || input[state->i] == '>')  // Handle special tokens (pipe, redirections)
+      process_special_tokens(input, state, &tokens);
+    else if(input[state->i] == '"' || input[state->i] == '\'') // Handle quoted sections within a word
+      process_quotes(input, state);
     else
-    {
-      // Just a regular character in a word
-      buff[j++] = input[i++];
-    }
+      process_normal_word(input,state);  // Just a regular character in a word
   }
-
-  // Don't forget any remaining text in the buffer ///////////////////////////////////////
-  if(j > 0)
-  {
-    buff[j] = '\0';
-    char *stripped = strip_quotes(buff);
-    if(stripped != NULL)
-    {
-      add_token(&tokens, stripped, TOKEN_WORD);
-      free(stripped);
-    }
-  }
-
-  return tokens;
+  process_remainder_text(input, state, &tokens);    // Don't forget any remaining text in the buffer
+  return (free(state), tokens);
 }
 
-// void print_tokens( t_token *tokens) // print tokens
-// {
-//   while(tokens != NULL)
-//   {
-//     printf("token => [%s], type => [%d]\n ", tokens->value, tokens->type);
-//     tokens = tokens->next;
-//   }
-// }
+void print_tokens( t_token *tokens) // print tokens
+{
+  while(tokens != NULL)
+  {
+    printf("token => [%s], type => [%d]\n ", tokens->value, tokens->type);
+    tokens = tokens->next;
+  }
+}
 
 
 // void free_tokens(t_token *tokens)
@@ -310,54 +184,54 @@ t_token *tokenize(char *input)
 // }
 
 
-// t_command *find_pipe_node(t_command *commands) //  check pipe node
-// {
-//     t_command *current = commands;
-//     while (current)
-//     {
-//         if (current->type == TOKEN_PIPE)
-//             return current; // Return the pipe node
-//         current = current->next;
-//     }
-//     return NULL; // No pipe found
-// }
+t_command *find_pipe_node(t_command *commands) //  check pipe node
+{
+    t_command *current = commands;
+    while (current)
+    {
+        if (current->type == TOKEN_PIPE)
+            return current; // Return the pipe node
+        current = current->next;
+    }
+    return NULL; // No pipe found
+}
 
 
 
 
-// int main()
-// {
-//     // char *input = "echo        \"hello \'\'      \" \"world\"";
-//     char *input = "ls | cat | wc";
+int main()
+{
+    // char *input = "echo        \"hello \'\'      \" \"world\"";
+    char *input ="ls -la | cat | wc -l";
 
 
-//     printf("Raw input: %s\n", input);
-//     printf("\n");
-//     // Tokenize the input
-//     t_token *tokens = tokenize(input);
+    printf("Raw input: %s\n", input);
+    printf("\n");
+    // Tokenize the input
+    t_token *tokens = tokenize(input);
 
-//     // Print the tokens
-//     printf("Tokens:\n");
-//     print_tokens(tokens);
-//     // free_tokens(tokens);
+    // Print the tokens
+    printf("Tokens:\n");
+    print_tokens(tokens);
+    // free_tokens(tokens);
 
-//     // Parse the tokens
-//     t_command *commands = pars_tokens(tokens);
-//     t_command *pipe_node = find_pipe_node(commands);
+    // Parse the tokens
+    t_command *commands = pars_tokens(tokens);
+    t_command *pipe_node = find_pipe_node(commands);
 
-//     // Print the parsed commands
-//     printf("\nParsed Commands:\n");
-//     print_commands(commands);
-//     //
+    // Print the parsed commands
+    printf("\nParsed Commands:\n");
+    print_commands(commands);
+    //
 
-//     if (pipe_node)
-//     printf("Found a pipe node in the command list!\n");
-//     else
-//     printf("No pipe node found in the command list.\n");
+    if (pipe_node)
+    printf("Found a pipe node in the command list!\n");
+    else
+    printf("No pipe node found in the command list.\n");
 
 
-//     return 0;
-// }
+    return 0;
+}
 
 // int main(int argc , char **argv)
 // {

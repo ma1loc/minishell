@@ -15,6 +15,7 @@ t_redirections *new_redirection(char *file_name, t_token_type type)
   redir->next = NULL;
   return(redir);
 }
+
 void add_redirection_to_list( t_command *cmd, char *file_name, t_token_type type)
 {
   t_redirections *current_redir;
@@ -38,7 +39,7 @@ void add_redirection_to_list( t_command *cmd, char *file_name, t_token_type type
   // new_redir->next = NULL;
 }
 
-void free_redirections(t_redirections *redir)
+void free_redirections(t_redirections *redir) // free redir
 {
   t_redirections *current_redir;
   t_redirections *next_redir;
@@ -53,218 +54,122 @@ void free_redirections(t_redirections *redir)
   }
 }
 
+
 t_command *pars_tokens(t_token *tokens)
 {
   t_command *commandes;
-  t_command *current_cmd; // track current commande
-  t_command *new_cmd;
   t_token *current;
   t_args_list *list_args;
-  int args_count;
 
-  list_args = NULL;
-  commandes = malloc(sizeof(t_command)); // creat new commande
-
-  commandes->name = NULL;
-  commandes->args = NULL;
-  // commandes->input_file = NULL;
-  // commandes->output_file = NULL;
-  commandes->redirections = NULL;
-  commandes->type = 0;
-  commandes->next = NULL;
-
-  current_cmd = commandes;
-  current = tokens; // linked list of tokens
-  args_count = 0;
-  if(current == NULL)
+  if(tokens == NULL)
     return NULL;
-  while(current != NULL) // go trought each token
+  list_args = NULL;
+  t_commande_state *state;    // state to use current commande and new onece
+  state = malloc(sizeof(t_commande_state));
+  if(!state)
+    return(NULL);
+  memset(state, 0 , sizeof(t_commande_state));
+  commandes = creat_new_node_command(commandes);  // create first command node
+  state->current_cmd = commandes;   // track current commande
+  current = tokens; // linked list of tokens
+  while(current != NULL) // process each token
   {
-    if(current->type == TOKEN_WORD)  // if first token is word
-    {
-      if(current_cmd->name == NULL && current->value[0] != '\0')
-        current_cmd->name = strdup(current->value);  // first word become the first command name
-      else
-        add_args_to_list(&list_args, current);
-    }
-    else if(current->type == TOKEN_PIPE)
-    {
-      // current_cmd->type = current->type;
-      if(list_args != NULL)
-      {
-        args_count = count_args_list(list_args);
-        current_cmd->args = malloc((args_count + 2) * sizeof(char *));
-        fill_array(list_args, current_cmd);
-
-        current_cmd->args[args_count + 1] = NULL;
-        // free_list_args(list_args);
-        list_args = NULL;
-      }
-      else
-      {
-        current_cmd->args = malloc(sizeof(char *)); // if no args for this command
-        current_cmd->args[0] = NULL;
-      }
-      new_cmd = malloc(sizeof(t_command));
-      new_cmd->name = strdup("|");
-      new_cmd->args = NULL;
-      new_cmd->redirections = NULL;
-      new_cmd->type = TOKEN_PIPE;
-      new_cmd->next = NULL;
-
-      current_cmd->next = new_cmd;  // link the pip node
-      current_cmd = new_cmd;
-      // list_args = NULL;
-      new_cmd = malloc(sizeof(t_command));
-      if(!new_cmd)  // creat new node for the next commande
-        return(NULL);
-      new_cmd->name = NULL;
-      new_cmd->args = NULL;
-      new_cmd->redirections = NULL;
-      new_cmd->type = 0;
-      new_cmd->next = NULL;
-
-      current_cmd->next = new_cmd;
-      current_cmd = new_cmd;
-
-    }
-    else if(current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC)
-    {
-      if(current->next && current->next->type == TOKEN_WORD) // next token shoud be the input filename
-      {
-        add_redirection_to_list(current_cmd, current->next->value, current->type);
-        current = current->next; // skip filename token
-      }
-    }
-    else if(current->type == TOKEN_RED_OUT || current->type == TOKEN_APPEND)
-    {
-      if(current->next && current->next->type == TOKEN_WORD)
-      {
-        // current_cmd->output_file = strdup(current->next->value);
-        // current_cmd->type = current->type;
-        add_redirection_to_list(current_cmd, current->next->value, current->type);
-        current = current->next;
-      }
-    }
+    process_token(state, current, &tokens, &list_args);
     current = current->next;
   }
-
-  if(list_args != NULL)  // process argus for last command
-  {
-    args_count = count_args_list(list_args);
-    current_cmd->args = malloc((args_count + 2) * sizeof(char *));
-    if (!current_cmd->args)
-      return NULL;
-
-    fill_array(list_args, current_cmd);
-
-    current_cmd->args[args_count + 1] = NULL;
-    // free_list_args(list_args);
-    list_args = NULL;
-  }
-  else if (current_cmd->args == NULL)
-  {
-      current_cmd->args = malloc(2 * sizeof(char *));
-      if (!current_cmd->args)
-          return NULL;
-      if (current_cmd->name)  // Add this check
-          current_cmd->args[0] = strdup(current_cmd->name);
-      else
-          current_cmd->args[0] = NULL;
-      current_cmd->args[1] = NULL;
-      // Don't call fill_array here since list_args is NULL
-  }
+  process_args_last_cmd(state, list_args); // process any remaining arguments
+  free(state);
   return(commandes);
 }
 
 
-// void print_commands(t_command *commands)
-// {
-//     t_command *current = commands;
-//     int cmd_num = 1;
+void print_commands(t_command *commands)
+{
+    t_command *current = commands;
+    int cmd_num = 1;
 
-//     if (!commands) {
-//         printf("No commands to print\n");
-//         return;
-//     }
+    if (!commands) {
+        printf("No commands to print\n");
+        return;
+    }
 
-//     while (current) {
-//         printf("Command %d:\n", cmd_num);
+    while (current) {
+        printf("Command %d:\n", cmd_num);
 
-//         // Print command type with better clarity
-//         printf("  Type: ");
-//         if (current->type == TOKEN_WORD)
-//             printf("WORD\n");
-//         else if (current->type == TOKEN_PIPE)
-//             printf("PIPE (command followed by pipe)\n");
-//         else if (current->type == TOKEN_RED_IN)
-//             printf("REDIRECT_IN\n");
-//         else if (current->type == TOKEN_RED_OUT)
-//             printf("REDIRECT_OUT\n");
-//         else if (current->type == TOKEN_APPEND)
-//             printf("REDIRECT_APPEND\n");
-//         else if (current->type == TOKEN_HERDOC)
-//             printf("HEREDOC\n");
-//         else if (current->type == 0)
-//             printf("SIMPLE (end of pipeline)\n");
-//         else
-//             printf("UNKNOWN (%d)\n", current->type);
+        // Print command type with better clarity
+        printf("  Type: ");
+        if (current->type == TOKEN_WORD)
+            printf("WORD\n");
+        else if (current->type == TOKEN_PIPE)
+            printf("PIPE (command followed by pipe)\n");
+        else if (current->type == TOKEN_RED_IN)
+            printf("REDIRECT_IN\n");
+        else if (current->type == TOKEN_RED_OUT)
+            printf("REDIRECT_OUT\n");
+        else if (current->type == TOKEN_APPEND)
+            printf("REDIRECT_APPEND\n");
+        else if (current->type == TOKEN_HERDOC)
+            printf("HEREDOC\n");
+        else if (current->type == 0)
+            printf("SIMPLE (end of pipeline)\n");
+        else
+            printf("UNKNOWN (%d)\n", current->type);
 
-//         // Print command name
-//         printf("  Name: %s\n", current->name ? current->name : "NULL");
+        // Print command name
+        printf("  Name: %s\n", current->name ? current->name : "NULL");
 
-//         // Print arguments
-//         printf("  Arguments:");
-//         if (current->args) {
-//             int i = 0;
-//             while (current->args[i]) {
-//                 printf(" %s", current->args[i]);
-//                 i++;
-//             }
-//             printf("\n");
-//         } else {
-//             printf(" (none)\n");
-//         }
+        // Print arguments
+        printf("  Arguments:");
+        if (current->args) {
+            int i = 0;
+            while (current->args[i]) {
+                printf(" %s", current->args[i]);
+                i++;
+            }
+            printf("\n");
+        } else {
+            printf(" (none)\n");
+        }
 
-//         // Print redirections
-//         printf("  Redirections:\n");
-//         if (current->redirections) {
-//             t_redirections *redir = current->redirections;
-//             int redir_num = 1;
+        // Print redirections
+        printf("  Redirections:\n");
+        if (current->redirections) {
+            t_redirections *redir = current->redirections;
+            int redir_num = 1;
 
-//             while (redir) {
-//                 printf("    Redirection %d: ", redir_num);
+            while (redir) {
+                printf("    Redirection %d: ", redir_num);
 
-//                 // Check for NULL file_name
-//                 const char *filename = redir->file_name ? redir->file_name : "NULL";
+                // Check for NULL file_name
+                const char *filename = redir->file_name ? redir->file_name : "NULL";
 
-//                 if (redir->type == TOKEN_RED_IN)
-//                     printf("Input from '%s'\n", filename);
-//                 else if (redir->type == TOKEN_RED_OUT)
-//                     printf("Output to '%s'\n", filename);
-//                 else if (redir->type == TOKEN_APPEND)
-//                     printf("Append to '%s'\n", filename);
-//                 else if (redir->type == TOKEN_HERDOC)
-//                     printf("herdoc to '%s'\n", filename);
-//                 else
-//                     printf("Unknown type %d, file: '%s'\n", redir->type, filename);
+                if (redir->type == TOKEN_RED_IN)
+                    printf("Input from '%s'\n", filename);
+                else if (redir->type == TOKEN_RED_OUT)
+                    printf("Output to '%s'\n", filename);
+                else if (redir->type == TOKEN_APPEND)
+                    printf("Append to '%s'\n", filename);
+                else if (redir->type == TOKEN_HERDOC)
+                    printf("herdoc to '%s'\n", filename);
+                else
+                    printf("Unknown type %d, file: '%s'\n", redir->type, filename);
 
-//                 redir = redir->next;
-//                 redir_num++;
-//             }
-//         } else {
-//             printf("    None\n");
-//         }
+                redir = redir->next;
+                redir_num++;
+            }
+        } else {
+            printf("    None\n");
+        }
 
-//         // Check for pipe
-//         if (current->type == TOKEN_PIPE)
-//             printf("  Piped to next command\n");
+        // Check for pipe
+        if (current->type == TOKEN_PIPE)
+            printf("  Piped to next command\n");
 
-//         printf("\n");
-//         current = current->next;
-//         cmd_num++;
-//     }
-// }
+        printf("\n");
+        current = current->next;
+        cmd_num++;
+    }
+}
 
 
 t_args_list *add_args_to_list(t_args_list **list_head, t_token *token)

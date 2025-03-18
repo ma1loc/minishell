@@ -53,8 +53,6 @@ t_tree *build_tree_commande(t_command *commandes)
   }
   else
     root->left = NULL; //edge case if pip is the first token
-
-  ////
   if(right_cmds != NULL)
     root->right = (build_tree_commande(right_cmds));
   else
