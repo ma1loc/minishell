@@ -1,63 +1,82 @@
-#include "mini_shell.h"
+# include "mini_shell.h"
+# include "../parsing/tokenizer.h"
 
-int execute_command(t_setup *setup)
+void create_pipe(t_setup *setup, int *fds)
 {
-    char *cmd_path;
-    int status;
-    
-    if (!setup->cmd || !setup->cmd->name)
-        return (0);
-    
-    if (is_builtin(setup->cmd->name))
+    if (pipe(fds) == -1)
     {
-        return (execute_builtin(setup));
+        ft_perror(setup, "pipe failed", 1);
+        exit(1);
     }
-    
-    cmd_path = get_path(setup);
-    if (!cmd_path)
-    {
-        ft_putstr_fd("minishell: command not found: ", 2);
-        ft_putendl_fd(setup->cmd->name, 2);
-        return (127);
-    }
-    
-    status = execute_external(setup, cmd_path);
-    free(cmd_path);
-    return (status);
 }
 
+pid_t create_fork(t_setup *setup)
+{
+    pid_t pid;
 
-// int execute_command_tree(t_command *cmd, int input_fd, int output_fd)
-// {
-//     if (!cmd)
-//         return (SUCCESS);
-        
-//     if (cmd->type == TOKEN_CMD) {
-//         // Execute simple command, checking if built-in
-//         if (is_builtin(cmd->content))
-//             return (execute_builtin(cmd->content, input_fd, output_fd));
-//         else
-//             return (execute_external(cmd->content, input_fd, output_fd));
-//     }
-//     else if (cmd->type == TOKEN_PIPE) {
-//         int pipe_fd[2];
-//         if (pipe(pipe_fd) == -1)
-//             return (ERROR);
-            
-//         // Execute left side of pipe, output goes to pipe
-//         int ret = execute_command_tree(cmd->left, input_fd, pipe_fd[1]);
-//         close(pipe_fd[1]);
-        
-//         if (ret != SUCCESS)
-//             return (ret);
-            
-//         // Execute right side of pipe, input comes from pipe
-//         ret = execute_command_tree(cmd->right, pipe_fd[0], output_fd);
-//         close(pipe_fd[0]);
-        
-//         return (ret);
-//     }
-//     // Add other token types as needed
+    pid = fork();
+    if (pid < 0)
+    {
+        ft_perror(setup, "fork failed", 1);
+        exit(1);
+    }
+    return pid;
+}
+
+void left_process(t_tree *left, t_setup *setup, int *fds)
+{
+    // >>> close read end
+    close(fds[0]);
+    dup2(fds[1], STDOUT_FILENO);
+    close(fds[1]);
     
-//     return (SUCCESS);
-// }
+    if (left)
+        execute_tree(left, setup);
+    
+    exit(0);
+}
+
+void right_process(t_tree *right, t_setup *setup, int *fds)
+{
+    // >>> close write end
+    close(fds[1]);
+    dup2(fds[0], STDIN_FILENO);
+    close(fds[0]);
+    
+    if (right)
+        execute_tree(right, setup);
+    
+    exit(0);
+}
+
+int execute_pipe(t_tree *tree, t_setup *setup)
+{
+    printf(">>> pipe line\n");
+    int fds[2];
+    pid_t pid1;
+    pid_t pid2;
+    int status;
+
+    create_pipe(setup, fds);
+    
+    // >>> left command (writes to pipe)
+    pid1 = create_fork(setup);
+    if (pid1 == 0)
+        left_process(tree->left, setup, fds);
+        
+    // >>> right command (reads from pipe)
+    pid2 = create_fork(setup);
+    if (pid2 == 0)
+        right_process(tree->right, setup, fds);
+
+    close(fds[0]);
+    close(fds[1]);
+    
+    waitpid(pid1, NULL, 0);
+    waitpid(pid2, &status, 0);
+
+    if (WIFEXITED(status))
+        return WEXITSTATUS(status);
+    else
+        return 1;
+}
