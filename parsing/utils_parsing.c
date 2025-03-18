@@ -1,7 +1,7 @@
 #include "tokenizer.h"
 #include "../srcs/mini_shell.h"
 
-void process_token_type_word(t_commande_state *state, t_token *current, t_token **tokens, t_args_list **list_args)
+void process_token_type_word(t_commande_state *state, t_token *current, t_args_list **list_args)
 {
   if(state->current_cmd->name == NULL && current->value[0] != '\0')
         state->current_cmd->name = strdup(current->value);  // first word become the first command name
@@ -132,7 +132,7 @@ t_command *creat_new_node_command(t_command *commandes)
 void process_token(t_commande_state *state, t_token *current, t_token **tokens, t_args_list **list_args)
 {
   if(current->type == TOKEN_WORD)  // if first token is word
-  process_token_type_word(state, current, tokens, list_args);
+  process_token_type_word(state, current, list_args);
 else if(current->type == TOKEN_PIPE)
   process_token_type_pipe(state, list_args);
 else if(current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC)
