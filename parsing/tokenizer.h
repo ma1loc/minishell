@@ -99,7 +99,7 @@ void process_token(t_commande_state *state, t_token *current, t_token **tokens, 
 void creat_node_next_commande(t_commande_state *state);
 void creat_node_pipe_commande(t_commande_state *state);
 t_command *creat_new_node_command(t_command *commandes);
-void process_token_type_word(t_commande_state *state, t_token *current, t_token **tokens, t_args_list **list_args);
+void process_token_type_word(t_commande_state *state, t_token *current, t_args_list **list_args);
 void process_token_type_pipe(t_commande_state *state, t_args_list **list_args);
 void process_token_type_redir_in_her(t_commande_state *state, t_token *current, t_token **token);
 void process_token_type_redir_out_app(t_commande_state *state, t_token *current);
