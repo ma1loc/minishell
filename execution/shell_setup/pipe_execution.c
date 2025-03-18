@@ -1,98 +1,115 @@
 #include "mini_shell.h"
 
-void create_pipe(int *fds)
+void    set_pipe(t_setup *setup, int *fd)
 {
-    if (pipe(fds) == -1)
+    if (pipe(fd) == -1)
     {
-        ft_perror("pipe failed", 1);
-        exit(1);
+        ft_perror(setup, "Error: pipe failed\n", FAIL);    // >>> set the exit status
+        return;
     }
 }
 
-pid_t create_fork()
+pid_t    set_first_fork(t_setup  *setup, int *fd)
 {
-    pid_t pid;
-
-    pid = fork();
-    if (pid < 0)
-    {
-        ft_perror("fork failed", 1);
-        exit(1);
-    }
-    return pid;
-}
-
-void left_process(t_tree *left, t_setup *setup, int *fds)
-{
-    // >>> close read end
-    close(fds[0]);
-    dup2(fds[1], STDOUT_FILENO);
-    close(fds[1]);
-    
-    if (left)
-        execute_tree(left, setup);
-    
-    exit(0);
-}
-
-void right_process(t_tree *right, t_setup *setup, int *fds)
-{
-    // >>> close write end
-    close(fds[1]);
-    dup2(fds[0], STDIN_FILENO);
-    close(fds[0]);
-    
-    if (right)
-        execute_tree(right, setup);
-    
-    exit(0);
-}
-
-int execute_pipe(t_tree *tree, t_setup *setup)
-{
-    printf(">>> pipe line\n");
-    int fds[2];
     pid_t pid1;
-    pid_t pid2;
-    int status;
 
-    create_pipe(fds);
+    pid1 = fork();
+    if (pid1 < 0)
+    {
+        perror("fork");
+        close(fd[0]);
+        close(fd[1]);
+        ft_perror(setup, NULL, FAIL);
+        return (-1);
+    }
+    return (pid1);
+}
+// >>> new one <<<
+pid_t    set_second_fork(t_setup  *setup, pid_t pid_1, int *fd)
+{
+    pid_t   pid_2;
     
-    // >>> left command (writes to pipe)
-    pid1 = create_fork();
-    if (pid1 == 0)
-        left_process(tree->left, setup, fds);
-        
-    // >>> right command (reads from pipe)
-    pid2 = create_fork();
-    if (pid2 == 0)
-        right_process(tree->right, setup, fds);
-
-    close(fds[0]);
-    close(fds[1]);
-    
-    waitpid(pid1, NULL, 0);
-    waitpid(pid2, &status, 0);
-
-    if (WIFEXITED(status))
-        return WEXITSTATUS(status);
-    else
-        return 1;
+    pid_2 = fork();
+    if (pid_2 < 0)
+    {
+        perror("fork");
+        close(fd[0]);
+        close(fd[1]);
+        waitpid(pid_1, NULL, 0);  // wait for first child
+        ft_perror(setup, NULL, FAIL);
+        return (-1);
+    }
+    return (pid_2);
 }
 
-int execute_tree(t_tree *tree, t_setup *setup)
+void execute_pipe(t_tree *tree, t_setup *setup)
 {
-    if (!tree)
-        return 0;       
-    if (tree->type == TOKEN_WORD)
+    int fd[2];
+    pid_t pid_1;
+    pid_t pid_2;
+    int status;
+    
+    set_pipe(setup, fd);    // >>> seting the pipe
+    pid_1 = set_first_fork(setup, fd); // >>> first child process left side
+    if (pid_1 == 0)
     {
-        execute_command(tree, setup);   // here have the problem
-        return 0;
-    }
-    else if (tree->type == TOKEN_PIPE)
-    {
-        return execute_pipe(tree, setup);
+        // >>> child process - execute left command
+        // >>> close read end, redirect stdout to pipe write end
+        close(fd[0]);
+        if (dup2(fd[1], STDOUT_FILENO) == -1)
+        {
+            perror("dup2");
+            ft_perror(setup, NULL, FAIL);
+            exit(FAIL);
+        }
+        close(fd[1]);
+        if (tree->left)
+        {
+            if (tree->left->type == TOKEN_WORD)
+            {
+                setup->cmd = tree->left->cmd;
+                execute_command(tree->left, setup);
+            }
+            else
+                execution(tree->left, setup);
+        }
+        exit(EXIT_SUCCESS);
     }
     
-    return 0;
+    // >>> second child process right side    
+    pid_2 = set_second_fork(setup, pid_1, fd);
+    
+    if (pid_2 == 0)
+    {
+        // >>> child process - execute right command
+        // >>> close write end, redirect stdin to pipe read end
+        close(fd[1]);
+        if (dup2(fd[0], STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            ft_perror(setup, NULL, FAIL);
+            exit(FAIL);
+        }
+        close(fd[0]);
+        
+        if (tree->right)
+        {
+            if (tree->right->type == TOKEN_WORD)
+            {
+                setup->cmd = tree->right->cmd;
+                execute_command(tree->right, setup);
+            }
+            else
+                execution(tree->right, setup);
+        }
+        exit(EXIT_SUCCESS);
+    }
+    
+    // >>> parent process
+    close(fd[0]);
+    close(fd[1]);
+    
+    // >>> wait for both children to finish
+    waitpid(pid_1, &status, 0);
+    waitpid(pid_2, &status, 0);
 }

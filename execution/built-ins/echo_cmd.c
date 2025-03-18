@@ -35,34 +35,34 @@ void	echo_print(t_command *cmd, int i)
 }
 
 // >>> set the exit status to 0 if success <<<
-void    echo_cmd(t_setup *built_in)
+void    echo_cmd(t_setup *setup)
 {
 	int	i;
 
 	i = 1;
-	// if (!built_in->cmd->args[1])
+	// if (!setup->cmd->args[1])
 	// 	printf("\n");
 	// >>> Expansion <<<
 	// >>> fix echo '$?' hello <<<
+	// >>>>>>>>>>>>>>	just test	>>>>>>>>>>>>>>>>>>
+	if (ft_strcmp(setup->cmd->args[1], "$?") == 0)
+		printf("%d\n", setup->exit_stat);
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	// else if (ft_strcmp(built_in->cmd->args[1], "$?") == 0)
-		// printf("%d\n", built_in->exit_status);
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	// else if (is_option(built_in->cmd->args[i]) == 0)
-	if (is_option(built_in->cmd->args[i]) == 0)
+	// else if (is_option(setup->cmd->args[i]) == 0)
+	else if (is_option(setup->cmd->args[i]) == 0)
 	{
 		i = 2;
-		while (is_option(built_in->cmd->args[i]) == 0)
+		while (is_option(setup->cmd->args[i]) == 0)
 		{
-			if (built_in->cmd->args[i + 1] == NULL) 
+			if (setup->cmd->args[i + 1] == NULL) 
 				break;
 			i++;
 		}
-		echo_print(built_in->cmd, i);
+		echo_print(setup->cmd, i);
 	}
 	else
 	{
-		echo_print(built_in->cmd, i);
+		echo_print(setup->cmd, i);
 		printf("\n");
 	}
 }

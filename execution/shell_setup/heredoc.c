@@ -8,7 +8,7 @@ void    heredoc(t_setup *setup)
 
     in_file = open("heredoc.txt", O_CREAT | O_RDWR, 0644);
     if (in_file == -1)
-        ft_perror("open: failed\n", FAIL);
+        ft_perror(setup, "Error: open failed\n", FAIL);
     while (true)
     {
         input = readline("heredoc> ");

@@ -14,24 +14,24 @@ t_setup  *init_setup_struct()
     set_env->pwd = NULL;
     set_env->oldpwd = NULL;
     set_env->cmd_path = NULL;
-    set_env->exit_status = 0;   // >>> to see litter on
+    set_env->exit_stat = 0;   // >>> to see litter on
     return (set_env);
 }
 
 // >>> setup the env of the minishell
 t_setup *shell_env_setup(char **env)
 {
-    t_setup  *setup_env;
+    t_setup  *setup;
 
-    setup_env = init_setup_struct();
-    setup_env->envp = env;  // to check litter on.
-    if (!setup_env)
-        ft_perror("memory allocation failed\n", FAIL);
-    setup_env->env = init_env(env, setup_env->env);
-    if (!setup_env->env)
-        ft_perror("cd: memory allocation failed\n", FAIL); // to free latter on
-    get_pwd(setup_env);
-    set_env(&setup_env->env, "OLDPWD", setup_env->pwd);
+    setup = init_setup_struct();
+    setup->envp = env;  // to check litter on.
+    if (!setup)
+        ft_perror(setup, "memory allocation failed\n", FAIL);
+    setup->env = init_env(env, setup->env);
+    if (!setup->env)
+        ft_perror(setup, "cd: memory allocation failed\n", FAIL); // to free latter on
+    get_pwd(setup);
+    set_env(&setup->env, "OLDPWD", setup->pwd);
 
-    return (setup_env);
+    return (setup);
 }

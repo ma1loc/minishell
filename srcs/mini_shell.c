@@ -1,21 +1,6 @@
 # include "mini_shell.h"
 # include "../parsing/tokenizer.h"
 
-void print_tree(t_tree *tree, int level)
-{
-    if (!tree)
-        return;
-    for (int i = 0; i < level; i++)
-        fprintf(stderr, "  ");
-    if (tree->type == TOKEN_PIPE)
-        fprintf(stderr, "PIPE\n");
-    else if (tree->type == TOKEN_WORD)
-        fprintf(stderr, "CMD: %s\n", tree->name);
-
-    print_tree(tree->left, level + 1);
-    print_tree(tree->right, level + 1);
-}
-
 int		main(int argc, char **argv, char **env)
 {
     (void)argv;
@@ -43,6 +28,6 @@ int		main(int argc, char **argv, char **env)
         }
     }
     else
-        ft_perror("No extra args, please ;)\n", 1); // exit status litter on
+        ft_perror(setup_env, "No extra args, please ;)\n", 1); // exit status litter on
     return 0;
 }
