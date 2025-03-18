@@ -158,14 +158,14 @@ t_token *tokenize(char *input)
   return (free(state), tokens);
 }
 
-void print_tokens( t_token *tokens) // print tokens
-{
-  while(tokens != NULL)
-  {
-    printf("token => [%s], type => [%d]\n ", tokens->value, tokens->type);
-    tokens = tokens->next;
-  }
-}
+// void print_tokens( t_token *tokens) // print tokens
+// {
+//   while(tokens != NULL)
+//   {
+//     printf("token => [%s], type => [%d]\n ", tokens->value, tokens->type);
+//     tokens = tokens->next;
+//   }
+// }
 
 
 // void free_tokens(t_token *tokens)
@@ -184,54 +184,54 @@ void print_tokens( t_token *tokens) // print tokens
 // }
 
 
-t_command *find_pipe_node(t_command *commands) //  check pipe node
-{
-    t_command *current = commands;
-    while (current)
-    {
-        if (current->type == TOKEN_PIPE)
-            return current; // Return the pipe node
-        current = current->next;
-    }
-    return NULL; // No pipe found
-}
+// t_command *find_pipe_node(t_command *commands) //  check pipe node
+// {
+//     t_command *current = commands;
+//     while (current)
+//     {
+//         if (current->type == TOKEN_PIPE)
+//             return current; // Return the pipe node
+//         current = current->next;
+//     }
+//     return NULL; // No pipe found
+// }
 
 
 
 
-int main()
-{
-    // char *input = "echo        \"hello \'\'      \" \"world\"";
-    char *input ="ls -la | cat | wc -l";
+// int main()
+// {
+//     // char *input = "echo        \"hello \'\'      \" \"world\"";
+//     char *input ="ls -la | cat | wc -l";
 
 
-    printf("Raw input: %s\n", input);
-    printf("\n");
-    // Tokenize the input
-    t_token *tokens = tokenize(input);
+//     printf("Raw input: %s\n", input);
+//     printf("\n");
+//     // Tokenize the input
+//     t_token *tokens = tokenize(input);
 
-    // Print the tokens
-    printf("Tokens:\n");
-    print_tokens(tokens);
-    // free_tokens(tokens);
+//     // Print the tokens
+//     printf("Tokens:\n");
+//     print_tokens(tokens);
+//     // free_tokens(tokens);
 
-    // Parse the tokens
-    t_command *commands = pars_tokens(tokens);
-    t_command *pipe_node = find_pipe_node(commands);
+//     // Parse the tokens
+//     t_command *commands = pars_tokens(tokens);
+//     t_command *pipe_node = find_pipe_node(commands);
 
-    // Print the parsed commands
-    printf("\nParsed Commands:\n");
-    print_commands(commands);
-    //
+//     // Print the parsed commands
+//     printf("\nParsed Commands:\n");
+//     print_commands(commands);
+//     //
 
-    if (pipe_node)
-    printf("Found a pipe node in the command list!\n");
-    else
-    printf("No pipe node found in the command list.\n");
+//     if (pipe_node)
+//     printf("Found a pipe node in the command list!\n");
+//     else
+//     printf("No pipe node found in the command list.\n");
 
 
-    return 0;
-}
+//     return 0;
+// }
 
 // int main(int argc , char **argv)
 // {
