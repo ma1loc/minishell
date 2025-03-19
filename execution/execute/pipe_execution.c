@@ -70,28 +70,27 @@ void    first_child_process(t_setup *setup, t_tree *tree, int *fd)
 
 void    second_child_process(t_setup *setup, t_tree *tree, int *fd)
 {
-        // >>> child process execute right command
-        // >>> close write end, redirect stdin to pipe read end
-        close(fd[1]);
-        if (dup2(fd[0], STDIN_FILENO) == -1)
+    // >>> child process execute right command
+    // >>> close write end, redirect stdin to pipe read end
+    close(fd[1]);
+    if (dup2(fd[0], STDIN_FILENO) == -1)
+    {
+        perror("dup2");
+        ft_perror(setup, NULL, FAIL);
+        exit(FAIL);
+    }
+    close(fd[0]);
+    if (tree->right)
+    {
+        if (tree->right->type == TOKEN_WORD)
         {
-            perror("dup2");
-            ft_perror(setup, NULL, FAIL);
-            exit(FAIL);
+            setup->cmd = tree->right->cmd;
+            execute_command(tree->right, setup);
         }
-        close(fd[0]);
-        
-        if (tree->right)
-        {
-            if (tree->right->type == TOKEN_WORD)
-            {
-                setup->cmd = tree->right->cmd;
-                execute_command(tree->right, setup);
-            }
-            else
-                execution(tree->right, setup);
-        }
-        exit(EXIT_SUCCESS);
+        else
+            execution(tree->right, setup);
+    }
+    exit(EXIT_SUCCESS);
 }
 
 void    execute_pipe(t_tree *tree, t_setup *setup)

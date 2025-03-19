@@ -61,8 +61,18 @@ void    execute_command(t_tree *tree, t_setup *setup)
     }
 }
 
+// >>> if user give just the "<<" put synatx error -> handel it litter on, (exit status of it is 2)
+// >>> msg "syntax error near unexpected token" exit status -> 2
+// tests -> "ls | << l cat | cat" is valid or not?
 void    execution(t_tree *tree, t_setup *setup)
 {
+    // if (tree->cmd->redirections->type == TOKEN_HERDOC) // >>> segv here
+    // {
+    //     printf("access to heredoc\n");
+    //     heredoc(tree, setup);
+    // }
+
+    // >>> here i have to update the envp
     if (tree->type == TOKEN_WORD)
         execute_command(tree, setup);
     else if (tree->type == TOKEN_PIPE)
