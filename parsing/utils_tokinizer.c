@@ -1,7 +1,7 @@
 #include "tokenizer.h"
 #include "../srcs/mini_shell.h"
 
-void process_spaces(char *input, t_tokinizer_state *state, t_token **tokens)
+void process_spaces(t_tokinizer_state *state, t_token **tokens)
 {
   char *stripped;
 
@@ -66,7 +66,7 @@ void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tok
 
 }
 
-void process_remainder_text(char *input, t_tokinizer_state *state, t_token **tokens)
+void process_remainder_text(t_tokinizer_state *state, t_token **tokens)
 {
   char *stripped;
 

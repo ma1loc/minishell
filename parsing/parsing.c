@@ -75,7 +75,7 @@ t_command *pars_tokens(t_token *tokens)
   current = tokens; // linked list of tokens
   while(current != NULL) // process each token
   {
-    process_token(state, current, &tokens, &list_args);
+    process_token(state, current, &list_args);
     current = current->next;
   }
   process_args_last_cmd(state, list_args); // process any remaining arguments

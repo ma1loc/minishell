@@ -146,7 +146,7 @@ t_token *tokenize(char *input)
   while(input[state->i] != '\0')
   {
     if(input[state->i] == ' ')    // skip spaces between tokens
-      process_spaces(input, state, &tokens);
+      process_spaces(state, &tokens);
     else if(input[state->i] == '|' || input[state->i] == '<' || input[state->i] == '>')  // Handle special tokens (pipe, redirections)
       process_special_tokens(input, state, &tokens);
     else if(input[state->i] == '"' || input[state->i] == '\'') // Handle quoted sections within a word
@@ -154,7 +154,7 @@ t_token *tokenize(char *input)
     else
       process_normal_word(input,state);  // Just a regular character in a word
   }
-  process_remainder_text(input, state, &tokens);    // Don't forget any remaining text in the buffer
+  process_remainder_text(state, &tokens);    // Don't forget any remaining text in the buffer
   return (free(state), tokens);
 }
 
