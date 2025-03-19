@@ -14,8 +14,15 @@ t_setup  *init_setup_struct()
     set_env->pwd = NULL;
     set_env->oldpwd = NULL;
     set_env->cmd_path = NULL;
+    set_env->envp = NULL;
     set_env->exit_stat = 0;   // >>> to see litter on
     return (set_env);
+}
+
+void    update_env(t_setup *setup) // >>> update if the command that use it is export or unset
+{
+    // >>> to check litter on the update of the env
+    (void)setup;
 }
 
 // >>> setup the env of the minishell
@@ -24,9 +31,8 @@ t_setup *shell_env_setup(char **env)
     t_setup  *setup;
 
     setup = init_setup_struct();
-    setup->envp = env;  // to check litter on.
     if (!setup)
-        ft_perror(setup, "memory allocation failed\n", FAIL);
+        ft_perror(setup, "memory allocation failed\n", FAIL);    
     setup->env = init_env(env, setup->env);
     if (!setup->env)
         ft_perror(setup, "cd: memory allocation failed\n", FAIL); // to free latter on
