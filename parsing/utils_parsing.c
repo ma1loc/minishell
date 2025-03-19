@@ -71,7 +71,7 @@ void process_token_type_pipe(t_commande_state *state, t_args_list **list_args)
 
 }
 
-void process_token_type_redir_in_her(t_commande_state *state, t_token *current, t_token **token)
+void process_token_type_redir_in_her(t_commande_state *state, t_token *current)
 {
   if(current->next && current->next->type == TOKEN_WORD) // next token shoud be the input filename
   {
@@ -129,14 +129,14 @@ t_command *creat_new_node_command(t_command *commandes)
   return(commandes);
 }
 
-void process_token(t_commande_state *state, t_token *current, t_token **tokens, t_args_list **list_args)
+void process_token(t_commande_state *state, t_token *current, t_args_list **list_args)
 {
   if(current->type == TOKEN_WORD)  // if first token is word
   process_token_type_word(state, current, list_args);
 else if(current->type == TOKEN_PIPE)
   process_token_type_pipe(state, list_args);
 else if(current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC)
-  process_token_type_redir_in_her(state, current, tokens);
+  process_token_type_redir_in_her(state, current);
 else if(current->type == TOKEN_RED_OUT || current->type == TOKEN_APPEND)
   process_token_type_redir_out_app(state, current);
 }
