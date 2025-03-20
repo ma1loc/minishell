@@ -21,7 +21,7 @@
 # define FAIL 1
 # define SYNTAX_ERROR 2
 # define CMD_NOT_FOUND 127
-# define CMD_NOT_EXEC 126   
+# define CMD_NOT_EXEC 126
 // # define EXIT_SEVERE 128
 // # define EXIT_SEVERE 130 for the ctrl + c (heredoc case)
 // >>>>>>>>>>>>>>>>>>>>>>>
@@ -106,6 +106,7 @@ int     command_type(char *name);
 int     is_built_in(char *name);
 t_setup *shell_env_setup(char **env);
 t_setup *init_setup_struct();
+void    heredoc(t_tree *tree, t_setup *setup);
 char	*path_resolver(t_setup *setup);
 char	*split_path(char *path, char *cmd);
 
