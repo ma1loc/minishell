@@ -12,8 +12,9 @@ void    heredoc(t_tree *tree, t_setup *setup)
     while (true)
     {
         input = readline("heredoc> ");
-        if (input == NULL || ft_strcmp(input, setup->cmd->redirections->file_name) == 0) // >>> delimiter check
+        if (input == NULL || ft_strcmp(input, tree->cmd->redirections->file_name) == 0) // >>> delimiter check
         {
+            
             close(in_file);
             break;
         }
@@ -22,6 +23,7 @@ void    heredoc(t_tree *tree, t_setup *setup)
     }
     execute_command(tree, setup);   // >>> to check litter on
     // >>> unlink to remove the heredoc.txt file when finishing, to do litter
+    unlink("/home/yanflous/Desktop/minishell/heredoc.txt");
     return ;
 }
 // recursive descent parsing

@@ -4,8 +4,7 @@ void    set_pipe(t_setup *setup, int *fd)
 {
     if (pipe(fd) == -1)
     {
-        // >>> set the exit status
-        ft_perror(setup, "Error: pipe failed\n", FAIL);
+        ft_perror(setup, NULL, FAIL);
         return;
     }
 }
@@ -17,7 +16,6 @@ pid_t    set_first_fork(t_setup  *setup, int *fd)
     pid1 = fork();
     if (pid1 < 0)
     {
-        perror("fork");
         close(fd[0]);
         close(fd[1]);
         ft_perror(setup, NULL, FAIL);
@@ -33,7 +31,6 @@ pid_t    set_second_fork(t_setup  *setup, pid_t pid_1, int *fd)
     pid_2 = fork();
     if (pid_2 < 0)
     {
-        perror("fork");
         close(fd[0]);
         close(fd[1]);
         waitpid(pid_1, NULL, 0);  // >>> wait for first child
@@ -50,7 +47,6 @@ void    first_child_process(t_setup *setup, t_tree *tree, int *fd)
     close(fd[0]);
     if (dup2(fd[1], STDOUT_FILENO) == -1)
     {
-        perror("dup2");
         ft_perror(setup, NULL, FAIL);
         exit(FAIL);
     }
@@ -75,7 +71,6 @@ void    second_child_process(t_setup *setup, t_tree *tree, int *fd)
     close(fd[1]);
     if (dup2(fd[0], STDIN_FILENO) == -1)
     {
-        perror("dup2");
         ft_perror(setup, NULL, FAIL);
         exit(FAIL);
     }
