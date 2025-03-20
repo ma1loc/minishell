@@ -55,7 +55,7 @@ void free_redirections(t_redirections *redir) // free redir
 }
 
 
-t_command *pars_tokens(t_token *tokens)
+t_command *pars_tokens(t_token *tokens) // main func parsing tokens
 {
   t_command *commandes;
   t_token *current;
@@ -73,18 +73,13 @@ t_command *pars_tokens(t_token *tokens)
   commandes = creat_new_node_command(commandes);  // create first command node
   state->current_cmd = commandes;   // track current commande
   current = tokens; // linked list of tokens
-  while(current != NULL) // process each token
-  {
-    process_token(state, current, &list_args);
-    current = current->next;
-  }
-  process_args_last_cmd(state, list_args); // process any remaining arguments
+  process_token(state, current, &list_args);
   free(state);
   return(commandes);
 }
 
 
-// void print_commands(t_command *commands)
+// void print_commands(t_command *commands) //////////////////////////////////
 // {
 //     t_command *current = commands;
 //     int cmd_num = 1;
@@ -183,7 +178,7 @@ t_args_list *add_args_to_list(t_args_list **list_head, t_token *token)
   new_arg = malloc(sizeof(t_args_list));
   if(!new_arg)
   {
-    // free other stuf
+    // free other stufvoid
     return (NULL);
   }
   new_arg->value = strdup(token->value);

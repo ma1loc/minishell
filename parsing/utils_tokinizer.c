@@ -14,7 +14,7 @@ void process_spaces(t_tokinizer_state *state, t_token **tokens)
       add_token(tokens, stripped, TOKEN_WORD);
       free(stripped);
     }
-    state->j = 0;   // in_word = 0;
+    state->j = 0;
   }
   state->i++;
 }
@@ -62,7 +62,7 @@ void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tok
     }
     state->j = 0;
   }
-  process_operators(input, state, tokens);
+  process_operators(input, state, tokens);  
 
 }
 

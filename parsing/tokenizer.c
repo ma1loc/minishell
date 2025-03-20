@@ -16,8 +16,8 @@ char *strip_quotes(char *str)  //test
 
     in_dquote = 0;
     in_squote = 0;
-    if (!str)
-        return NULL;
+    // if (!str)            // check this bsc i check it in the first input
+    //     return NULL;
     len = strlen(str);
     result = malloc(len + 1);
     if (!result)
@@ -152,9 +152,9 @@ t_token *tokenize(char *input)
     else if(input[state->i] == '"' || input[state->i] == '\'') // Handle quoted sections within a word
       process_quotes(input, state);
     else
-      process_normal_word(input,state);  // Just a regular character in a word
+      process_normal_word(input,state);  // just a regular character in a word
   }
-  process_remainder_text(state, &tokens);    // Don't forget any remaining text in the buffer
+  process_remainder_text(state, &tokens);  // don't forget any remaining text in the buffer
   return (free(state), tokens);
 }
 
@@ -199,10 +199,11 @@ t_token *tokenize(char *input)
 
 
 
-// int main()
+// int main() /////////////////////////////////////////////////
 // {
 //     // char *input = "echo        \"hello \'\'      \" \"world\"";
-//     char *input ="ls -la | cat | wc -l";
+//     // char *input ="ls -la | cat | wc -l";
+//     char *input = "<< ls cat echo walo";
 
 
 //     printf("Raw input: %s\n", input);
