@@ -64,9 +64,7 @@ void    execute_command(t_tree *tree, t_setup *setup)
 // tests -> "ls | << l cat | cat" is valid or not?
 void    execution(t_tree *tree, t_setup *setup)
 {
-<<<<<<< HEAD
     (void)setup;
-=======
     // if (tree->cmd->redirections->type == TOKEN_HERDOC) // >>> segv here
     // {
     //     printf("access to heredoc\n");
@@ -74,7 +72,6 @@ void    execution(t_tree *tree, t_setup *setup)
     // }
 
     // >>> here i have to update the envp
->>>>>>> 45b042e (update the and fix some stuff)
     if (tree->type == TOKEN_WORD)
     {
         if(tree->cmd->redirections == NULL)

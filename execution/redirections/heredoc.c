@@ -12,11 +12,7 @@ void    heredoc(t_tree *tree, t_setup *setup)
     while (true)
     {
         input = readline("heredoc> ");
-<<<<<<< HEAD
         if (input == NULL || ft_strcmp(input, tree->cmd->redirections->file_name) == 0) // >>> delimiter check
-=======
-        if (input == NULL || ft_strcmp(input, setup->cmd->redirections->file_name) == 0) // >>> delimiter check
->>>>>>> 45b042e (update the and fix some stuff)
         {
             
             close(in_file);
