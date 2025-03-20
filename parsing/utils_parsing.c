@@ -1,13 +1,13 @@
 #include "tokenizer.h"
 #include "../srcs/mini_shell.h"
 
-void process_token_type_word(t_commande_state *state, t_token *current, t_args_list **list_args)
-{
-  if(state->current_cmd->name == NULL && current->value[0] != '\0')
-        state->current_cmd->name = strdup(current->value);  // first word become the first command name
-      else
-        add_args_to_list(list_args, current);
-}
+// void process_token_type_word(t_commande_state *state, t_token *current, t_args_list **list_args)
+// {
+//   if(state->current_cmd->name == NULL && current->value[0] != '\0')
+//         state->current_cmd->name = strdup(current->value);  // first word become the first command name
+//       else
+//         add_args_to_list(list_args, current);
+// }
 
 void creat_node_pipe_commande(t_commande_state *state)
 {
@@ -50,12 +50,11 @@ void creat_node_next_commande(t_commande_state *state)// creat new node for the 
 
 void process_token_type_pipe(t_commande_state *state, t_args_list **list_args)
 {
-   // current_cmd->type = current->type;
-   if(list_args != NULL)
+   if(list_args != NULL)  // if there is args for current cmd
    {
      state->args_count = count_args_list(*list_args);
      state->current_cmd->args = malloc((state->args_count + 2) * sizeof(char *));
-     fill_array(*list_args, state->current_cmd); // derefrence signle list arg to get the value
+     fill_array(*list_args, state->current_cmd); // derefrence signle pointer list args to get the value to fill args
 
      state->current_cmd->args[state->args_count + 1] = NULL;
      // free_list_args(list_args);
@@ -71,23 +70,24 @@ void process_token_type_pipe(t_commande_state *state, t_args_list **list_args)
 
 }
 
-void process_token_type_redir_in_her(t_commande_state *state, t_token *current)
+t_token *process_token_type_redir_in_her(t_commande_state *state, t_token *current)
 {
-  if(current->next && current->next->type == TOKEN_WORD) // next token shoud be the input filename
+  if(current->next && current->next->type == TOKEN_WORD) // next token shoud be the input filename or delimiter
   {
     add_redirection_to_list(state->current_cmd, current->next->value, current->type);
-    current = current->next; // skip filename token
+    return(current->next); // skip filename  or delemiter token
   }
+  return(current);
 }
 
-void process_token_type_redir_out_app(t_commande_state *state, t_token *current)
-{
-  if(current->next && current->next->type == TOKEN_WORD)
-  {
-    add_redirection_to_list(state->current_cmd, current->next->value, current->type);
-    current = current->next;
-  }
-}
+// void process_token_type_redir_out_app(t_commande_state *state, t_token *current)
+// {
+//   if(current->next && current->next->type == TOKEN_WORD)
+//   {
+//     add_redirection_to_list(state->current_cmd, current->next->value, current->type);
+//     current = current->next;
+//   }
+// }
 
 void process_args_last_cmd(t_commande_state *state, t_args_list *list_args)
 {
@@ -131,13 +131,35 @@ t_command *creat_new_node_command(t_command *commandes)
 
 void process_token(t_commande_state *state, t_token *current, t_args_list **list_args)
 {
-  if(current->type == TOKEN_WORD)  // if first token is word
-  process_token_type_word(state, current, list_args);
-else if(current->type == TOKEN_PIPE)
-  process_token_type_pipe(state, list_args);
-else if(current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC)
-  process_token_type_redir_in_her(state, current);
-else if(current->type == TOKEN_RED_OUT || current->type == TOKEN_APPEND)
-  process_token_type_redir_out_app(state, current);
+  int found_cmd_name = 0;
+
+  while (current != NULL) // process each token
+  {
+    if (current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC || current->type == TOKEN_RED_OUT || current->type == TOKEN_APPEND)
+    {
+      // process redirection first
+      current = process_token_type_redir_in_her(state, current);
+        // if (current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC)
+        //     current = process_token_type_redir_in_her(state, current);
+        // else
+        //     process_token_type_redir_out_app(state, current);
+    }
+    else if (current->type == TOKEN_WORD)
+    {
+        if (!found_cmd_name) { // if found cmd name become 1 so skeep to add name
+            // first word token not part of a redirection becomes command name
+            state->current_cmd->name = strdup(current->value);
+            found_cmd_name = 1;
+        }
+        add_args_to_list(list_args, current);
+    }
+    else if (current->type == TOKEN_PIPE)
+    {
+      process_token_type_pipe(state, list_args);
+      found_cmd_name = 0; // reset for next command
+    }
+    current = current->next;
+    process_args_last_cmd(state, *list_args); // process any remaining arguments
+  }
 }
 
