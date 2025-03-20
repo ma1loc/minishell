@@ -11,7 +11,10 @@ int		main(int argc, char **argv, char **env)
     if (argc > 1)
         ft_perror(NULL, "No extra args, please ;)\n", FAIL); // exit status litter on
     setup = shell_env_setup(env);
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // setup->envp = upload_env(setup);
     setup->envp = env;
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
     while (true)
     {
         setup->input = readline("minishell$ ");

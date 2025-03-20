@@ -25,5 +25,35 @@ void	unset_cmd(t_env **env_list, char *key)
         }
         previous = current;
         current = current->next;
-    }
+    }   
 }
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// void	unset_cmd(t_setup *setup, char *key)
+// {
+//     t_env	*current;
+//     t_env	*previous;
+
+//     if (!setup->env_list || !key)
+// 		return;
+//     current = setup->env;
+//     previous = NULL;
+//     while (current)
+//     {
+//         if (ft_strcmp(current->key, key) == 0)
+//         {
+//             if (previous == NULL)
+//                 setup->env = current->next;
+//             else
+//                 previous->next = current->next;
+//             free(current->key);
+//             free(current->value);
+//             free(current);
+//             return;
+//         }
+//         previous = current;
+//         current = current->next;
+//     }
+    
+// }
