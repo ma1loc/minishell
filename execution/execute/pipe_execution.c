@@ -71,10 +71,6 @@ void    second_child_process(t_setup *setup, t_tree *tree, int *fd)
     close(fd[1]);
     if (dup2(fd[0], STDIN_FILENO) == -1)
     {
-<<<<<<< HEAD
-=======
-        perror("dup2");
->>>>>>> 45b042e (update the and fix some stuff)
         ft_perror(setup, NULL, FAIL);
         exit(FAIL);
     }
