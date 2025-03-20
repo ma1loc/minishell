@@ -5,6 +5,7 @@
     //  TERM environment variable not set. to set litter on
 // internal and external
 // >>> new one <<<
+// >>> set the exit status here <<<
 void    execute_external(t_tree *tree, t_setup *setup)
 {
     int     pid;
@@ -14,7 +15,7 @@ void    execute_external(t_tree *tree, t_setup *setup)
     setup->cmd_path = path_resolver(setup);
     if (!setup->cmd_path)
     {
-        printf("Command not found: %s\n", setup->cmd->name); // >>> exit status to set litter on
+        ft_perror(setup ,"Command not found\n", CMD_NOT_FOUND); // >>> exit status to set litter on
         return;
     }
     pid = fork();
@@ -66,15 +67,34 @@ void    execute_command(t_tree *tree, t_setup *setup)
 // tests -> "ls | << l cat | cat" is valid or not?
 void    execution(t_tree *tree, t_setup *setup)
 {
-    // if (tree->cmd->redirections->type == TOKEN_HERDOC) // >>> segv here
-    // {
-    //     printf("access to heredoc\n");
-    //     heredoc(tree, setup);
-    // }
-
-    // >>> here i have to update the envp
+    (void)setup;
     if (tree->type == TOKEN_WORD)
-        execute_command(tree, setup);
+    {
+        if(tree->cmd->redirections == NULL)
+            execute_command(tree, setup);
+        else
+        {
+            if (tree->cmd->redirections->type == TOKEN_HERDOC) // >>> segv here
+            {
+                // printf("access to heredoc\n");
+                heredoc(tree, setup);
+            }
+            else if(tree->cmd->redirections->type == TOKEN_RED_IN)
+            {
+                printf("access to red in\n");
+            } 
+            else if(tree->cmd->redirections->type == TOKEN_APPEND)
+            {
+                printf("access to append\n");
+
+            }
+            else if(tree->cmd->redirections->type == TOKEN_RED_OUT)
+            {
+                printf("access to red out\n");
+            }
+        }
+    }
     else if (tree->type == TOKEN_PIPE)
         execute_pipe(tree, setup);
+
 }

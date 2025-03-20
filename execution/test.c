@@ -80,3 +80,130 @@ int execute_pipe(t_tree *tree, t_setup *setup)
     else
         return 1;
 }
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+#include "mini_shell.h"
+
+void    free_old_envp(t_setup *setup)
+{
+    int i;
+
+    i = 0;
+    while (setup->envp[i])
+    {
+        free(setup->envp[i]);
+        i++;
+    }
+    free(setup->envp);  // Free the envp array itself
+}
+
+int     count_new_envp(t_env *env)
+{
+    int     env_len;
+    t_env   *current_env;
+
+    env_len = 0;
+    current_env = env;
+    while (current_env)
+    {
+        current_env = current_env->next;
+        env_len++;
+    }
+    return (env_len);
+}
+
+// >>> update if the command that use it is export or unset
+// >>> to check litter on the update of the env
+char    **upload_env(t_setup *setup)
+{
+    int     envp_len;
+    char    **envp_update;
+    t_env   *current_env;
+    char    *key;
+    char    *full_line;
+    int     i;
+
+    if (setup->envp)
+        free_old_envp(setup);
+    envp_len = count_new_envp(setup->env);
+    envp_update = malloc(sizeof(char *) * (envp_len + 1));
+    if (!envp_update)
+        ft_perror(setup, "Error: malloc failed\n", FAIL);
+    i = 0;
+    current_env = setup->env;
+    while (current_env)
+    {
+        key = ft_strjoin(current_env->key, "=");
+        full_line = ft_strjoin(key, current_env->value);
+        free(key);  // Free the key after joining
+        envp_update[i] = full_line;
+        current_env = current_env->next;
+        i++;
+    }
+    envp_update[i] = NULL;
+    return (envp_update);
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+#include "mini_shell.h"
+
+void    free_old_envp(t_setup *setup)
+{
+    int i;
+
+    i = 0;
+    while (setup->envp[i])
+    {
+        free(setup->envp[i]);
+        i++;
+    }
+    free(setup->envp);  // Free the envp array itself
+}
+
+int     count_new_envp(t_env *env)
+{
+    int     env_len;
+    t_env   *current_env;
+
+    env_len = 0;
+    current_env = env;
+    while (current_env)
+    {
+        current_env = current_env->next;
+        env_len++;
+    }
+    return (env_len);
+}
+
+// >>> update if the command that use it is export or unset
+// >>> to check litter on the update of the env
+char    **upload_env(t_setup *setup)
+{
+    int     envp_len;
+    char    **envp_update;
+    t_env   *current_env;
+    char    *key;
+    char    *full_line;
+    int     i;
+
+    if (setup->envp)
+        free_old_envp(setup);
+    envp_len = count_new_envp(setup->env);
+    envp_update = malloc(sizeof(char *) * (envp_len + 1));
+    if (!envp_update)
+        ft_perror(setup, "Error: malloc failed\n", FAIL);
+    i = 0;
+    current_env = setup->env;
+    while (current_env)
+    {
+        key = ft_strjoin(current_env->key, "=");
+        full_line = ft_strjoin(key, current_env->value);
+        free(key);
+        envp_update[i] = full_line;
+        current_env = current_env->next;
+        i++;
+    }
+    return (envp_update[i] = NULL, envp_update);
+}

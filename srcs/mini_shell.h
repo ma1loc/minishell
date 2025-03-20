@@ -91,6 +91,7 @@ void	get_pwd(t_setup *built_in);
 t_env	*init_env(char **env, t_env *env_list);
 void	env_cmd(t_setup *built_in);
 void	unset_cmd(t_env **env_list, char *key);
+// void    unset_cmd(t_setup *setup, char *key);
 void	set_env(t_env **env_list, char *key, char *value);
 void    cd(t_setup *built_in);
 void	exit_cmd(t_setup  *built_in);

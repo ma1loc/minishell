@@ -1,6 +1,7 @@
 #include "mini_shell.h"
 
 // >>> to improved litter on
+// >>> exit with the last status
 void	exit_cmd(t_setup *setup)
 {
 	int input;
