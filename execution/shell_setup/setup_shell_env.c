@@ -19,6 +19,12 @@ t_setup  *init_setup_struct()
     return (set_env);
 }
 
+void    update_env(t_setup *setup) // >>> update if the command that use it is export or unset
+{
+    // >>> to check litter on the update of the env
+    (void)setup;
+}
+
 // >>> setup the env of the minishell
 t_setup *shell_env_setup(char **env)
 {
