@@ -1,7 +1,7 @@
 # include "mini_shell.h"
 
 // >>> signal handler here to
-void    heredoc(t_setup *setup)
+void    heredoc(t_tree *tree, t_setup *setup)
 {
     int     in_file;
     char    *input;
@@ -12,7 +12,7 @@ void    heredoc(t_setup *setup)
     while (true)
     {
         input = readline("heredoc> ");
-        if (input == NULL || ft_strcmp(input, setup->cmd->redirections->file_name) == 0) // delimiter)
+        if (input == NULL || ft_strcmp(input, setup->cmd->redirections->file_name) == 0) // >>> delimiter check
         {
             close(in_file);
             break;
@@ -20,6 +20,7 @@ void    heredoc(t_setup *setup)
         write(in_file, input, ft_strlen(input));
         write(in_file, "\n", 1);
     }
+    execute_command(tree, setup);   // >>> to check litter on
     // >>> unlink to remove the heredoc.txt file when finishing, to do litter
     return ;
 }

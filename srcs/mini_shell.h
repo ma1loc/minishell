@@ -81,9 +81,6 @@ typedef struct s_setup
     char        **env_list;
     char        **envp;
     int         exit_stat;
-    // int         fds[2]; // new
-    // pid_t	    pid1;   // new
-	// pid_t	    pid2;   // new
 }   t_setup;
 
 // >>> built_in_cmds
@@ -94,13 +91,13 @@ void	get_pwd(t_setup *built_in);
 t_env	*init_env(char **env, t_env *env_list);
 void	env_cmd(t_setup *built_in);
 void	unset_cmd(t_env **env_list, char *key);
+// void    unset_cmd(t_setup *setup, char *key);
 void	set_env(t_env **env_list, char *key, char *value);
 void    cd(t_setup *built_in);
 void	exit_cmd(t_setup  *built_in);
 void	export_cmd(t_setup	*built_in);
 
 // >>> hellping functions
-// void    ft_perror(char *msg, int exit_status);
 void    ft_perror(t_setup *setup, char *msg, int exit_stat);
 void	free_spliting(char **split_path);
 
@@ -109,12 +106,11 @@ int     command_type(char *name);
 int     is_built_in(char *name);
 t_setup *shell_env_setup(char **env);
 t_setup *init_setup_struct();
-void    heredoc(t_setup *setup);
+void    heredoc(t_tree *tree, t_setup *setup);
 char	*path_resolver(t_setup *setup);
 char	*split_path(char *path, char *cmd);
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 void    execution(t_tree *tree, t_setup *setup);
-// int     execute_tree(t_tree *tree, t_setup *setup);
 void	execute_internal(t_command *cmd, t_setup *setup);
 void    execute_command(t_tree *tree, t_setup *setup);
 void    execute_pipe(t_tree *tree, t_setup *setup);
