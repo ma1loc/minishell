@@ -25,5 +25,7 @@ void    ft_perror(t_setup *setup, char *msg, int exit_stat)
     // >>> garbage collector have to create and call here <<<
     if (msg)
         ft_putstr_fd(msg, STDERR_FILENO);
+    else
+        perror("");
     ft_exit(setup, exit_stat);
 }

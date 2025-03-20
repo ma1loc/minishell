@@ -83,7 +83,7 @@ typedef struct s_setup
     int         exit_stat;
 }   t_setup;
 
-// >>> built_in_cmds
+// >>>>>>>>>>>>>>>>>>>> built_in_cmds <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 void    echo_cmd(t_setup *built_in);       // the echo command fun. [done]
 void    cd_cmd(t_setup *built_in);         // the cd command fun. [done]
 void	pwd_cmd(t_setup *built_in);        // the pwd path print fun. [done]
@@ -106,14 +106,22 @@ int     command_type(char *name);
 int     is_built_in(char *name);
 t_setup *shell_env_setup(char **env);
 t_setup *init_setup_struct();
-void    heredoc(t_tree *tree, t_setup *setup);
 char	*path_resolver(t_setup *setup);
 char	*split_path(char *path, char *cmd);
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// >>>>>>>>>>>>>>>>> execution >>>>>>>>>>>>>>>>>>>>
 void    execution(t_tree *tree, t_setup *setup);
 void	execute_internal(t_command *cmd, t_setup *setup);
 void    execute_command(t_tree *tree, t_setup *setup);
 void    execute_pipe(t_tree *tree, t_setup *setup);
+
+// >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
+void    heredoc(t_tree *tree, t_setup *setup);
+void    red_input(t_tree *tree, t_setup *setup);
+void    red_output(t_tree *tree, t_setup *setup);
+void    red_append(t_tree *tree, t_setup *setup);
+
+
 
 // void execute_tree(t_tree *root);
 // void	env_cmd(t_env *env_list);

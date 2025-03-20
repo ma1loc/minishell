@@ -8,7 +8,7 @@
 // >>> set the exit status here <<<
 void    execute_external(t_tree *tree, t_setup *setup)
 {
-    int     pid;
+    pid_t     pid;
     int     status;
     (void)tree;
 
@@ -27,12 +27,9 @@ void    execute_external(t_tree *tree, t_setup *setup)
     if (pid == 0)
     {
         // >>> child process
-        if (execve(setup->cmd_path, setup->cmd->args, setup->envp) == -1) {
-            perror("execve");
-            exit(EXIT_FAILURE); // >>> exit status to set litter on
-        }
-        // >>> if not execve succeed
-        exit(EXIT_FAILURE);
+        if (execve(setup->cmd_path, setup->cmd->args, setup->envp) == -1)
+            ft_perror(setup, NULL, FAIL);
+        exit(FAIL);
     }
     else
     {
@@ -48,7 +45,7 @@ void    execute_command(t_tree *tree, t_setup *setup)
 {
     if (!tree)
         return ;
-    if (is_built_in(tree->name))
+    else if (is_built_in(tree->name))
     {
         // printf(">>> build_in\n");
         execute_internal(tree->cmd, setup);
@@ -74,27 +71,16 @@ void    execution(t_tree *tree, t_setup *setup)
             execute_command(tree, setup);
         else
         {
-            if (tree->cmd->redirections->type == TOKEN_HERDOC) // >>> segv here
-            {
-                // printf("access to heredoc\n");
+            if (tree->cmd->redirections->type == TOKEN_HERDOC)
                 heredoc(tree, setup);
-            }
             else if(tree->cmd->redirections->type == TOKEN_RED_IN)
-            {
-                printf("access to red in\n");
-            } 
+                red_input(tree, setup);
             else if(tree->cmd->redirections->type == TOKEN_APPEND)
-            {
                 printf("access to append\n");
-
-            }
             else if(tree->cmd->redirections->type == TOKEN_RED_OUT)
-            {
                 printf("access to red out\n");
-            }
         }
     }
     else if (tree->type == TOKEN_PIPE)
         execute_pipe(tree, setup);
-
 }
