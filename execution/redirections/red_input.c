@@ -46,35 +46,42 @@
 // the file not exitstat (no such file or directory: file.txt) => (exit status with 1)
 void    red_input(t_tree *tree, t_setup *setup)
 {
-    (void)setup;
-    int     in_file;
-    pid_t   pid;
-    int     fd[2];
-    
-    printf("tree->cmd->name -> |%s|", tree->cmd->name);
-    
-    int i = 0;
-    while (tree->cmd->args[i])
-    {
-        printf("tree->cmd->args[%d] -> |%s|\n", i, tree->cmd->args[i]);
-        i++;
-    }
-    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    // in the red_input < the file is read only
-    in_file = open(tree->args[2], O_RDONLY);
-    if (in_file == -1)
-    ft_perror(setup, NULL, FAIL);
-    if (pipe(fd) == -1)
-    ft_perror(setup, NULL, FAIL);
-    pid = fork();
-    if (pid == -1)
-    ft_perror(setup, NULL, FAIL);
-    // echo "hello" < text.txt  ======>  print hello
-    if (pid == 0)   // >>> chiled process
-    {
-        // echo "hello"
-    }
-    
-    
+	(void)setup;
+	(void)tree;
+	int		in_file;
+	pid_t	pid;
+	int		fd[2];
+	int		dup_stdin;
+	int		status;
 
+	// >>> echo "hello" < text.txt  ======>  print hello
+	int i = 0;
+	printf("file name -> %s\n", tree->cmd->redirections->file_name);
+	printf("tree->cmd->name -> |%s|\n", tree->cmd->name);
+	printf("command -> %s\n", tree->cmd->name);
+	while (tree->cmd->args[i])
+	{
+		printf("tree->cmd->args[%d] -> |%s|\n", i, tree->cmd->args[i]);
+		i++;
+	}
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	// in the red_input < the file is read only
+	in_file = open(tree->cmd->redirections->file_name, O_RDONLY);
+	if (in_file == -1)
+		ft_perror(setup, NULL, FAIL);
+	if (pipe(fd) == -1)
+		ft_perror(setup, NULL, FAIL);
+	pid = fork();
+	if (pid == -1)
+		ft_perror(setup, NULL, FAIL);
+	// >>> have first put a backup of the stdin without losing it
+	dup_stdin = dup(0);
+	// >>>>> | < txt.txt cat | <<<<<
+	if (dup2(in_file, 0) == -1)
+		ft_perror(setup, NULL, FAIL);
+
+
+	waitpid(pid, &status, 0);
 }

@@ -10,7 +10,7 @@ void    execute_external(t_tree *tree, t_setup *setup)
 {
     pid_t     pid;
     int     status;
-    (void)tree;
+    (void)tree;     // >>> to remove litter on.
 
     setup->cmd_path = path_resolver(setup);
     if (!setup->cmd_path)
@@ -21,7 +21,7 @@ void    execute_external(t_tree *tree, t_setup *setup)
     pid = fork();
     if (pid == -1)
     {
-        perror("fork");
+        ft_perror(setup, NULL, FAIL);
         return;
     }    
     if (pid == 0)
@@ -79,7 +79,18 @@ void    execution(t_tree *tree, t_setup *setup)
         else
         {
             if (tree->cmd->redirections->type == TOKEN_HERDOC)
+			{
+				int i = 0;
+				printf("file name -> %s\n", tree->cmd->redirections->file_name);
+				printf("tree->cmd->name -> |%s|\n", tree->cmd->name);
+				printf("command -> %s\n", tree->cmd->name);
+				while (tree->cmd->args[i])
+				{
+					printf("tree->cmd->args[%d] -> |%s|\n", i, tree->cmd->args[i]);
+					i++;
+				}
                 heredoc(tree, setup);
+			}
             else if(tree->cmd->redirections->type == TOKEN_RED_IN)
                 red_input(tree, setup);
             else if(tree->cmd->redirections->type == TOKEN_APPEND)
