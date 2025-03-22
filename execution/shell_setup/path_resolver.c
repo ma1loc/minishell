@@ -81,6 +81,6 @@ char	*path_resolver(t_setup *setup)
 		return (NULL);
 	path = split_path(env_list->value, cmd);
 	if (!path)
-		return (ft_perror(setup, "Error: command not found\n", FAIL), NULL);
+		return (ft_perror(setup, "Error: command not found\n", EXIT_FAILURE), NULL);
 	return (path);
 }

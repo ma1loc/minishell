@@ -16,7 +16,7 @@ void    cd(t_setup *setup)
     {
         home = getenv("HOME"); // >>> getenv returns a pointer to the environment variable (not dynamically allocated memory),
         if (!home)
-            ft_perror(setup, "cd: HOME not set\n", FAIL); // >>> exit status (1);
+            ft_perror(setup, "cd: HOME not set\n", EXIT_FAILURE); // >>> exit status (1);
         status = chdir(home);   // >>> to fix litter (no error for no reason)
         if (status == -1)
             perror("cd"); // >>> here call the custem ft_perror just reminder 
@@ -30,6 +30,7 @@ void    cd(t_setup *setup)
 
 }
 
+// >>> to improve litter on
 void    cd_cmd(t_setup *setup)
 {
     char    *pwd;
@@ -47,5 +48,5 @@ void    cd_cmd(t_setup *setup)
         // }
     }
     else
-        ft_perror(setup, "cd: memory allocation failed\n", FAIL);
+        ft_perror(setup, "cd: memory allocation failed\n", EXIT_FAILURE);
 }
