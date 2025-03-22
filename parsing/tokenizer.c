@@ -55,7 +55,7 @@ char *strip_quotes(char *str)  //test
     return result;
 }
 
-int check_syntax(char *input, int in_quoets, int len)
+int check_syntax(char *input, int len)
 {
 
   if(input[0] == '|' || input[len - 1] == '|')
@@ -87,7 +87,7 @@ int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or
   len = strlen(input);
   while(input[i] != '\0')
   {
-    if(check_syntax(input, in_quoets, len) != 0)
+    if(check_syntax(input, len) != 0)
     {
       in_quoets = 1;
       break;
