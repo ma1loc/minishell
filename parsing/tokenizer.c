@@ -55,13 +55,31 @@ char *strip_quotes(char *str)  //test
     return result;
 }
 
+int check_syntax(char *input, int in_quoets, int len)
+{
 
+  if(input[0] == '|' || input[len - 1] == '|')
+    return(1);
+  else if(input[len - 1] == '<')
+    return(1);
+  else if(input[len - 1] == '<' && input[len - 2] == '<')
+    return(1);
+  else if(input[0] == '<' && input[1] == '\0')
+    return(1);
+  else if(input[0] == '>' && input[1] == '>' && input[2] == '\0')
+    return(1);
+  else if (input[len - 1] == '>')
+    return(1);
+  else if(input[0] == '<' && input[1] == '<' && input[2] == '\0')
+    return(1);
+  return(0);
+}
 int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or no
 {
   int i;
   int in_quoets;
   char quoest_char;
-  char len;
+  int len;
 
   i = 0;
   in_quoets = 0;
@@ -69,11 +87,16 @@ int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or
   len = strlen(input);
   while(input[i] != '\0')
   {
-    if(input[0] == '|' || input[len - 1] == '|')
+    if(check_syntax(input, in_quoets, len) != 0)
     {
       in_quoets = 1;
       break;
     }
+    // if(input[0] == '|' || input[len - 1] == '|')
+    // {
+    //   in_quoets = 1;
+    //   break;
+    // }
     else if ((input[i] == '"' || input[i] == '\'') && (quoest_char == input[i] || in_quoets == 0))
     {
       if(!in_quoets)
@@ -158,7 +181,7 @@ t_token *tokenize(char *input)
   return (free(state), tokens);
 }
 
-// void print_tokens( t_token *tokens) // print tokens
+// void print_tokens( t_token *tokens) //////////////// print tokens
 // {
 //   while(tokens != NULL)
 //   {
@@ -184,7 +207,7 @@ t_token *tokenize(char *input)
 // }
 
 
-// t_command *find_pipe_node(t_command *commands) //  check pipe node
+// t_command *find_pipe_node(t_command *commands) //////////////////////////////////  check pipe node
 // {
 //     t_command *current = commands;
 //     while (current)
@@ -202,8 +225,9 @@ t_token *tokenize(char *input)
 // int main() /////////////////////////////////////////////////
 // {
 //     // char *input = "echo        \"hello \'\'      \" \"world\"";
-//     // char *input ="ls -la | cat | wc -l";
-//     char *input = "<< ls cat echo walo";
+//     char *input ="ls -la | cat | << wc -l";
+//     // char *input = "<< ls cat echo walo";
+//     // char *input = " ls | cat | hello ";
 
 
 //     printf("Raw input: %s\n", input);
