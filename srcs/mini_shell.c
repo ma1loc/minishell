@@ -9,9 +9,10 @@ int		main(int argc, char **argv, char **env)
 
     setup = NULL;
     if (argc > 1)
-        ft_perror(NULL, "No extra args, please ;)\n", FAIL); // exit status litter on
+        ft_perror(NULL, "No extra args, please ;)\n", EXIT_FAILURE); // exit status litter on
     setup = shell_env_setup(env);
     setup->envp = env;
+	
     while (true)
     {
         setup->input = readline("minishell$ ");
@@ -21,9 +22,11 @@ int		main(int argc, char **argv, char **env)
             continue ;
         setup->token = tokenize(setup->input);
         if (!setup->token)
-            exit(FAIL);
+            exit(EXIT_FAILURE);
         setup->cmd = pars_tokens(setup->token);
         setup->tree = build_tree_commande(setup->cmd);
+		// print_tree(setup->tree, 0);
+		// print_red(setup->tree);
         execution(setup->tree, setup);
 		add_history(setup->input);
     }

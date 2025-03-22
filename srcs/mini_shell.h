@@ -17,8 +17,8 @@
 # define PATH_MAX 4096
 
 // >>> exit status define
-# define SUCCESS 0
-# define FAIL 1
+# define EXIT_SUCCESS 0
+# define EXIT_FAILURE 1
 # define SYNTAX_ERROR 2
 # define CMD_NOT_FOUND 127
 # define CMD_NOT_EXEC 126
@@ -117,6 +117,7 @@ void    execute_command(t_tree *tree, t_setup *setup);
 void    execute_pipe(t_tree *tree, t_setup *setup);
 
 // >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
+void	handle_redirections(t_tree *tree, t_setup *setup);
 void    heredoc(t_tree *tree, t_setup *setup);
 void    red_input(t_tree *tree, t_setup *setup);
 void    red_output(t_tree *tree, t_setup *setup);

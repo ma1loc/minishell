@@ -32,10 +32,10 @@ t_setup *shell_env_setup(char **env)
 
     setup = init_setup_struct();
     if (!setup)
-        ft_perror(setup, "memory allocation failed\n", FAIL);    
+        ft_perror(setup, "memory allocation failed\n", EXIT_FAILURE);    
     setup->env = init_env(env, setup->env);
     if (!setup->env)
-        ft_perror(setup, "cd: memory allocation failed\n", FAIL); // to free latter on
+        ft_perror(setup, "cd: memory allocation failed\n", EXIT_FAILURE); // to free latter on
     get_pwd(setup);
     set_env(&setup->env, "OLDPWD", setup->pwd);
 

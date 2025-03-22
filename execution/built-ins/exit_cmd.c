@@ -11,7 +11,7 @@ void	exit_cmd(t_setup *setup)
 	else if (setup->cmd->args[2])
 	{
 		setup->exit_stat = 1;
-		ft_perror(setup, "exit: too many arguments\n", FAIL); // >>> use the ft_perror
+		ft_perror(setup, "exit: too many arguments\n", EXIT_FAILURE); // >>> use the ft_perror
 	}
 	else if (ft_isdigit(setup->cmd->args[1]))
 	{
