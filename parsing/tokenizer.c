@@ -1,9 +1,8 @@
 #include "tokenizer.h"
-#include "../srcs/mini_shell.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "../srcs/mini_shell.h"
 
 char *strip_quotes(char *str)  //test
 {
@@ -70,6 +69,10 @@ int check_syntax(char *input, int len)
     return(1);
   else if (input[len - 1] == '>')
     return(1);
+  else if(input[0] == '<' && input[1] == '<' && input[2] == '<' && input[3] == '<')
+    return(1);
+  else if(input[0] == '>' && input[1] == '>' && input[3] == '>')
+    return(1);
   else if(input[0] == '<' && input[1] == '<' && input[2] == '\0')
     return(1);
   return(0);
@@ -114,6 +117,7 @@ int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or
   }
   if(in_quoets)
   {
+    // ft_perror(setup, "syntax error near unexpected token", setup->exit_stat = 2);
     printf("syntax error\n");
    // ft_perror()   put later the msg and exit status with this func
     return(1);
@@ -225,14 +229,17 @@ t_token *tokenize(char *input)
 // int main() /////////////////////////////////////////////////
 // {
 //     // char *input = "echo        \"hello \'\'      \" \"world\"";
-//     char *input ="ls -la | cat | << wc -l";
+//     // char *input ="ls -la | cat | << wc -l";
 //     // char *input = "<< ls cat echo walo";
-//     // char *input = " ls | cat | hello ";
+//     char *input = " ls | cat | hello ";
+//     // char *input = "<<<<.....................";
+
 
 
 //     printf("Raw input: %s\n", input);
 //     printf("\n");
 //     // Tokenize the input
+//     t_setup *setup;
 //     t_token *tokens = tokenize(input);
 
 //     // Print the tokens
