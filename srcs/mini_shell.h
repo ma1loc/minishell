@@ -117,11 +117,14 @@ void    execute_command(t_tree *tree, t_setup *setup);
 void    execute_pipe(t_tree *tree, t_setup *setup);
 
 // >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
-void	handle_redirections(t_tree *tree, t_setup *setup);
-void    heredoc(t_tree *tree, t_setup *setup);
-void    red_input(t_tree *tree, t_setup *setup);
-void    red_output(t_tree *tree, t_setup *setup);
-void    red_append(t_tree *tree, t_setup *setup);
+// void	handle_redirections(t_tree *tree, t_setup *setup);
+void	redirections_and_execute(t_tree *tree, t_setup *setup);
+void	heredoc(t_tree *tree, t_setup *setup);
+// void	red_input(t_tree *tree, t_setup *setup);
+// void	red_output(t_tree *tree, t_setup *setup);
+// int		red_input(t_tree *tree, t_setup *setup);
+// int		red_output(t_tree *tree, t_setup *setup);
+void	red_append(t_tree *tree, t_setup *setup);
 
 
 

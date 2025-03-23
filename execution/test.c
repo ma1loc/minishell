@@ -414,3 +414,74 @@ void print_red(t_tree *tree)
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+void handle_redirections(t_tree *tree, t_setup *setup)
+{
+	// t_redirections *current_redirection = tree->cmd->redirections;
+	while (tree->cmd->redirections != NULL)
+	{
+		if (tree->cmd->redirections->type == TOKEN_HERDOC)
+			heredoc(tree, setup);
+		else if (tree->cmd->redirections->type == TOKEN_RED_IN)
+			red_input(tree, setup);
+		else if (tree->cmd->redirections->type == TOKEN_APPEND)
+			red_append(tree, setup);
+		else if (tree->cmd->redirections->type == TOKEN_RED_OUT)
+			red_output(tree, setup);
+		tree->cmd->redirections = tree->cmd->redirections->next;
+	}
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+void redirections_and_execute(t_tree *tree, t_setup *setup)
+{
+    int dup_stdin;
+    int dup_stdout;
+    t_redirections *current_red;
+	int fd;
+	
+	dup_stdin = dup(STDIN_FILENO);
+	dup_stdout = dup(STDOUT_FILENO);
+	current_red = tree->cmd->redirections;
+    
+    while (current_red != NULL)
+    {
+        if (current_red->type == TOKEN_RED_IN)
+        {
+            printf(">>>>>>>>>>>>> inter red_input\n");
+            
+			fd = open(current_red->file_name, O_RDONLY);
+            if (fd < 0)
+                ft_perror(setup, NULL, EXIT_FAILURE);
+            else
+            {
+                dup2(fd, STDIN_FILENO);
+                close(fd);
+            }
+        }
+        else if (current_red->type == TOKEN_RED_OUT)
+        {
+            printf(">>>>>>>>>> inter red_output\n");
+            fd = open(current_red->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (fd < 0)
+                ft_perror(setup, NULL, EXIT_FAILURE);
+            else
+            {
+                dup2(fd, STDOUT_FILENO);
+                close(fd);
+            }
+        }
+        current_red = current_red->next;
+    }
+    execute_command(tree, setup);
+    
+
+    dup2(dup_stdin, STDIN_FILENO);
+    dup2(dup_stdout, STDOUT_FILENO);
+    close(dup_stdin);
+    close(dup_stdout);
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+

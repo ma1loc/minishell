@@ -36,8 +36,8 @@ void    cd_cmd(t_setup *setup)
     char    *pwd;
 
     pwd = ft_strdup(setup->pwd);
-    if (!pwd)   // >>> if NULL i know i have to do it just skeep it
-    {
+    // if (!pwd)   // >>> if NULL i know i have to do it just skeep it
+    // {
         // if (cd(setup)); // check if the cd success.
         // {
             cd(setup);
@@ -46,7 +46,7 @@ void    cd_cmd(t_setup *setup)
             set_env(&setup->env, "OLDPWD", pwd);
             free(pwd);
         // }
-    }
-    else
-        ft_perror(setup, "cd: memory allocation failed\n", EXIT_FAILURE);
+    // }
+    // else
+    //     ft_perror(setup, "cd: memory allocation failed\n", EXIT_FAILURE);
 }

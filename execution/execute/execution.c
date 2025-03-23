@@ -57,18 +57,6 @@ void    execute_command(t_tree *tree, t_setup *setup)
     }
 }
 
-void handle_redirections(t_tree *tree, t_setup *setup)
-{
-    if (tree->cmd->redirections->type == TOKEN_HERDOC)
-        heredoc(tree, setup);
-    else if (tree->cmd->redirections->type == TOKEN_RED_IN)
-        red_input(tree, setup);
-    else if (tree->cmd->redirections->type == TOKEN_APPEND)
-        red_append(tree, setup);
-    else if (tree->cmd->redirections->type == TOKEN_RED_OUT)
-        red_output(tree, setup);
-}
-
 void    execution(t_tree *tree, t_setup *setup)
 {
     if (tree->type == TOKEN_WORD)
@@ -77,7 +65,8 @@ void    execution(t_tree *tree, t_setup *setup)
         if(tree->cmd->redirections == NULL)
             execute_command(tree, setup);
         else
-			handle_redirections(tree, setup);
+			redirections_and_execute(tree, setup);
+			// handle_redirections(tree, setup);
     }
     else if (tree->type == TOKEN_PIPE)
         execute_pipe(tree, setup);

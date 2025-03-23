@@ -56,7 +56,8 @@ void    first_child_process(t_setup *setup, t_tree *tree, int *fd)
 		if (tree->left->cmd && tree->left->cmd->redirections)
 		{
 			setup->cmd->redirections = tree->left->redirections;	// >>> to check litter on
-            handle_redirections(tree->left, setup);
+            // setup->cmd = tree->left->cmd;
+			redirections_and_execute(tree->left, setup);
 		}
         else if (tree->left->type == TOKEN_WORD)
         {
@@ -85,7 +86,8 @@ void    second_child_process(t_setup *setup, t_tree *tree, int *fd)
 		if (tree->right->cmd && tree->right->cmd->redirections)
 		{
 			setup->cmd->redirections = tree->right->redirections;
-            handle_redirections(tree->right, setup);
+			// setup->cmd = tree->right->cmd;
+			redirections_and_execute(tree->right, setup);
 		}
         if (tree->right->type == TOKEN_WORD)
         {
