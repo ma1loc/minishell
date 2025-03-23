@@ -62,7 +62,7 @@ void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tok
     }
     state->j = 0;
   }
-  process_operators(input, state, tokens);  
+  process_operators(input, state, tokens);
 
 }
 
@@ -100,7 +100,8 @@ void process_quotes(char *input, t_tokinizer_state *state)
 
     if(input[state->i] == '\0')
     {
-      printf("syntax error\n");
+      // printf("syntax error\n");
+      // ft_perror(setup, "syntax error near unexpected token", setup->exit_stat = 2);
       return ;
     }
 
