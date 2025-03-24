@@ -11,6 +11,7 @@ t_setup  *init_setup_struct()
     set_env->env = NULL;
     set_env->token = NULL;
     set_env->cmd = NULL;
+	set_env->tree = NULL;
     set_env->pwd = NULL;
     set_env->oldpwd = NULL;
     set_env->cmd_path = NULL;

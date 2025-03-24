@@ -21,7 +21,7 @@ void    heredoc(t_tree *tree, t_setup *setup)
         write(in_file, input, ft_strlen(input));
         write(in_file, "\n", 1);
     }
-    execute_command(tree, setup);   // >>> to check litter on
+    execute_commands(tree, setup);   // >>> to check litter on
     // >>> unlink to remove the heredoc.txt file when finishing, to do litter
     unlink("/home/yanflous/Desktop/minishell/heredoc.txt");
     return ;

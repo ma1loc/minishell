@@ -6,7 +6,7 @@
 // internal and external
 // >>> new one <<<
 // >>> set the exit status here <<<
-void    execute_external(t_tree *tree, t_setup *setup)
+void    execute_externals(t_tree *tree, t_setup *setup)
 {
     pid_t     pid;
     int     status;
@@ -41,32 +41,31 @@ void    execute_external(t_tree *tree, t_setup *setup)
 	}
 }
 
-void    execute_command(t_tree *tree, t_setup *setup)
+void	execute_commands(t_tree *tree, t_setup *setup)
 {
-    if (!tree)
-        return ;
-    else if (is_built_in(tree->name))
-    {
-        execute_internal(tree->cmd, setup);
-        return ;
-    }
-    else
-    {
-        execute_external(tree, setup);
-        return ;
-    }
+	if (!tree)
+		return ;
+	else if (is_built_in(tree->name))
+	{
+		execute_internals(tree->cmd, setup);
+		return ;
+	}
+	else
+	{
+		execute_externals(tree, setup);
+		return ;
+	}
 }
 
-void    execution(t_tree *tree, t_setup *setup)
+void	execution(t_tree *tree, t_setup *setup)
 {
-    if (tree->type == TOKEN_WORD)
-    {
-
-        if(tree->cmd->redirections == NULL)
-            execute_command(tree, setup);
-        else
-			redirections_and_execute(tree, setup);
-    }
-    else if (tree->type == TOKEN_PIPE)
-        execute_pipe(tree, setup);
+	if (tree->type == TOKEN_WORD)
+	{
+		if(tree->cmd->redirections == NULL)
+			execute_commands(tree, setup);
+		else
+			execute_redirections(tree, setup);
+	}
+	else if (tree->type == TOKEN_PIPE)
+		execute_pipes(tree, setup);
 }

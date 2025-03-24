@@ -1,6 +1,6 @@
 #include "mini_shell.h"
 
-void	get_pwd(t_setup *built_in)
+void	get_pwd(t_setup *setup)
 {
 	char	buf_path[PATH_MAX];
 	char	*path;
@@ -8,16 +8,16 @@ void	get_pwd(t_setup *built_in)
 	path = getcwd(buf_path, sizeof(buf_path));
 	if (path)
 	{
-		if (built_in->pwd)
-			free(built_in->pwd);
-		built_in->pwd = ft_strdup(path);
+		if (setup->pwd)
+			free(setup->pwd);
+		setup->pwd = ft_strdup(path);
 	}
 	else
-		perror("pwd"); // >>> update with ft_perror
+		ft_perror(setup, "pwd", EXIT_FAILURE); // >>> update with ft_perror
 }
 
-void	pwd_cmd(t_setup *built_in)
+void	pwd_cmd(t_setup *setup)
 {
-	get_pwd(built_in);
-	printf("%s\n", built_in->pwd);
+	get_pwd(setup);
+	printf("%s\n", setup->pwd);
 }

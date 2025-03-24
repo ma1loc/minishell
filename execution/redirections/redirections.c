@@ -17,7 +17,6 @@ int red_input(t_tree *tree, t_setup *setup, t_redirections *redirection)
             return (close(in_file), ft_perror(setup, NULL, EXIT_FAILURE), -1);
         close(in_file);
     }
-	printf("in_file fd -> %d\n", in_file);
     return (in_file);
 }
 
@@ -38,7 +37,6 @@ int    red_output(t_tree *tree, t_setup *setup, t_redirections *redirections)
 			return (close(out_file), ft_perror(setup, NULL, EXIT_FAILURE), -1);
         close(out_file);
     }
-	printf("out_file fd -> %d\n", out_file);
 	return (out_file);
 }
 
@@ -47,7 +45,7 @@ int    red_output(t_tree *tree, t_setup *setup, t_redirections *redirections)
 // cat < out.txt | echo "hello" > ggg
 // cat <> bala -> hanging
 // >>>>>>>>.... seg to check litter on >>>> bash: syntax error near unexpected token `>>'
-void redirections_and_execute(t_tree *tree, t_setup *setup)
+void	execute_redirections(t_tree *tree, t_setup *setup)
 {
     int dup_stdin;
     int dup_stdout;
@@ -66,13 +64,14 @@ void redirections_and_execute(t_tree *tree, t_setup *setup)
             in_fd = red_input(tree, setup, current);
         else if (current->type == TOKEN_RED_OUT)
             out_fd = red_output(tree, setup, current);
+		else if (current->type == TOKEN_RED_INOUT)
+			printf("<.........................................................................>\n");
         current = current->next;
     }
 	if (in_fd < 0 || out_fd < 0)
-		return ;
+		return ;	// >>> to close litter on the fds
 	else
-		execute_command(tree, setup);
-    
+		execute_commands(tree, setup);
     dup2(dup_stdin, STDIN_FILENO);
     dup2(dup_stdout, STDOUT_FILENO);
     close(dup_stdin);
