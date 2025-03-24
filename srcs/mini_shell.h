@@ -78,27 +78,27 @@ typedef struct s_setup
     char        *pwd;
     char        *oldpwd;
     char        *cmd_path;
-    char        **env_list;
+    // char        **env_list;
     char        **envp;
     int         exit_stat;
 }   t_setup;
 
 // >>>>>>>>>>>>>>>>>>>> built_in_cmds <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-void    echo_cmd(t_setup *built_in);       // the echo command fun. [done]
-void    cd_cmd(t_setup *built_in);         // the cd command fun. [done]
-void	pwd_cmd(t_setup *built_in);        // the pwd path print fun. [done]
-void	get_pwd(t_setup *built_in);
+void    echo_cmd(t_setup *setup);       // the echo command fun. [done]
+void    cd_cmd(t_setup *setup);         // the cd command fun. [done]
+void	pwd_cmd(t_setup *setup);        // the pwd path print fun. [done]
+void	get_pwd(t_setup *setup);
 t_env	*init_env(char **env, t_env *env_list);
 void	env_cmd(t_setup *built_in);
 void	unset_cmd(t_env **env_list, char *key);
 // void    unset_cmd(t_setup *setup, char *key);
 void	set_env(t_env **env_list, char *key, char *value);
-void    cd(t_setup *built_in);
+int		cd(t_setup *built_in);
 void	exit_cmd(t_setup  *built_in);
 void	export_cmd(t_setup	*built_in);
 
 // >>> hellping functions
-void    ft_perror(t_setup *setup, char *msg, int exit_stat);
+void	ft_perror(t_setup *setup, char *msg, int exit_stat);
 void	free_spliting(char **split_path);
 
 // >>> the execution will start here
@@ -112,13 +112,12 @@ char	*split_path(char *path, char *cmd);
 
 // >>>>>>>>>>>>>>>>> execution >>>>>>>>>>>>>>>>>>>>
 void    execution(t_tree *tree, t_setup *setup);
-void	execute_internal(t_command *cmd, t_setup *setup);
-void    execute_command(t_tree *tree, t_setup *setup);
-void    execute_pipe(t_tree *tree, t_setup *setup);
+void	execute_internals(t_command *cmd, t_setup *setup);
+void    execute_commands(t_tree *tree, t_setup *setup);
+void    execute_pipes(t_tree *tree, t_setup *setup);
 
 // >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
-// void	handle_redirections(t_tree *tree, t_setup *setup);
-void	redirections_and_execute(t_tree *tree, t_setup *setup);
+void	execute_redirections(t_tree *tree, t_setup *setup);
 void	heredoc(t_tree *tree, t_setup *setup);
 // void	red_input(t_tree *tree, t_setup *setup);
 // void	red_output(t_tree *tree, t_setup *setup);

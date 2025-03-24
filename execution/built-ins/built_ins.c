@@ -1,6 +1,6 @@
 #include "mini_shell.h"
 
-void	execute_internal(t_command *cmd, t_setup *setup)
+void	execute_internals(t_command *cmd, t_setup *setup)
 {
 	if (ft_strcmp(cmd->name, "echo") == 0)
 		echo_cmd(setup);
