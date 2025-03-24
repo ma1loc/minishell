@@ -66,7 +66,6 @@ void    execution(t_tree *tree, t_setup *setup)
             execute_command(tree, setup);
         else
 			redirections_and_execute(tree, setup);
-			// handle_redirections(tree, setup);
     }
     else if (tree->type == TOKEN_PIPE)
         execute_pipe(tree, setup);

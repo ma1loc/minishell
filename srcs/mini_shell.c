@@ -25,8 +25,6 @@ int		main(int argc, char **argv, char **env)
             exit(EXIT_FAILURE);
         setup->cmd = pars_tokens(setup->token);
         setup->tree = build_tree_commande(setup->cmd);
-		// print_tree(setup->tree, 0);
-		// print_red(setup->tree);
         execution(setup->tree, setup);
 		add_history(setup->input);
     }

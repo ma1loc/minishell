@@ -40,10 +40,68 @@ pid_t    set_second_fork(t_setup  *setup, pid_t pid_1, int *fd)
     return (pid_2);
 }
 
-void    first_child_process(t_setup *setup, t_tree *tree, int *fd)
+// void    first_child_process(t_setup *setup, t_tree *tree, int *fd)
+// {
+//     // >>> child process - execute left command
+//     // >>> close read end, redirect stdout to pipe write end
+//     close(fd[0]);
+//     if (dup2(fd[1], STDOUT_FILENO) == -1)
+//     {
+//         ft_perror(setup, NULL, EXIT_FAILURE);
+//         exit(EXIT_FAILURE);
+//     }
+//     close(fd[1]);
+//     if (tree->left)
+//     {
+// 		if (tree->left->cmd && tree->left->cmd->redirections)
+// 		{
+// 			setup->cmd->redirections = tree->cmd->redirections->next;	// >>> to check litter on
+// 			// setup->cmd = tree->left->cmd;
+// 			redirections_and_execute(tree->left, setup);
+// 		}
+//         else if (tree->left->type == TOKEN_WORD)
+//         {
+//             setup->cmd = tree->left->cmd;
+//             execute_command(tree->left, setup);
+//         }
+//         else
+//             execution(tree->left, setup);
+//     }
+//     exit(EXIT_SUCCESS);
+// }
+
+// void    second_child_process(t_setup *setup, t_tree *tree, int *fd)
+// {
+//     // >>> child process execute right command
+//     // >>> close write end, redirect stdin to pipe read end
+//     close(fd[1]);
+//     if (dup2(fd[0], STDIN_FILENO) == -1)
+//     {
+//         ft_perror(setup, NULL, EXIT_FAILURE);
+//         exit(EXIT_FAILURE);
+//     }
+//     close(fd[0]);
+//     if (tree->right)
+//     {
+// 		if (tree->right->cmd && tree->right->cmd->redirections)
+// 		{
+// 			setup->cmd->redirections = tree->cmd->redirections->next;
+// 			// setup->cmd->redirections = tree->right->redirections;
+// 			redirections_and_execute(tree->right, setup);
+// 		}
+//         if (tree->right->type == TOKEN_WORD)
+//         {
+//             setup->cmd = tree->right->cmd;
+//             execute_command(tree->right, setup);
+//         }
+//         else
+//             execution(tree->right, setup);
+//     }
+//     exit(EXIT_SUCCESS);
+// }
+
+void first_child_process(t_setup *setup, t_tree *tree, int *fd)
 {
-    // >>> child process - execute left command
-    // >>> close read end, redirect stdout to pipe write end
     close(fd[0]);
     if (dup2(fd[1], STDOUT_FILENO) == -1)
     {
@@ -51,18 +109,22 @@ void    first_child_process(t_setup *setup, t_tree *tree, int *fd)
         exit(EXIT_FAILURE);
     }
     close(fd[1]);
+    
     if (tree->left)
     {
-		if (tree->left->cmd && tree->left->cmd->redirections)
-		{
-			setup->cmd->redirections = tree->left->redirections;	// >>> to check litter on
-            // setup->cmd = tree->left->cmd;
-			redirections_and_execute(tree->left, setup);
-		}
-        else if (tree->left->type == TOKEN_WORD)
+        if (tree->left->type == TOKEN_WORD)
         {
-            setup->cmd = tree->left->cmd;
-            execute_command(tree->left, setup);
+            if (tree->left->cmd && tree->left->cmd->redirections)
+            {
+				// setup->cmd->redirections = tree->cmd->redirections->next;
+                setup->cmd = tree->left->cmd;
+				redirections_and_execute(tree->left, setup);
+            }
+            else
+            {
+                setup->cmd = tree->left->cmd;
+                execute_command(tree->left, setup);
+            }
         }
         else
             execution(tree->left, setup);
@@ -70,10 +132,8 @@ void    first_child_process(t_setup *setup, t_tree *tree, int *fd)
     exit(EXIT_SUCCESS);
 }
 
-void    second_child_process(t_setup *setup, t_tree *tree, int *fd)
+void second_child_process(t_setup *setup, t_tree *tree, int *fd)
 {
-    // >>> child process execute right command
-    // >>> close write end, redirect stdin to pipe read end
     close(fd[1]);
     if (dup2(fd[0], STDIN_FILENO) == -1)
     {
@@ -81,18 +141,22 @@ void    second_child_process(t_setup *setup, t_tree *tree, int *fd)
         exit(EXIT_FAILURE);
     }
     close(fd[0]);
+    
     if (tree->right)
     {
-		if (tree->right->cmd && tree->right->cmd->redirections)
-		{
-			setup->cmd->redirections = tree->right->redirections;
-			// setup->cmd = tree->right->cmd;
-			redirections_and_execute(tree->right, setup);
-		}
         if (tree->right->type == TOKEN_WORD)
         {
-            setup->cmd = tree->right->cmd;
-            execute_command(tree->right, setup);
+            if (tree->right->cmd && tree->right->cmd->redirections)
+            {
+				// setup->cmd->redirections = tree->cmd->redirections->next;
+                setup->cmd = tree->right->cmd;
+				redirections_and_execute(tree->right, setup);
+            }
+            else
+            {
+                setup->cmd = tree->right->cmd;
+                execute_command(tree->right, setup);
+            }
         }
         else
             execution(tree->right, setup);

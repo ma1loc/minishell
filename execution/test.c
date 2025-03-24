@@ -485,3 +485,362 @@ void redirections_and_execute(t_tree *tree, t_setup *setup)
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+#include "mini_shell.h"
+
+void    set_pipe(t_setup *setup, int *fd)
+{
+    if (pipe(fd) == -1)
+    {
+        ft_perror(setup, NULL, EXIT_FAILURE);
+        return;
+    }
+}
+
+pid_t    set_first_fork(t_setup  *setup, int *fd)
+{
+    pid_t pid1;
+
+    pid1 = fork();
+    if (pid1 < 0)
+    {
+        close(fd[0]);
+        close(fd[1]);
+        ft_perror(setup, NULL, EXIT_FAILURE);
+        return (-1);
+    }
+    return (pid1);
+}
+
+pid_t    set_second_fork(t_setup  *setup, pid_t pid_1, int *fd)
+{
+    pid_t   pid_2;
+    
+    pid_2 = fork();
+    if (pid_2 < 0)
+    {
+        close(fd[0]);
+        close(fd[1]);
+        waitpid(pid_1, NULL, 0);  // >>> wait for first child
+        ft_perror(setup, NULL, EXIT_FAILURE);
+        return (-1);
+    }
+    return (pid_2);
+}
+
+void    first_child_process(t_setup *setup, t_tree *tree, int *fd)
+{
+    // >>> child process - execute left command
+    // >>> close read end, redirect stdout to pipe write end
+    close(fd[0]);
+    if (dup2(fd[1], STDOUT_FILENO) == -1)
+    {
+        ft_perror(setup, NULL, EXIT_FAILURE);
+        exit(EXIT_FAILURE);
+    }
+    close(fd[1]);
+    if (tree->left)
+    {
+		if (tree->left->cmd && tree->left->cmd->redirections)
+		{
+			setup->cmd->redirections = tree->left->redirections;	// >>> to check litter on
+            // setup->cmd = tree->left->cmd;
+			redirections_and_execute(tree->left, setup);
+		}
+        else if (tree->left->type == TOKEN_WORD)
+        {
+            setup->cmd = tree->left->cmd;
+            execute_command(tree->left, setup);
+        }
+        else
+            execution(tree->left, setup);
+    }
+    exit(EXIT_SUCCESS);
+}
+
+void    second_child_process(t_setup *setup, t_tree *tree, int *fd)
+{
+    // >>> child process execute right command
+    // >>> close write end, redirect stdin to pipe read end
+    close(fd[1]);
+    if (dup2(fd[0], STDIN_FILENO) == -1)
+    {
+        ft_perror(setup, NULL, EXIT_FAILURE);
+        exit(EXIT_FAILURE);
+    }
+    close(fd[0]);
+    if (tree->right)
+    {
+		if (tree->right->cmd && tree->right->cmd->redirections)
+		{
+			setup->cmd->redirections = tree->right->redirections;
+			// setup->cmd = tree->right->cmd;
+			redirections_and_execute(tree->right, setup);
+		}
+        if (tree->right->type == TOKEN_WORD)
+        {
+            setup->cmd = tree->right->cmd;
+            execute_command(tree->right, setup);
+        }
+        else
+            execution(tree->right, setup);
+    }
+    exit(EXIT_SUCCESS);
+}
+
+void    execute_pipe(t_tree *tree, t_setup *setup)
+{
+    int fd[2];
+    pid_t pid_1;
+    pid_t pid_2;
+    int status;
+    
+    // >>> seting the pipe
+    set_pipe(setup, fd);
+    // >>> first child process left side
+    pid_1 = set_first_fork(setup, fd);
+    if (pid_1 == 0)
+        first_child_process(setup, tree, fd);
+    // >>> second child process right side
+    pid_2 = set_second_fork(setup, pid_1, fd);
+    if (pid_2 == 0)
+        second_child_process(setup, tree, fd);
+    // >>> parent process
+    close(fd[0]);
+    close(fd[1]);
+    // >>> wait for both children to finish
+    waitpid(pid_1, &status, 0);
+    waitpid(pid_2, &status, 0);
+}
+
+int	red_input(t_tree *tree, t_setup *setup)
+{
+    printf(">>>>>>>>>>>>> inter red_input\n");
+	
+	int		in_file;
+	
+	if (tree->cmd->name == NULL)
+		return (-1);
+
+	in_file = open(tree->cmd->redirections->file_name, O_RDONLY);
+    if (in_file < 0)
+        return (ft_perror(setup, NULL, EXIT_FAILURE), -1);
+    else
+    {
+        if (dup2(in_file, STDIN_FILENO) == -1)
+			return (close(in_file), ft_perror(setup, NULL, EXIT_FAILURE), -1);
+        close(in_file);
+    }
+	return (in_file);
+}
+
+int    red_output(t_tree *tree, t_setup *setup)
+{
+	printf(">>>>>>>>>> inter red_output\n");
+
+	int		out_file;
+
+	if (tree->cmd->name == NULL)
+		return (-1);
+	out_file = open(tree->cmd->redirections->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (out_file < 0)
+        return (ft_perror(setup, NULL, EXIT_FAILURE), -1);
+    else
+    {
+        if (dup2(out_file, STDOUT_FILENO) == -1)
+			return (close(out_file), ft_perror(setup, NULL, EXIT_FAILURE), -1);
+        close(out_file);
+    }
+	return (out_file);
+}
+
+// >>> cases:
+// cat < out.txt | grep "CC" > ggg
+// cat < out.txt | echo "hello" > ggg
+// >>>>>>>>.... seg to check litter on >>>> bash: syntax error near unexpected token `>>'
+
+void redirections_and_execute(t_tree *tree, t_setup *setup)
+{
+    int dup_stdin;
+    int dup_stdout;
+	int fd;
+	
+	dup_stdin = dup(STDIN_FILENO);
+	dup_stdout = dup(STDOUT_FILENO);
+    
+    while (tree->cmd->redirections != NULL)
+    {
+        if (tree->cmd->redirections->type == TOKEN_RED_IN)
+			fd = red_input(tree, setup);
+        else if (tree->cmd->redirections->type == TOKEN_RED_OUT)
+			fd = red_output(tree, setup);
+        tree->cmd->redirections = tree->cmd->redirections->next;
+    }
+	if (fd != -1)
+		execute_command(tree, setup);
+	close(fd);
+    dup2(dup_stdin, STDIN_FILENO);
+    dup2(dup_stdout, STDOUT_FILENO);
+    close(dup_stdin);
+    close(dup_stdout);
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+#include "mini_shell.h"
+
+void    set_pipe(t_setup *setup, int *fd)
+{
+    if (pipe(fd) == -1)
+    {
+        ft_perror(setup, NULL, EXIT_FAILURE);
+        return;
+    }
+}
+
+pid_t    set_first_fork(t_setup  *setup, int *fd)
+{
+    pid_t pid1;
+
+    pid1 = fork();
+    if (pid1 < 0)
+    {
+        close(fd[0]);
+        close(fd[1]);
+        ft_perror(setup, NULL, EXIT_FAILURE);
+        return (-1);
+    }
+    return (pid1);
+}
+
+pid_t    set_second_fork(t_setup  *setup, pid_t pid_1, int *fd)
+{
+    pid_t   pid_2;
+    
+    pid_2 = fork();
+    if (pid_2 < 0)
+    {
+        close(fd[0]);
+        close(fd[1]);
+        waitpid(pid_1, NULL, 0);  // >>> wait for first child
+        ft_perror(setup, NULL, EXIT_FAILURE);
+        return (-1);
+    }
+    return (pid_2);
+}
+
+void    first_child_process(t_setup *setup, t_tree *tree, int *fd)
+{
+    // >>> child process - execute left command
+    // >>> close read end, redirect stdout to pipe write end
+    close(fd[0]);
+    if (dup2(fd[1], STDOUT_FILENO) == -1)
+    {
+        ft_perror(setup, NULL, EXIT_FAILURE);
+        exit(EXIT_FAILURE);
+    }
+    close(fd[1]);
+    if (tree->left)
+    {
+		if (tree->left->cmd && tree->left->cmd->redirections)
+		{
+			setup->cmd->redirections = tree->cmd->redirections->next;	// >>> to check litter on
+			// setup->cmd = tree->left->cmd;
+			redirections_and_execute(tree->left, setup);
+		}
+        else if (tree->left->type == TOKEN_WORD)
+        {
+            setup->cmd = tree->left->cmd;
+            execute_command(tree->left, setup);
+        }
+        else
+            execution(tree->left, setup);
+    }
+    exit(EXIT_SUCCESS);
+}
+
+void    second_child_process(t_setup *setup, t_tree *tree, int *fd)
+{
+    // >>> child process execute right command
+    // >>> close write end, redirect stdin to pipe read end
+    close(fd[1]);
+    if (dup2(fd[0], STDIN_FILENO) == -1)
+    {
+        ft_perror(setup, NULL, EXIT_FAILURE);
+        exit(EXIT_FAILURE);
+    }
+    close(fd[0]);
+    if (tree->right)
+    {
+		if (tree->right->cmd && tree->right->cmd->redirections)
+		{
+			setup->cmd->redirections = tree->cmd->redirections->next;
+			// setup->cmd->redirections = tree->right->redirections;
+			redirections_and_execute(tree->right, setup);
+		}
+        if (tree->right->type == TOKEN_WORD)
+        {
+            setup->cmd = tree->right->cmd;
+            execute_command(tree->right, setup);
+        }
+        else
+            execution(tree->right, setup);
+    }
+    exit(EXIT_SUCCESS);
+}
+
+void    execute_pipe(t_tree *tree, t_setup *setup)
+{
+    int fd[2];
+    pid_t pid_1;
+    pid_t pid_2;
+    int status;
+    
+    // >>> seting the pipe
+    set_pipe(setup, fd);
+    // >>> first child process left side
+    pid_1 = set_first_fork(setup, fd);
+    if (pid_1 == 0)
+        first_child_process(setup, tree, fd);
+    // >>> second child process right side
+    pid_2 = set_second_fork(setup, pid_1, fd);
+    if (pid_2 == 0)
+        second_child_process(setup, tree, fd);
+    // >>> parent process
+    close(fd[0]);
+    close(fd[1]);
+    // >>> wait for both children to finish
+    waitpid(pid_1, &status, 0);
+    waitpid(pid_2, &status, 0);
+}
+
+void redirections_and_execute(t_tree *tree, t_setup *setup)
+{
+    int dup_stdin = dup(STDIN_FILENO);
+    int dup_stdout = dup(STDOUT_FILENO);
+    t_redirections *current = tree->cmd->redirections;
+    int in_fd = -1;
+	int out_fd = -1;
+    
+    while (current != NULL)
+    {
+        if (current->type == TOKEN_RED_IN)
+            in_fd = red_input(tree, setup);
+        else if (current->type == TOKEN_RED_OUT)
+            out_fd = red_output(tree, setup);
+        current = current->next;
+    }
+    
+
+    if (in_fd != -1 || out_fd != -1)
+        execute_command(tree, setup);
+    
+    if (in_fd != -1)
+		close(in_fd);
+    if (out_fd != -1)
+		close(out_fd);
+    
+    dup2(dup_stdin, STDIN_FILENO);
+    dup2(dup_stdout, STDOUT_FILENO);
+    close(dup_stdin);
+    close(dup_stdout);
+}
