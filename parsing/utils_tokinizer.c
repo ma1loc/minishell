@@ -35,6 +35,11 @@ void process_operators(char *input, t_tokinizer_state *state, t_token **tokens)
     add_token(tokens, "<<", TOKEN_HERDOC);
     state->i += 2;
   }
+  else if(input[state->i] == '<' && input[state->i + 1] == '>')
+  {
+    add_token(tokens, "<>", TOKEN_RED_INOUT);
+    state->i += 2;
+  }
   else if(input[state->i] == '>')
   {
     add_token(tokens, ">", TOKEN_RED_OUT);
