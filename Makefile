@@ -37,4 +37,4 @@ re: fclean all
 .PHONY: clean fclean re
 # .SECONDRY: $(NAME) $(OBJ)
 # .SECONDRY: $(OBJ)	# >>> to check the relink litter on.
-.INTERMEDIATE: $(OBJ)
+.INTERMEDIATE: $(OBJ)	# >>> to romove this litter on.

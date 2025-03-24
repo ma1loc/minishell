@@ -126,13 +126,4 @@ void	heredoc(t_tree *tree, t_setup *setup);
 // int		red_output(t_tree *tree, t_setup *setup);
 void	red_append(t_tree *tree, t_setup *setup);
 
-
-
-// void execute_tree(t_tree *root);
-// void	env_cmd(t_env *env_list);
-
-// >>> env command
-
-// // >>> unset command
-
 # endif

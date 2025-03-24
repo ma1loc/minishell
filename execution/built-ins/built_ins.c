@@ -2,23 +2,23 @@
 
 void	execute_internal(t_command *cmd, t_setup *setup)
 {
-	if (ft_strcmp(cmd->name, "echo") == 0)    // >>> [Done]
+	if (ft_strcmp(cmd->name, "echo") == 0)
 		echo_cmd(setup);
-	else if (ft_strcmp(cmd->name, "cd") == 0)    // >>> [Done]
+	else if (ft_strcmp(cmd->name, "cd") == 0)
 		cd_cmd(setup);
-	else if (ft_strcmp(cmd->name, "pwd") == 0)  // >>> [Done]
+	else if (ft_strcmp(cmd->name, "pwd") == 0)
 		pwd_cmd(setup);
-    else if (ft_strcmp(cmd->name, "unset") == 0)   // >>> [Done]
+    else if (ft_strcmp(cmd->name, "unset") == 0)
 			unset_cmd(&setup->env, cmd->args[1]);
-    else if (ft_strcmp(cmd->name, "env") == 0)    // >>> [Done]
+    else if (ft_strcmp(cmd->name, "env") == 0)
 		env_cmd(setup);
-    else if (ft_strcmp(cmd->name, "exit") == 0)   // >>> [D]
+    else if (ft_strcmp(cmd->name, "exit") == 0)
 	    exit_cmd(setup);
     else if (ft_strcmp(cmd->name, "export") == 0) // >>> []
         export_cmd(setup);
 }
 
-int is_built_in(char *name)
+int is_built_in(char *name)  
 {
     if (ft_strcmp(name, "echo") == 0)
         return (1);
