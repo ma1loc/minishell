@@ -54,7 +54,7 @@ char *strip_quotes(char *str)  //test
     return result;
 }
 
-int check_syntax(char *input, int len)
+int check_syntax(char *input, int len, int *i)
 {
 
   if(input[0] == '|' || input[len - 1] == '|')
@@ -68,6 +68,8 @@ int check_syntax(char *input, int len)
   else if(input[0] == '>' && input[1] == '>' && input[2] == '\0')
     return(1);
   else if (input[len - 1] == '>')
+    return(1);
+  else if(input[*i] == '>' && input[*i + 1] == '<')
     return(1);
   else if(input[0] == '<' && input[1] == '<' && input[2] == '<' && input[3] == '<')
     return(1);
@@ -90,7 +92,7 @@ int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or
   len = strlen(input);
   while(input[i] != '\0')
   {
-    if(check_syntax(input, len) != 0)
+    if(check_syntax(input, len, &i) != 0)
     {
       in_quoets = 1;
       break;
@@ -231,8 +233,8 @@ t_token *tokenize(char *input)
 //     // char *input = "echo        \"hello \'\'      \" \"world\"";
 //     // char *input ="ls -la | cat | << wc -l";
 //     // char *input = "<< ls cat echo walo";
-//     char *input = " ls | cat | hello ";
-//     // char *input = "<<<<.....................";
+//     // char *input = " ls | cat | hello ";
+//     char *input = "ls > a >< b";
 
 
 
