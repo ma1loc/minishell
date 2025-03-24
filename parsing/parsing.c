@@ -147,6 +147,8 @@ t_command *pars_tokens(t_token *tokens) // main func parsing tokens
 //                     printf("Append to '%s'\n", filename);
 //                 else if (redir->type == TOKEN_HERDOC)
 //                     printf("herdoc to '%s'\n", filename);
+//                 else if (redir->type == TOKEN_RED_INOUT)
+//                     printf("output to '%s'\n", filename);
 //                 else
 //                     printf("Unknown type %d, file: '%s'\n", redir->type, filename);
 

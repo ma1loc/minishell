@@ -234,7 +234,7 @@ t_token *tokenize(char *input)
 //     // char *input ="ls -la | cat | << wc -l";
 //     // char *input = "<< ls cat echo walo";
 //     // char *input = " ls | cat | hello ";
-//     char *input = "ls > a >< b";
+//     char *input = "ls <> makefile";
 
 
 
