@@ -135,7 +135,7 @@ void process_token(t_commande_state *state, t_token *current, t_args_list **list
 
   while (current != NULL) // process each token
   {
-    if (current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC || current->type == TOKEN_RED_OUT || current->type == TOKEN_APPEND)
+    if (current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC || current->type == TOKEN_RED_OUT || current->type == TOKEN_APPEND || current->type == TOKEN_RED_INOUT)
     {
       // process redirection first
       current = process_token_type_redir_in_her(state, current);
