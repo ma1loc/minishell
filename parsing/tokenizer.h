@@ -4,6 +4,8 @@
 #include <stdbool.h>
 // #include "../srcs/mini_shell.h"
 
+typedef struct s_setup t_setup;
+
 typedef enum e_token_type
 {
   TOKEN_WORD = 0,
@@ -73,7 +75,8 @@ typedef struct s_tree   // struct for the tree
   struct s_tree *right; // right command
 } t_tree;
 
-t_token *tokenize(char *input);
+// t_token *tokenize(char *input);
+t_token *tokenize(char *input, t_setup *setup);
 t_command *pars_tokens(t_token *tokens);
 void print_tokens(t_token *tokens);  // remov later
 void print_commands(t_command *cmd);  // remove later

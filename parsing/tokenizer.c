@@ -79,7 +79,7 @@ int check_syntax(char *input, int len, int *i)
     return(1);
   return(0);
 }
-int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or no
+int check_quotes_syntax(char *input, t_setup *setup) // fuc to check if quoest match inclosed or no
 {
   int i;
   int in_quoets;
@@ -119,8 +119,8 @@ int check_quotes_syntax(char *input) // fuc to check if quoest match inclosed or
   }
   if(in_quoets)
   {
-    // ft_perror(setup, "syntax error near unexpected token", setup->exit_stat = 2);
-    printf("syntax error\n");
+    ft_perror(setup, "syntax error near unexpected token\n", EXIT_FAILURE);
+    // printf("syntax error\n");
    // ft_perror()   put later the msg and exit status with this func
     return(1);
   }
@@ -158,7 +158,7 @@ t_token *add_token( t_token **head, char *value, t_token_type type) // function 
 }
 
 
-t_token *tokenize(char *input)
+t_token *tokenize(char *input, t_setup *setup)
 {
   t_tokinizer_state *state;
   t_token *tokens;
@@ -170,7 +170,7 @@ t_token *tokenize(char *input)
   state->i = 0;
   state->j = 0;
   memset(state->buff, 0, sizeof(state->buff));
-  if(!input || check_quotes_syntax(input) != 0)
+  if(!input || check_quotes_syntax(input, setup) != 0)
     return (free(state), NULL);
   while(input[state->i] != '\0')
   {
