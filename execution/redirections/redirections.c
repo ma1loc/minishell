@@ -98,16 +98,22 @@ void	execute_redirections(t_tree *tree, t_setup *setup)
 		else if (current->type == TOKEN_APPEND)
 			result = red_append(tree, setup, current);
 		else if (current->type == TOKEN_HERDOC)
+		{
+			printf("inter to heredoc\n");
 			result = heredoc(tree, setup);
-		
+		}
 		if (result == -1)
 			break;
 		current = current->next;
     }
 	if (result != -1)
+	{
+		printf("inter the main execution\n");
 		execute_commands(tree, setup);
+	}
     dup2(save_stdin, STDIN_FILENO);
     dup2(save_stdout, STDOUT_FILENO);
+	printf("refreche the stds\n");
     close(save_stdin);
     close(save_stdout);
 }

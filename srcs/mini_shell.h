@@ -16,6 +16,12 @@
 
 # define PATH_MAX 4096
 
+// >>> to remove litter on
+typedef struct s_token t_token;
+typedef struct s_command t_command;
+typedef struct s_tree t_tree;
+typedef struct s_redirections t_redirections;
+
 // >>> exit status define
 # define EXIT_SUCCESS 0
 # define EXIT_FAILURE 1
