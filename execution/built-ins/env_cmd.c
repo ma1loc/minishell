@@ -13,10 +13,8 @@ void	free_the_spliting(char	**split)
 	free(split);
 }
 
-// t_env	*init_env(char **env, t_setup *set_env)
 t_env	*init_env(char **env, t_env *env_list)
 {
-    // t_env   *env_list;
 	t_env	*new_node;
 	char	**split_env;
 

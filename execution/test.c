@@ -844,3 +844,7 @@ void redirections_and_execute(t_tree *tree, t_setup *setup)
     close(dup_stdin);
     close(dup_stdout);
 }
+
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+

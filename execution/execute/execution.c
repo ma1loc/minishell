@@ -6,11 +6,10 @@
 // internal and external
 // >>> new one <<<
 // >>> set the exit status here <<<
-void    execute_externals(t_tree *tree, t_setup *setup)
+void    execute_externals(t_setup *setup)
 {
     pid_t     pid;
     int     status;
-    (void)tree;     // >>> to remove litter on.
 
     setup->cmd_path = path_resolver(setup);
     if (!setup->cmd_path)
@@ -52,7 +51,7 @@ void	execute_commands(t_tree *tree, t_setup *setup)
 	}
 	else
 	{
-		execute_externals(tree, setup);
+		execute_externals(setup);
 		return ;
 	}
 }
