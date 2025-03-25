@@ -78,7 +78,6 @@ typedef struct s_setup
     char        *pwd;
     char        *oldpwd;
     char        *cmd_path;
-    // char        **env_list;
     char        **envp;
     int         exit_stat;
 }   t_setup;
@@ -106,7 +105,6 @@ int     command_type(char *name);
 int     is_built_in(char *name);
 t_setup *shell_env_setup(char **env);
 t_setup *init_setup_struct();
-void    heredoc(t_tree *tree, t_setup *setup);
 char	*path_resolver(t_setup *setup);
 char	*split_path(char *path, char *cmd);
 
@@ -118,11 +116,12 @@ void    execute_pipes(t_tree *tree, t_setup *setup);
 
 // >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
 void	execute_redirections(t_tree *tree, t_setup *setup);
-void	heredoc(t_tree *tree, t_setup *setup);
+int		heredoc(t_tree *tree, t_setup *setup);
 // void	red_input(t_tree *tree, t_setup *setup);
 // void	red_output(t_tree *tree, t_setup *setup);
 // int		red_input(t_tree *tree, t_setup *setup);
 // int		red_output(t_tree *tree, t_setup *setup);
-void	red_append(t_tree *tree, t_setup *setup);
+int		red_in_out(t_tree *tree, t_setup *setup, t_redirections *redirection);
+int		red_append(t_tree *tree, t_setup *setup, t_redirections *redirection);
 
 # endif
