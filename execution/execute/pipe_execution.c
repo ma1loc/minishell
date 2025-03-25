@@ -57,7 +57,8 @@ void first_child_process(t_setup *setup, t_tree *tree, int *fd)
             if (tree->left->cmd && tree->left->cmd->redirections)
             {
 				// setup->cmd->redirections = tree->cmd->redirections->next;
-                setup->cmd = tree->left->cmd;
+                printf("it's a redirection\n");
+				setup->cmd = tree->left->cmd;
 				execute_redirections(tree->left, setup);
             }
             else
