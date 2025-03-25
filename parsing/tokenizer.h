@@ -98,8 +98,10 @@ void free_redirections(t_redirections *redir);
 void process_spaces(t_tokinizer_state *state, t_token **tokens);
 void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tokens);
 void process_operators(char *input, t_tokinizer_state *state, t_token **tokens);
-void process_quotes(char *input, t_tokinizer_state *state);
-// void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup);
+// void process_quotes(char *input, t_tokinizer_state *state);
+void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup);
+
+
 
 void process_normal_word(char *input, t_tokinizer_state *state);
 void process_remainder_text(t_tokinizer_state *state, t_token **tokens);
