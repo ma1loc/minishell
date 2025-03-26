@@ -119,7 +119,7 @@ int check_quotes_syntax(char *input, t_setup *setup) // fuc to check if quoest m
   }
   if(in_quoets)
   {
-    ft_perror(setup, "syntax error near unexpected token\n", EXIT_FAILURE);
+    ft_perror(setup, "syntax error near unexpected token\n", SYNTAX_ERROR);
     // printf("syntax error\n");
    // ft_perror()   put later the msg and exit status with this func
     return(1);
