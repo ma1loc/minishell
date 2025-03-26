@@ -146,7 +146,9 @@ void process_token(t_commande_state *state, t_token *current, t_args_list **list
     }
     else if (current->type == TOKEN_WORD)
     {
-        if (!found_cmd_name) { // if found cmd name become 1 so skeep to add name
+        expand_env_vars(current, state->setup);
+        if (!found_cmd_name)
+        {   // if found cmd name become 1 so skeep to add name
             // first word token not part of a redirection becomes command name
             state->current_cmd->name = strdup(current->value);
             found_cmd_name = 1;

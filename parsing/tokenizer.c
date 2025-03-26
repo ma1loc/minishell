@@ -234,16 +234,18 @@ t_token *tokenize(char *input, t_setup *setup)
 //     // char *input ="ls -la | cat | << wc -l";
 //     // char *input = "<< ls cat echo walo";
 //     // char *input = " ls | cat | hello ";
-//     char *input = "ls <> makefile";
+//     char *input = "echo $ PATH";
 
 
 
 //     printf("Raw input: %s\n", input);
-//     printf("\n");
+//     t_env env1 = {"PATH", "/usr/bin:/bin:/usr/sbin:/sbin", NULL};
+//     t_setup setup;
+//     setup.env = &env1;
 //     // Tokenize the input
-//     t_setup *setup;
-//     t_token *tokens = tokenize(input);
-
+//     // t_setup *setup;
+//     t_token *tokens = tokenize(input, &setup);
+//     tokens = expand_env_vars(tokens, &setup);
 //     // Print the tokens
 //     printf("Tokens:\n");
 //     print_tokens(tokens);
