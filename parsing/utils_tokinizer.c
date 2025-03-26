@@ -106,7 +106,7 @@ void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup)
     if(input[state->i] == '\0')
     {
       // printf("syntax error\n");
-      ft_perror(setup, "syntax error near unexpected token\n", EXIT_FAILURE);
+      ft_perror(setup, "syntax error near unexpected token\n", SYNTAX_ERROR);
       return ;
     }
 
