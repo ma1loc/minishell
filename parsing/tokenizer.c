@@ -179,7 +179,7 @@ t_token *tokenize(char *input, t_setup *setup)
     else if(input[state->i] == '|' || input[state->i] == '<' || input[state->i] == '>')  // Handle special tokens (pipe, redirections)
       process_special_tokens(input, state, &tokens);
     else if(input[state->i] == '"' || input[state->i] == '\'') // Handle quoted sections within a word
-      process_quotes(input, state);
+      process_quotes(input, state, setup);
     else
       process_normal_word(input,state);  // just a regular character in a word
   }
