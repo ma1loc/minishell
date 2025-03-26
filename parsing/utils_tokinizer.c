@@ -89,7 +89,7 @@ void process_remainder_text(t_tokinizer_state *state, t_token **tokens)
 }
 
 
-void process_quotes(char *input, t_tokinizer_state *state)
+void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup)
 {
   {
     char quote_char;
@@ -106,7 +106,7 @@ void process_quotes(char *input, t_tokinizer_state *state)
     if(input[state->i] == '\0')
     {
       // printf("syntax error\n");
-      // ft_perror(setup, "syntax error near unexpected token", setup->exit_stat = 2);
+      ft_perror(setup, "syntax error near unexpected token\n", EXIT_FAILURE);
       return ;
     }
 
