@@ -1,6 +1,49 @@
 #include "tokenizer.h"
 #include "../srcs/mini_shell.h"
 
+
+// void	ft_putstr_fd(char *s, int fd)   //////// remove it
+// {
+// 	size_t	i;
+
+// 	if (fd < 0 || !s)
+// 		return ;
+// 	i = 0;
+// 	while (s[i])
+// 	{
+// 		write(fd, &s[i], 1);
+// 		i++;
+// 	}
+
+// 	// >>> put here the exit status to exit the program.
+// }
+// void    ft_exit(t_setup *setup, int exit_stat)  //////// remove it
+// {
+//     if (setup)
+//     {
+//         if (exit_stat == EXIT_SUCCESS)             // >>> exit 0
+//         setup->exit_stat = EXIT_SUCCESS;
+//         else if (exit_stat == EXIT_FAILURE)           // >>> exit 1
+//             setup->exit_stat = EXIT_FAILURE;
+//         else if (exit_stat == SYNTAX_ERROR)   // >>> exit 2
+//             setup->exit_stat = SYNTAX_ERROR;
+//         else if (exit_stat == CMD_NOT_FOUND)  // >>> exit 127
+//             setup->exit_stat = CMD_NOT_FOUND;
+//         else if (exit_stat == CMD_NOT_EXEC)   // >>> exit 126
+//             setup->exit_stat = CMD_NOT_EXEC;
+//     }
+// }
+// void    ft_perror(t_setup *setup, char *msg, int exit_stat) //////// remove it
+// {
+//     // >>> garbage collector have to create and call here <<<
+//     if (msg)
+//         ft_putstr_fd(msg, STDERR_FILENO);
+//     else
+//         perror("");
+//     ft_exit(setup, exit_stat);
+// }
+
+//////////////////////////////////////////////////////////////////////
 void process_spaces(t_tokinizer_state *state, t_token **tokens)
 {
   char *stripped;

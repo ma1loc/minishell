@@ -5,6 +5,7 @@
 // #include "../srcs/mini_shell.h"
 
 typedef struct s_setup t_setup;
+typedef struct s_env t_env;
 
 typedef enum e_token_type
 {
@@ -61,6 +62,7 @@ typedef struct s_commmande_state // struct for state of cmd to use cuurent and n
 {
   t_command *current_cmd;
   t_command *new_cmd;
+  t_setup *setup; //////
   int args_count;
 } t_commande_state;
 
@@ -116,11 +118,15 @@ t_token *process_token_type_redir_in_her(t_commande_state *state, t_token *curre
 // void process_token_type_redir_out_app(t_commande_state *state, t_token *current);
 void process_args_last_cmd(t_commande_state *state, t_args_list *list_args);
 
+t_token *expand_env_vars(t_token *tokens, t_setup *setup);
+char *get_env_value(char *name, t_setup *setup);
 
 
 
 
 t_token *add_token( t_token **head, char *value, t_token_type type);
 char *strip_quotes(char *str);
+void    ft_perror(t_setup *setup, char *msg, int exit_stat);
+
 
 #endif
