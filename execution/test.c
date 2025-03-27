@@ -848,3 +848,108 @@ void redirections_and_execute(t_tree *tree, t_setup *setup)
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+void execute_pipes(t_tree *tree, t_setup *setup)
+{
+    // First, process heredocs before pipe setup
+    process_heredocs(tree, setup);
+    
+    int fd[2];
+    pid_t pid_1;
+    pid_t pid_2;
+    int status;
+	
+    // Pipe setup and fork processes remain the same
+    set_pipe(setup, fd);
+    pid_1 = set_first_fork(setup, fd);
+    if (pid_1 == 0)
+        first_child_process(setup, tree, fd);
+    
+    pid_2 = set_second_fork(setup, pid_1, fd);
+    if (pid_2 == 0)
+        second_child_process(setup, tree, fd);
+    
+    close(fd[0]);
+    close(fd[1]);
+    
+    waitpid(pid_1, &status, 0);
+    waitpid(pid_2, &status, 0);
+}
+
+void process_heredocs(t_tree *tree, t_setup *setup)
+{
+    // Traverse the tree or command structure to find heredocs
+    // For each heredoc:
+    // 1. Create a temporary file
+    // 2. Read input until delimiter
+    // 3. Write input to temp file
+    // 4. Update the command's input redirection to use this temp file
+    t_command *current_command = tree->commands;
+    while (current_command)
+    {
+        if (is_heredoc(current_command))
+        {
+            int temp_fd = create_heredoc_temp_file();
+            write_heredoc_input(current_command, temp_fd);
+            close(temp_fd);
+            
+            // Update the command's input redirection to use the temp file
+            update_input_redirection(current_command, temp_file_path);
+        }
+        current_command = current_command->next;
+    }
+}
+
+int create_heredoc_temp_file()
+{
+    char temp_filename[256];
+    snprintf(temp_filename, sizeof(temp_filename), "/tmp/minishell_heredoc_XXXXXX");
+    
+    int fd = mkstemp(temp_filename);
+    if (fd == -1)
+    {
+        // Handle error
+        return -1;
+    }
+    
+    // Store the filename for later cleanup
+    store_temp_file_path(temp_filename);
+    
+    return fd;
+}
+
+void write_heredoc_input(t_command *command, int temp_fd)
+{
+    char *line;
+    while (1)
+    {
+        line = readline("> ");  // Or however you read input in your shell
+        if (line == NULL || strcmp(line, command->delimiter) == 0)
+        {
+            free(line);
+            break;
+        }
+        
+        write(temp_fd, line, strlen(line));
+        write(temp_fd, "\n", 1);
+        free(line);
+    }
+}
+
+// void preprocess_heredocs(t_command *pipe_commands) {
+//     for (each command in pipe_commands) {
+//         if (command has heredoc) {
+//             create_temporary_file();
+//             read_heredoc_input();
+//             write_input_to_temp_file();
+//             replace_heredoc_with_temp_file_path();
+//         }
+//     }
+// }
+
+// void execute_pipeline(t_command *pipe_commands) {
+//     // First preprocess heredocs
+//     preprocess_heredocs(pipe_commands);
+    
+//     // Then proceed with normal pipeline execution
+//     setup_pipeline_and_execute();
+// }

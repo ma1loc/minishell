@@ -111,7 +111,9 @@ void    execute_pipes(t_tree *tree, t_setup *setup)
     pid_t pid_1;
     pid_t pid_2;
     int status;
-    
+	
+	// >>> here i have to check first the heredoc to process it, thghout the while loop
+
     // >>> seting the pipe
     set_pipe(setup, fd);
     // >>> first child process left side
