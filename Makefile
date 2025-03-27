@@ -12,7 +12,8 @@ SRC = srcs/mini_shell.c libft/ft_strlen.c libft/ft_split.c libft/ft_strjoin.c li
 	execution/shell_setup/setup_shell_env.c execution/execute/execution.c execution/shell_setup/path_resolver.c libft/ft_strchr.c \
 	parsing/build_tree.c execution/execute/pipe_execution.c parsing/utils_parsing.c	parsing/utils_tokinizer.c \
 	execution/redirections/red_input.c execution/redirections/red_output.c execution/redirections/heredoc.c \
-	execution/redirections/red_append.c execution/redirections/redirections.c execution/redirections/red_in_out.c
+	execution/redirections/red_append.c execution/redirections/redirections.c execution/redirections/red_in_out.c \
+	parsing/expand.c
 
 OBJ = $(SRC:.c=.o)
 NAME = minishell

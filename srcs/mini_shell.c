@@ -21,6 +21,7 @@ int		main(int argc, char **argv, char **env)
         if (setup->input[0] == '\0')
             continue ;
         setup->token = tokenize(setup->input, setup);
+		setup->token = expand_env_vars(setup->token, setup);
         if (!setup->token)
 			continue ;
             // exit(EXIT_FAILURE);
