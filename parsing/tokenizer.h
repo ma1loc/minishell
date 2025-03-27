@@ -117,7 +117,7 @@ void process_token_type_pipe(t_commande_state *state, t_args_list **list_args);
 t_token *process_token_type_redir_in_her(t_commande_state *state, t_token *current);
 // void process_token_type_redir_out_app(t_commande_state *state, t_token *current);
 void process_args_last_cmd(t_commande_state *state, t_args_list *list_args);
-
+///////////////////////
 t_token *expand_env_vars(t_token *tokens, t_setup *setup);
 char *get_env_value(char *name, t_setup *setup);
 
