@@ -139,14 +139,10 @@ void process_token(t_commande_state *state, t_token *current, t_args_list **list
     {
       // process redirection first
       current = process_token_type_redir_in_her(state, current);
-        // if (current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC)
-        //     current = process_token_type_redir_in_her(state, current);
-        // else
-        //     process_token_type_redir_out_app(state, current);
     }
     else if (current->type == TOKEN_WORD)
     {
-        expand_env_vars(current, state->setup);
+        // expand_env_vars(current, state->setup);
         if (!found_cmd_name)
         {   // if found cmd name become 1 so skeep to add name
             // first word token not part of a redirection becomes command name
@@ -165,3 +161,79 @@ void process_token(t_commande_state *state, t_token *current, t_args_list **list
   }
 }
 
+
+
+// void process_token(t_commande_state *state, t_token *current, t_args_list **list_args)
+// {
+//     int found_cmd_name = 0;
+    
+//     // Debug: Print initial tokens
+//     printf("Starting Token Processing\n");
+//     t_token *debug_current = current;
+//     while (debug_current) {
+//         printf("Token: '%s', Type: %d\n", 
+//                debug_current->value ? debug_current->value : "NULL", 
+//                debug_current->type);
+//         debug_current = debug_current->next;
+//     }
+
+//     while (current != NULL) // process each token
+//     {
+//         // Debug print for each token
+//         printf("Processing Token: '%s', Type: %d\n", 
+//                current->value ? current->value : "NULL", 
+//                current->type);
+
+//         if (current->type == TOKEN_RED_IN || current->type == TOKEN_HERDOC || 
+//             current->type == TOKEN_RED_OUT || current->type == TOKEN_APPEND || 
+//             current->type == TOKEN_RED_INOUT)
+//         {
+//             // process redirection first
+//             current = process_token_type_redir_in_her(state, current);
+//         }
+//         else if (current->type == TOKEN_WORD)
+//         {
+//             // Enhanced environment variable expansion
+//             char *original_value = current->value;
+            
+//             // Debug: Print before expansion
+//             printf("Before Expansion: '%s'\n", original_value);
+            
+//             // Expand environment variables
+//             current->value = expand_env_in_string(current->value, state->setup);
+            
+//             // Debug: Print after expansion
+//             printf("After Expansion: '%s'\n", current->value);
+
+//             // Fallback if expansion fails
+//             if (!current->value) {
+//                 current->value = original_value;
+//             }
+
+//             if (!found_cmd_name)
+//             {   
+//                 // First word token becomes command name
+//                 state->current_cmd->name = strdup(current->value);
+//                 found_cmd_name = 1;
+                
+//                 // Debug: Print command name
+//                 printf("Set Command Name: '%s'\n", state->current_cmd->name);
+//             }
+            
+//             add_args_to_list(list_args, current);
+//         }
+//         else if (current->type == TOKEN_PIPE)
+//         {
+//             process_token_type_pipe(state, list_args);
+//             found_cmd_name = 0; // reset for next command
+//         }
+        
+//         current = current->next;
+//     }
+    
+//     // Process any remaining arguments
+//     process_args_last_cmd(state, *list_args);
+    
+//     // Final debug print
+//     printf("Token Processing Complete\n");
+// }

@@ -4,55 +4,77 @@
 #include <string.h>
 #include "../srcs/mini_shell.h"
 
-char *strip_quotes(char *str)  //test
+char *strip_quotes(char *str, t_setup *setup)
 {
     char *result;
     int len;
     int i;
     int j;
-    int in_dquote;
-    int in_squote;
 
-    in_dquote = 0;
-    in_squote = 0;
-    // if (!str)            // check this bsc i check it in the first input
-    //     return NULL;
+    t_expand *expand = NULL;
+    setup->expand = expand;
+    // if previously allocated, free the memory and set it to NULL
+    if (setup->expand != NULL)
+    {
+        free(setup->expand);
+    }
+
+    // Allocate new memory for setup->expand
+    setup->expand = malloc(sizeof(t_expand));
+    if (!setup->expand)
+      return NULL;
+
+    setup->expand->quotes_type = 0;
+    int in_dquote = 0;
+    int in_squote = 0;
+
     len = strlen(str);
     result = malloc(len + 1);
     if (!result)
-        return NULL;
+    {
+      free(setup->expand);
+      setup->expand = NULL;
+      return NULL;
+    }
     i = 0;  // index for original string
     j = 0;  // index for result string
-    while (i < len)  // process the string character by character
+    while (i < len)
     {
         if (str[i] == '"' && in_squote == 0)
         {
-            if (in_dquote == 0)
-                in_dquote = 1;   // now we are on duble
-            else
-                in_dquote = 0;
+          if (in_dquote == 0)
+          {
+            in_dquote = 1;
+            setup->expand->quotes_type = 2;
+          }
+          else
+            in_dquote = 0;
         }
         else if (str[i] == '\'' && in_dquote == 0)
         {
-            if (in_squote == 0)
-                in_squote = 1;  // now we're inside single quotes
-            else
-                in_squote = 0;  // now we're outside single quotes
+          if (in_squote == 0)
+          {
+            in_squote = 1;
+            setup->expand->quotes_type = 1;
+          }
+          else
+            in_squote = 0;
         }
         else
-            result[j++] = str[i];  // copy any character that's not an opening/closing quote
+          result[j++] = str[i];  // Copy non-quote characters
         i++;
     }
     result[j] = '\0';
-    if (j == 0 && len > 0)  // If the result is empty but the original wasn't just quotes (like for "" or '' or ""), return an empty string
+    if (j == 0 && len > 0)
         return result;
-    if (j == 0 && len == 0)   // For truly empty input
+    if (j == 0 && len == 0)
     {
         free(result);
         return NULL;
     }
     return result;
 }
+
 
 int check_syntax(char *input, int len, int *i)
 {
@@ -79,7 +101,7 @@ int check_syntax(char *input, int len, int *i)
     return(1);
   return(0);
 }
-int check_quotes_syntax(char *input, t_setup *setup) // fuc to check if quoest match inclosed or no
+int check_quotes_syntax(t_setup *setup) // fuc to check if quoest match inclosed or no
 {
   int i;
   int in_quoets;
@@ -89,25 +111,20 @@ int check_quotes_syntax(char *input, t_setup *setup) // fuc to check if quoest m
   i = 0;
   in_quoets = 0;
   quoest_char = 0;
-  len = strlen(input);
-  while(input[i] != '\0')
+  len = strlen(setup->input);
+  while(setup->input[i] != '\0')
   {
-    if(check_syntax(input, len, &i) != 0)
+    if(check_syntax(setup->input, len, &i) != 0)
     {
       in_quoets = 1;
       break;
     }
-    // if(input[0] == '|' || input[len - 1] == '|')
-    // {
-    //   in_quoets = 1;
-    //   break;
-    // }
-    else if ((input[i] == '"' || input[i] == '\'') && (quoest_char == input[i] || in_quoets == 0))
+    else if ((setup->input[i] == '"' || setup->input[i] == '\'') && (quoest_char == setup->input[i] || in_quoets == 0))
     {
       if(!in_quoets)
       {
         in_quoets = 1;
-        quoest_char = input[i];
+        quoest_char = setup->input[i];
       }
       else
       {
@@ -120,7 +137,6 @@ int check_quotes_syntax(char *input, t_setup *setup) // fuc to check if quoest m
   if(in_quoets)
   {
     ft_perror(setup, "syntax error near unexpected token\n", SYNTAX_ERROR);
-    // printf("syntax error\n");
    // ft_perror()   put later the msg and exit status with this func
     return(1);
   }
@@ -158,11 +174,13 @@ t_token *add_token( t_token **head, char *value, t_token_type type) // function 
 }
 
 
-t_token *tokenize(char *input, t_setup *setup)
+t_token *tokenize(t_setup *setup)
 {
   t_tokinizer_state *state;
   t_token *tokens;
+  char *input;
 
+  input = setup->input;
   tokens = NULL;
   state = malloc(sizeof(t_tokinizer_state));
   if(!state)
@@ -170,20 +188,21 @@ t_token *tokenize(char *input, t_setup *setup)
   state->i = 0;
   state->j = 0;
   memset(state->buff, 0, sizeof(state->buff));
-  if(!input || check_quotes_syntax(input, setup) != 0)
+  if(!setup->input || check_quotes_syntax(setup) != 0)
     return (free(state), NULL);
   while(input[state->i] != '\0')
   {
     if(input[state->i] == ' ')    // skip spaces between tokens
-      process_spaces(state, &tokens);
+      process_spaces(state, &tokens, setup);
     else if(input[state->i] == '|' || input[state->i] == '<' || input[state->i] == '>')  // Handle special tokens (pipe, redirections)
-      process_special_tokens(input, state, &tokens);
+      process_special_tokens(input, state, &tokens, setup);
     else if(input[state->i] == '"' || input[state->i] == '\'') // Handle quoted sections within a word
       process_quotes(input, state, setup);
     else
       process_normal_word(input,state);  // just a regular character in a word
   }
-  process_remainder_text(state, &tokens);  // don't forget any remaining text in the buffer
+  process_remainder_text(state, &tokens, setup);  // don't forget any remaining text in the buffer
+  tokens = expand_env_vars(tokens, setup);  // expand them before return to return expanded tokens
   return (free(state), tokens);
 }
 
@@ -234,18 +253,18 @@ t_token *tokenize(char *input, t_setup *setup)
 //     // char *input ="ls -la | cat | << wc -l";
 //     // char *input = "<< ls cat echo walo";
 //     // char *input = " ls | cat | hello ";
-//     char *input = "echo $ PATH";
+//     char *input = "echo $PATH";
 
 
 
 //     printf("Raw input: %s\n", input);
-//     t_env env1 = {"PATH", "/usr/bin:/bin:/usr/sbin:/sbin", NULL};
-//     t_setup setup;
-//     setup.env = &env1;
+//     // t_env env1 = {"PATH", "/usr/bin:/bin:/usr/sbin:/sbin", NULL};
+//     t_setup *setup;
+//     // setup->env = &env1;
 //     // Tokenize the input
 //     // t_setup *setup;
-//     t_token *tokens = tokenize(input, &setup);
-//     tokens = expand_env_vars(tokens, &setup);
+//     t_token *tokens = tokenize(input, setup);
+//     tokens = expand_env_vars(tokens, setup);
 //     // Print the tokens
 //     printf("Tokens:\n");
 //     print_tokens(tokens);
