@@ -953,3 +953,197 @@ void write_heredoc_input(t_command *command, int temp_fd)
 //     // Then proceed with normal pipeline execution
 //     setup_pipeline_and_execute();
 // }
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// >>> Key must start with letter or underscore
+// >>> bash: export: `5': not a valid identifier
+// >>> bash: export: `h-ello': not a valid identifier
+
+void export_display(t_setup *setup)
+{
+    t_env *tmp_env;
+    
+    tmp_env = setup->env;
+    if (!setup->env)
+        return;
+        
+    while (tmp_env)
+    {
+        printf("declare -x %s", tmp_env->key);
+        if (tmp_env->value)
+            printf("=\"%s\"", tmp_env->value);
+        printf("\n");
+        tmp_env = tmp_env->next;
+    }
+    setup->exit_stat = 0;
+}
+
+int		update_key_value(t_setup *setup, t_env *current, char *key, char *value)
+{
+	while (current)
+	{
+		if (ft_strcmp(current->key, key) == 0)
+		{
+			if (value == NULL)
+				return (-1);
+			free(current->value);
+			current->value = ft_strdup(value);
+			if (!current->value)
+			{	//	>>> here i have to add the setup
+				ft_perror(setup, "Error: memory allocation failed\n", EXIT_FAILURE);    
+				return (-1);
+			}
+			return (0);
+		}
+		current = current->next;
+	}
+    setup->exit_stat = 0;
+	return (0);
+}
+
+int		add_new_key_value(t_setup *setup, char *key, char *value)
+{
+	t_env	*last_node;
+	t_env	*new_node;
+	
+	last_node = ft_lstlast(setup->env);
+	if (!last_node)
+		return (ft_perror(setup, "Error: failed to get last node\n", EXIT_FAILURE), -1);
+	new_node = malloc(sizeof(t_env));
+	if (!new_node)
+	return (ft_perror(setup, "Error: memory allocation failed\n", EXIT_FAILURE), -1);
+	new_node->key = ft_strdup(key);
+	if (!new_node->key)
+		return (ft_perror(setup, "Error: memory allocation failed\n", EXIT_FAILURE), -1);
+	new_node->value = ft_strdup(value);
+	if (!new_node->value)
+	{
+		free(new_node->key);
+		free(new_node);
+		return (ft_perror(setup, "Error: memory allocation failed\n", EXIT_FAILURE), -1);
+	}
+	new_node->next = NULL;
+	last_node->next = new_node;
+    setup->exit_stat = 0;
+	return (0);
+}
+
+void	set_env(t_setup *setup, char *key, char *value)
+{
+	t_env	*current;
+	int		status;
+
+	if (!key)
+		return ;
+		
+	current = setup->env;
+	status = update_key_value(setup, current, key, value);
+	if (status == -1)
+		status = add_new_key_value(setup, key, value);
+}
+
+	
+void	export_cmd(t_setup	*setup)
+{
+		char	**args;
+		char	**dividing_args;
+		int		i;
+		
+		i = 1;
+		args = setup->cmd->args;
+		dividing_args = NULL;
+		if (!args[i])
+		export_display(setup);
+	// >>> here i have to split = in the args and set them ot the env
+	else if (args[i])
+	{
+		// printf("arg -> %s\n", args[i]);
+		while (args[i])
+		{
+			if (ft_strchr(args[i], '='))
+			{	// update the export variable to fix litter on
+				dividing_args = ft_split(args[i], '=');
+				set_env(setup, dividing_args[0], dividing_args[1]);
+				free_the_spliting(dividing_args);
+			}
+			else
+				set_env(setup, args[i], NULL);
+			i++;
+		}
+	}
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+/* Remove a single key from the environment list */
+int unset_key(t_setup *setup, char *key)
+{
+	t_env *current;
+    t_env *previous;
+    
+    if (!setup->env || !key)
+	return (1);
+    
+    /* Validate key name according to shell rules */
+    if (!is_valid_identifier(key))
+    {
+        ft_perror(setup, "unset: invalid parameter name\n", 1);
+        return (1);
+    }
+    
+    current = setup->env;
+    previous = NULL;
+    
+    while (current)
+    {
+        if (ft_strcmp(current->key, key) == 0)
+        {
+			if (previous == NULL)
+			setup->env = current->next;
+            else
+                previous->next = current->next;
+            
+				free(current->key);
+            if (current->value)
+			free(current->value);
+            free(current);
+            return (0);
+        }
+        previous = current;
+        current = current->next;
+    }
+    
+    return (0); /* Key not found, but not an error in unset */
+}
+
+/* Handle the unset command */
+void unset_cmd(t_setup *setup)
+{
+	char **args;
+    int i;
+    int status;
+    
+    args = setup->cmd->args;
+    if (!args || !args[1])
+    {
+		/* unset without arguments does nothing in bash */
+        setup->exit_stat = 0;
+        return;
+    }
+    
+    status = 0;
+    i = 1;
+    while (args[i])
+    {
+        /* Track the highest error status */
+        if (unset_key(setup, args[i]) != 0)
+		status = 1;
+        i++;
+    }
+    
+    setup->exit_stat = status;
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+

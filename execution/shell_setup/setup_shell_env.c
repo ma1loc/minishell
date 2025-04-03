@@ -4,9 +4,10 @@ t_setup  *init_setup_struct()
 {
     t_setup  *set_env;
 
-    set_env = malloc(sizeof(t_setup));
-    if (!set_env)
+	set_env = malloc(sizeof(t_setup));
+	if (!set_env)
         return (NULL);
+	set_env->i = 0;
     set_env->input = NULL;
     set_env->env = NULL;
     set_env->token = NULL;
@@ -17,28 +18,29 @@ t_setup  *init_setup_struct()
     set_env->cmd_path = NULL;
     set_env->envp = NULL;
     set_env->exit_stat = 0;   // >>> to see litter on
+	set_env->heredoc = NULL;
     return (set_env);
 }
 
-void    update_env(t_setup *setup) // >>> update if the command that use it is export or unset
-{
-    // >>> to check litter on the update of the env
-    (void)setup;
-}
-
 // >>> setup the env of the minishell
+// return NULL here
 t_setup *shell_env_setup(char **env)
 {
     t_setup  *setup;
 
     setup = init_setup_struct();
     if (!setup)
-        ft_perror(setup, "memory allocation failed\n", EXIT_FAILURE);    
+		ft_perror(setup, "Error: memory allocation failed\n", EXIT_FAILURE);
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     setup->env = init_env(env, setup->env);
     if (!setup->env)
-        ft_perror(setup, "cd: memory allocation failed\n", EXIT_FAILURE); // to free latter on
-    get_pwd(setup);
-    set_env(&setup->env, "OLDPWD", setup->pwd);
+		ft_perror(setup, "Error: failed to set env\n", EXIT_FAILURE); // to free latter on
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	setup->heredoc = malloc(sizeof(t_heredoc));
+	if (!setup->heredoc)
+		return (NULL);
+	get_pwd(setup);
+    set_env(setup, "OLDPWD", setup->pwd);
 
     return (setup);
 }

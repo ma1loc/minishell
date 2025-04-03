@@ -1,59 +1,54 @@
 #include "mini_shell.h"
 
-// >>> reomve the key, value from the env.
-void	unset_cmd(t_env **env_list, char *key)
+void	unset_key(t_setup *setup, char *key)
 {
-    t_env	*current;
-    t_env	*previous;
+	t_env	*curr;
+	t_env	*prev;
 
-    if (!*env_list || !key)
-		return;
-    current = *env_list;
-    previous = NULL;
-    while (current)
-    {
-        if (ft_strcmp(current->key, key) == 0)
-        {
-            if (previous == NULL)
-                *env_list = current->next;
+	if (!setup->env || !key)
+		return ;
+	curr = setup->env;
+	prev = NULL;
+	while (curr)
+	{
+		if (ft_strcmp(curr->key, key) == 0)
+		{
+			if (prev == NULL)	// >>> but this condition what is the time to be ture
+                setup->env = curr->next;
             else
-                previous->next = current->next;
-            free(current->key);
-            free(current->value);
-            free(current);
-            return;
+                prev->next = curr->next;
+            free(curr->key);
+            if (curr->value)
+                free(curr->value);
+            free(curr);
+            return ;
         }
-        previous = current;
-        current = current->next;
-    }   
+        prev = curr;
+        curr = curr->next;
+	}
 }
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// >>> reomve the key, value from the env.
+void	unset_cmd(t_setup *setup)
+{
+    char	**args;
+    int		i;
 
-// void	unset_cmd(t_setup *setup, char *key)
-// {
-//     t_env	*current;
-//     t_env	*previous;
+	i = 1;	// skip the command itself
+	args = setup->cmd->args;	// >>> just to be readable
 
-//     if (!setup->env_list || !key)
-// 		return;
-//     current = setup->env;
-//     previous = NULL;
-//     while (current)
-//     {
-//         if (ft_strcmp(current->key, key) == 0)
-//         {
-//             if (previous == NULL)
-//                 setup->env = current->next;
-//             else
-//                 previous->next = current->next;
-//             free(current->key);
-//             free(current->value);
-//             free(current);
-//             return;
-//         }
-//         previous = current;
-//         current = current->next;
-//     }
-    
-// }
+    if (!args || !args[1])		// >>> here the args alrady include the command itself (i think i have to remove it!!! (no need for the !args check))
+		return (setup->exit_stat = 0, (void)0);
+
+    while (args[i])
+    {
+		if (!is_valid_identifier(args[i]))
+		{
+			i++;
+			continue ;
+		}
+        unset_key(setup, args[i]);
+		i++;
+    }
+	setup->exit_stat = 0; // what ever if the unset fail or not will return 0 in the exit status
+}

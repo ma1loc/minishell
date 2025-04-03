@@ -1,6 +1,6 @@
 #include "mini_shell.h"
 
-int		is_option(char	*opt)
+int		is_n_option(char *opt)
 {
 	int	i;
 
@@ -40,19 +40,16 @@ void    echo_cmd(t_setup *setup)
 	int	i;
 
 	i = 1;
-	// if (!setup->cmd->args[1])
-	// 	printf("\n");
-	// >>> Expansion <<<
-	// >>> fix echo '$?' hello <<<
+	if (!setup->cmd->args[1])
+		printf("\n");
 	// >>>>>>>>>>>>>>	just test	>>>>>>>>>>>>>>>>>>
-	if (ft_strcmp(setup->cmd->args[1], "$?") == 0)
+	else if (ft_strcmp(setup->cmd->args[1], "$?") == 0)
 		printf("%d\n", setup->exit_stat);
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	// else if (is_option(setup->cmd->args[i]) == 0)
-	else if (is_option(setup->cmd->args[i]) == 0)
+	else if (is_n_option(setup->cmd->args[i]) == 0)
 	{
 		i = 2;
-		while (is_option(setup->cmd->args[i]) == 0)
+		while (is_n_option(setup->cmd->args[i]) == 0)
 		{
 			if (setup->cmd->args[i + 1] == NULL) 
 				break;
@@ -65,4 +62,5 @@ void    echo_cmd(t_setup *setup)
 		echo_print(setup->cmd, i);
 		printf("\n");
 	}
+	setup->exit_stat = 0;
 }

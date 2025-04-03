@@ -1,23 +1,35 @@
 #include "mini_shell.h"
 
-void	get_pwd(t_setup *setup)
+int	get_pwd(t_setup *setup)
 {
-	char	buf_path[PATH_MAX];
-	char	*path;
-
-	path = getcwd(buf_path, sizeof(buf_path));
-	if (path)
-	{
-		if (setup->pwd)
-			free(setup->pwd);
-		setup->pwd = ft_strdup(path);
-	}
-	else
-		ft_perror(setup, "pwd", EXIT_FAILURE); // >>> update with ft_perror
+    char buf_path[PATH_MAX];
+    char *path;
+    char *new_pwd;
+    
+    path = getcwd(buf_path, sizeof(buf_path));
+    if (path)
+    {
+        new_pwd = ft_strdup(path);
+        if (!new_pwd)
+        {
+            ft_perror(setup, "pwd: memory allocation failed\n", EXIT_FAILURE);
+            return (-1);
+        }
+        if (setup->pwd)
+            free(setup->pwd);   
+        setup->pwd = new_pwd;
+        setup->exit_stat = 0;
+    }
+    else
+    {
+        ft_perror(setup, "pwd: cannot get current directory\n", EXIT_FAILURE);
+		return (-1);
+    }
+	return (0);
 }
 
 void	pwd_cmd(t_setup *setup)
 {
-	get_pwd(setup);
-	printf("%s\n", setup->pwd);
+	if (get_pwd(setup) == 0)
+		printf("%s\n", setup->pwd);
 }
