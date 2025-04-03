@@ -55,13 +55,13 @@ void free_redirections(t_redirections *redir) // free redir
 }
 
 
-t_command *pars_tokens(t_token *tokens) // main func parsing tokens
+t_command *pars_tokens(t_setup *setup) // main func parsing tokens
 {
   t_command *commandes;
   t_token *current;
   t_args_list *list_args;
-
-  if(tokens == NULL)
+  current = setup->token;
+  if(setup->token == NULL)
     return NULL;
   commandes = NULL;
   list_args = NULL;
@@ -72,7 +72,7 @@ t_command *pars_tokens(t_token *tokens) // main func parsing tokens
   memset(state, 0 , sizeof(t_commande_state));
   commandes = creat_new_node_command(commandes);  // create first command node
   state->current_cmd = commandes;   // track current commande
-  current = tokens; // linked list of tokens
+  current = setup->token; // linked list of tokens
   process_token(state, current, &list_args);
   free(state);
   return(commandes);

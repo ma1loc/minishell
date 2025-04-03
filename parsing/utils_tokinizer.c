@@ -44,14 +44,14 @@
 // }
 
 //////////////////////////////////////////////////////////////////////
-void process_spaces(t_tokinizer_state *state, t_token **tokens)
+void process_spaces(t_tokinizer_state *state, t_token **tokens, t_setup *setup)
 {
   char *stripped;
 
   if(state->j > 0)
   {
     state->buff[state->j] = '\0';
-    stripped = strip_quotes(state->buff);
+    stripped = strip_quotes(state->buff, setup);
     if(stripped != NULL)
     {
       add_token(tokens, stripped, TOKEN_WORD);
@@ -95,14 +95,14 @@ void process_operators(char *input, t_tokinizer_state *state, t_token **tokens)
   }
 }
 
-void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tokens)
+void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tokens, t_setup *setup)
 {
   char *stripped;
 
   if(state->j > 0)
   {
     state->buff[state->j] = '\0';  //save any buffered word first
-    stripped = strip_quotes(state->buff);
+    stripped = strip_quotes(state->buff, setup);
     if(stripped != NULL)
     {
       add_token(tokens, stripped, TOKEN_WORD);
@@ -114,14 +114,14 @@ void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tok
 
 }
 
-void process_remainder_text(t_tokinizer_state *state, t_token **tokens)
+void process_remainder_text(t_tokinizer_state *state, t_token **tokens, t_setup *setup)
 {
   char *stripped;
 
   if(state->j > 0)
   {
     state->buff[state->j] = '\0';
-    stripped = strip_quotes(state->buff);
+    stripped = strip_quotes(state->buff, setup);
     if(stripped != NULL)
     {
       add_token(tokens, stripped, TOKEN_WORD);
