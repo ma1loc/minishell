@@ -44,7 +44,7 @@ int		main(int argc, char **argv, char **env)
         setup->token = tokenize(setup);
         if (!setup->token)
 			continue ;
-        setup->cmd = pars_tokens(setup->token);
+        setup->cmd = pars_tokens(setup);
         setup->tree = build_tree_commande(setup->cmd);
 		// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		process_heredoc(setup->tree, setup);
