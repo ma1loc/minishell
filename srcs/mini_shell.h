@@ -21,6 +21,7 @@ typedef struct s_token t_token;
 typedef struct s_command t_command;
 typedef struct s_tree t_tree;
 typedef struct s_redirections t_redirections;
+typedef struct s_expand t_expand;
 
 // >>> exit status define
 # define EXIT_SUCCESS 0
@@ -33,8 +34,8 @@ typedef struct s_redirections t_redirections;
 // >>>>>>>>>>>>>>>>>>>>>>>
 
 // >>> define the built_in and external cmd
-# define BUILT_IN 1
-# define EXTERNAL 0
+// # define BUILT_IN 1
+// # define EXTERNAL 0
 
 // >>> true or false (readable)
 #define true	1
@@ -53,6 +54,12 @@ void	*ft_memset(void *str, int c, size_t n);
 int     ft_isdigit(char *str);
 int     ft_atoi(const char *str);
 char	*ft_strchr(char *s, int c);
+char	*ft_itoa(int n);
+int		ft_isalpha(int c);
+int		ft_isalnum(int c);
+
+t_env	*ft_lstlast(t_env *lst);
+void	ft_lstadd_back(t_env **lst, t_env *new);
 
 // >>> sig
 // void	signals(int signal);
@@ -70,44 +77,58 @@ typedef struct s_env
     struct  s_env *next;
 }   t_env;
 
-t_env	*ft_lstlast(t_env *lst);
-void	ft_lstadd_back(t_env **lst, t_env *new);
+
+typedef struct s_heredoc
+{
+	int		count;     // >>> number of heredocs
+	int		fd[256];   // >>> store heredoc pipe fds (read ends)
+}	t_heredoc;
 
 // >>> start init all the env
 typedef struct s_setup
 {
+	int			i;
     char        *input;
     t_env       *env;
     t_token     *token;
     t_command   *cmd;
     t_tree      *tree;
+	t_expand	*expand;
     char        *pwd;
     char        *oldpwd;
     char        *cmd_path;
     char        **envp;
     int         exit_stat;
+	t_heredoc	*heredoc;
 }   t_setup;
 
 // >>>>>>>>>>>>>>>>>>>> built_in_cmds <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 void    echo_cmd(t_setup *setup);       // the echo command fun. [done]
 void    cd_cmd(t_setup *setup);         // the cd command fun. [done]
 void	pwd_cmd(t_setup *setup);        // the pwd path print fun. [done]
-void	get_pwd(t_setup *setup);
+// void	get_pwd(t_setup *setup);
+int		get_pwd(t_setup *setup);
 t_env	*init_env(char **env, t_env *env_list);
-void	env_cmd(t_setup *built_in);
-void	unset_cmd(t_env **env_list, char *key);
+void	env_cmd(t_setup *setup);
+void	unset_cmd(t_setup *setup);
 // void    unset_cmd(t_setup *setup, char *key);
-void	set_env(t_env **env_list, char *key, char *value);
-int		cd(t_setup *built_in);
-void	exit_cmd(t_setup  *built_in);
-void	export_cmd(t_setup	*built_in);
+void	set_env(t_setup *setup, char *key, char *value);
+
+int		cd(t_setup *setup);
+void	exit_cmd(t_setup  *setup);
+void	export_cmd(t_setup	*setup);
 
 // >>> hellping functions
 void	ft_perror(t_setup *setup, char *msg, int exit_stat);
-void	free_spliting(char **split_path);
+void	free_the_spliting(char **split);
+int		is_valid_identifier(char *key);
+void	free_env_list(t_env *env_list);
+int		is_valid_number(char *str);
+
+
 
 // >>> the execution will start here
-int     command_type(char *name);
+// int     command_type(char *name);
 int     is_built_in(char *name);
 t_setup *shell_env_setup(char **env);
 t_setup *init_setup_struct();
@@ -122,7 +143,17 @@ void    execute_pipes(t_tree *tree, t_setup *setup);
 
 // >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
 void	execute_redirections(t_tree *tree, t_setup *setup);
-int		heredoc(t_tree *tree, t_setup *setup);
+
+// >>>>>>>>>>>>>>>>>>> heredoc >>>>>>>>>>>>>>>>>>>>>>
+void	process_heredoc(t_tree *tree, t_setup *setup);
+int		red_heredoc(t_tree *tree, t_setup *setup);
+
+
+// int		process_heredocs(t_command *cmd, t_setup *setup);
+// int		heredoc(t_tree *tree, t_setup *setup);
+// void		process_heredocs_in_tree(t_tree *tree, t_setup *setup);
+// void	process_heredocs(t_tree *tree, t_setup *setup);
+
 // void	red_input(t_tree *tree, t_setup *setup);
 // void	red_output(t_tree *tree, t_setup *setup);
 // int		red_input(t_tree *tree, t_setup *setup);

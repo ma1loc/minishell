@@ -1,11 +1,5 @@
 #include "mini_shell.h"
 
-// >>> clear command not working with msg
-    //  minishell$ clear
-    //  TERM environment variable not set. to set litter on
-// internal and external
-// >>> new one <<<
-// >>> set the exit status here <<<
 void    execute_externals(t_setup *setup)
 {
     pid_t     pid;
@@ -13,10 +7,8 @@ void    execute_externals(t_setup *setup)
 
     setup->cmd_path = path_resolver(setup);
     if (!setup->cmd_path)
-    {
-        ft_perror(setup ,"Command not found\n", CMD_NOT_FOUND); // >>> exit status to set litter on
-        return;
-    }
+		return(ft_perror(setup ,"Command not found\n", CMD_NOT_FOUND), (void)0); // >>> exit status to set litter on
+        
     pid = fork();
     if (pid == -1)
     {
@@ -25,16 +17,13 @@ void    execute_externals(t_setup *setup)
     }    
     if (pid == 0)
     {
-        // >>> child process
         if (execve(setup->cmd_path, setup->cmd->args, setup->envp) == -1)
             ft_perror(setup, NULL, EXIT_FAILURE);
         exit(EXIT_FAILURE);
     }
     else
     {
-        // >>> parent process
-        waitpid(pid, &status, 0);
-        // >>> save exit status
+        waitpid(pid, &status, 0); // the last arg -> 0 is for waitpid to act normall
         if (WIFEXITED(status))
             setup->exit_stat = WEXITSTATUS(status); // >>> to check litter on
 	}

@@ -1,88 +1,113 @@
 # include "mini_shell.h"
 
-int	write_to_heredoc(t_setup *setup, char *heredoc_file)
+void	close_fds(t_setup *setup)
 {
-	int		read_fd;
+	int i;
+	int	count;
 
-	read_fd = open(heredoc_file, O_RDONLY);
-	if (read_fd == -1)
+	i = 0;
+	count = setup->heredoc->count;
+	while (i <= count)
 	{
-		unlink(heredoc_file);
-		return (ft_perror(setup, "Error: open failed\n", EXIT_FAILURE), -1);
+		close(setup->heredoc->fd[i]);
+		i++;
 	}
-	if (dup2(read_fd, STDIN_FILENO) == -1)
+}
+
+char	*get_file_name(t_setup *setup)
+{
+	char	*file_num;
+	char	*file_name;
+
+	file_num = ft_itoa(setup->heredoc->count);
+	if (!file_num)
+		return (NULL);
+	file_name = ft_strjoin("/tmp/heredoc", file_num);
+	if (!file_name)
 	{
-		close(read_fd);
-		unlink(heredoc_file);
-		return (ft_perror(setup, "Error: dup2 failed\n", EXIT_FAILURE), -1);
+		free(file_num);
+		return (NULL);
 	}
-	close(read_fd);
-	unlink(heredoc_file);
+	free(file_num);
+	return (file_name);
+}
+
+// >>> refresh the offset of the fd
+int	refresh_fds(t_setup *setup, char *file_name)
+{
+	int	count;
+
+	count = setup->heredoc->count;
+	close(setup->heredoc->fd[count]);
+	setup->heredoc->fd[count] = open(file_name, O_RDONLY, 0644);
+	if (!setup->heredoc->fd[count])
+		return (close_fds(setup),free(file_name), 1);
+	free(file_name);
 	return (0);
 }
 
-// >>> signal handler here to litter on just ignore it now
-int	heredoc(t_tree *tree, t_setup *setup)
+int	get_heredoc_fds(t_tree *tree, t_setup *setup)
 {
-    int     write_fd;
-    char    *input;
-	char	*heredoc_file;
-	int		status; 	
+	char	*file_name;
+	int		count;
+	char	*input;
+	
+	count = setup->heredoc->count;
+	file_name = get_file_name(setup);
+	if (!file_name)
+		return (close_fds(setup), 1);	// >>> check litter on
 
+	setup->heredoc->fd[count] = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	if (setup->heredoc->fd[count] == -1)
+		return (close_fds(setup), free(file_name), 1);
 
-	status = 0;
-	heredoc_file = ft_strdup("/home/yanflous/Desktop/minishell/heredoc.txt");
-    write_fd = open(heredoc_file, O_CREAT | O_WRONLY, 0644);
-    if (write_fd == -1)
-        return (free(heredoc_file), ft_perror(setup, "Error: open failed\n", EXIT_FAILURE), -1);
-    while (true)
-    {
-        input = readline("heredoc> ");
-        if (input == NULL || ft_strcmp(input, tree->cmd->redirections->file_name) == 0)
-        {
-            if (tree->cmd->name == NULL) // this is the dilemither
-			{
-				unlink(heredoc_file);
-				return (free(heredoc_file), close(write_fd), -1);
-			}
-            break;
-        }
-        write(write_fd, input, ft_strlen(input));
-        write(write_fd, "\n", 1);
-    }
-	close(write_fd);
-	status = write_to_heredoc(setup, heredoc_file);
-	return (status);
+	while (true)
+	{
+		input = readline("heredoc> ");
+		if (input == NULL || ft_strcmp(input, tree->cmd->redirections->file_name) == 0)
+		{
+			free(input);
+			break;
+		}
+		write(setup->heredoc->fd[setup->i], input, ft_strlen(input));
+		write(setup->heredoc->fd[setup->i], "\n", 1);
+		free(input);
+	}
+	// >>> refresh the offset of the fd
+	if (refresh_fds(setup, file_name) == 1)
+		return (1);
+	return (0);
 }
 
+void	get_heredoc_count(t_tree *tree, t_setup *setup)
+{
+	if (!tree)
+        return ;
 
-// int heredoc(t_tree *tree, t_setup *setup)
-// {
-//     int     write_fd;
-//     char    *input;
-//     char    *heredoc_file;
+    if (tree->cmd && tree->cmd->redirections)
+    {
+        t_redirections *redir = tree->cmd->redirections;
+        while (redir)
+        {
+            if (redir->type == TOKEN_HERDOC)
+			{
+                if (get_heredoc_fds(tree, setup) == 1)
+				{
+					ft_perror(setup, "heredoc process failed\n", 1);
+					break;
+				}
+				setup->i++;
+				setup->heredoc->count++;
+			}
+            redir = redir->next;
+        }
+    }
+    get_heredoc_count(tree->left, setup);
+    get_heredoc_count(tree->right, setup);
+}
 
-//     int     status;
-
-//     heredoc_file = ft_strdup("/tmp/minishell_heredoc.txt");
-//     write_fd = open(heredoc_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-//     if (write_fd == -1)
-//         return (free(heredoc_file), ft_perror(setup, "Error: open failed\n", EXIT_FAILURE), -1);
-
-//     while (true)
-//     {
-//         input = readline("heredoc> ");
-//         if (!input || ft_strcmp(input, tree->cmd->redirections->file_name) == 0)
-//             break;
-//         write(write_fd, input, ft_strlen(input));
-//         write(write_fd, "\n", 1);
-//         free(input);
-//     }
-//     free(input);
-//     close(write_fd);
-//     free(heredoc_file);
-//     exit(0);
-
-//     status = write_to_heredoc(setup, heredoc_file);
-//     return status;
-// }
+void	process_heredoc(t_tree *tree, t_setup *setup)
+{
+	setup->heredoc->count = 0;	// >>> count how many heredocs there
+	get_heredoc_count(tree, setup);
+}

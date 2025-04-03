@@ -1,17 +1,7 @@
 # include "mini_shell.h"
 
-// >>> here i have to get the path of the command, i mean the path the 
-// will the cmd will be there and executed.
-
-void	free_spliting(char **split_path)
-{
-	int	i;
-
-	i = 0;
-	while (split_path[i])
-		free(split_path[i++]);
-	free(split_path);
-}
+//	>>> here i have to get the path of the command, i mean the path the 
+//	will the cmd will be there and executed.
 
 char	*split_path(char *path, char *cmd)
 {
@@ -20,7 +10,7 @@ char	*split_path(char *path, char *cmd)
 	char	*add_to_path;
 	char	*full_path;
 
-	split_path = ft_split(path + 5, ':');
+	split_path = ft_split(path, ':');
 	if (!split_path)
 		return (NULL);
 	i = 0;
@@ -30,21 +20,13 @@ char	*split_path(char *path, char *cmd)
 		full_path = ft_strjoin(add_to_path, cmd);
 		free(add_to_path);
 		if (access(full_path, F_OK | X_OK) == 0)
-			return (free_spliting(split_path), full_path);
+			return (free_the_spliting(split_path), full_path);
 		free(full_path);
 		i++;
 	}
-	return (free_spliting(split_path), NULL);
+	return (free_the_spliting(split_path), NULL);
 }
 
-// >>> executable verification <<<
-// 		bash exe/
-// 		exe/: exe/: Is a directory <<< exit status 126
-//		Command not found	127
-// 		Permission denied	
-// 		Is a directory		126
-
-// >>> check if path is a directory
 int		is_directory(t_setup *setup, char *cmd_path)
 {
 	int	status;
@@ -55,9 +37,9 @@ int		is_directory(t_setup *setup, char *cmd_path)
 	{
 		// >>> here i have to set the exit status of 126 litter on
 		ft_perror(setup ,"Error: Is a directory\n", CMD_NOT_EXEC);
-		return (false);
+		return (0);
 	}
-	return (true);
+	return (1);
 }
 
 char	*path_resolver(t_setup *setup)
@@ -69,7 +51,7 @@ char	*path_resolver(t_setup *setup)
 	path = NULL;
 	cmd = setup->cmd->name;
 	env_list = setup->env;
-	if (is_directory(setup, cmd) == false)
+	if (is_directory(setup, cmd) == 0)
 		return (NULL);
 	else if (ft_strchr(cmd, '/') != NULL)
 		return (ft_strdup(cmd));
@@ -81,6 +63,6 @@ char	*path_resolver(t_setup *setup)
 		return (NULL);
 	path = split_path(env_list->value, cmd);
 	if (!path)
-		return (ft_perror(setup, "Error: command not found\n", EXIT_FAILURE), NULL);
+		return (NULL);
 	return (path);
 }

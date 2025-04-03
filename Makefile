@@ -2,7 +2,7 @@ CC = cc
 
 INCLUDE = -Isrcs -Iparsing
 
-CFLAGS = -Wall -Wextra -Werror $(INCLUDE) #-g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror $(INCLUDE) -g -fsanitize=address
 
 SRC = srcs/mini_shell.c libft/ft_strlen.c libft/ft_split.c libft/ft_strjoin.c libft/ft_strdup.c libft/ft_strncmp.c \
 	libft/ft_putstr_fd.c execution/signals/signals.c execution/built-ins/echo_cmd.c execution/built-ins/cd_cmd.c \
@@ -13,7 +13,9 @@ SRC = srcs/mini_shell.c libft/ft_strlen.c libft/ft_split.c libft/ft_strjoin.c li
 	parsing/build_tree.c execution/execute/pipe_execution.c parsing/utils_parsing.c	parsing/utils_tokinizer.c \
 	execution/redirections/red_input.c execution/redirections/red_output.c execution/redirections/heredoc.c \
 	execution/redirections/red_append.c execution/redirections/redirections.c execution/redirections/red_in_out.c \
-	parsing/expand.c
+	parsing/expand.c execution/redirections/heredoc_utils.c libft/ft_itoa.c execution/built-ins/built_in_utils.c \
+	libft/ft_isalpha.c libft/ft_isalnum.c
+										
 
 OBJ = $(SRC:.c=.o)
 NAME = minishell

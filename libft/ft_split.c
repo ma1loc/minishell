@@ -67,6 +67,8 @@ char	**ft_split(char *str, char separator)
 	int		index;
 	int		i;
 
+	if (!str)
+		return (NULL);
 	word_count = delim_count(str, separator);
 	new_str = malloc(sizeof(char *) * (word_count + 1));
 	if (!new_str)
