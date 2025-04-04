@@ -82,6 +82,7 @@ typedef struct s_heredoc
 {
 	int		count;     // >>> number of heredocs
 	int		fd[256];   // >>> store heredoc pipe fds (read ends)
+	char	*delimiter;
 }	t_heredoc;
 
 // >>> start init all the env
@@ -125,8 +126,6 @@ int		is_valid_identifier(char *key);
 void	free_env_list(t_env *env_list);
 int		is_valid_number(char *str);
 
-
-
 // >>> the execution will start here
 // int     command_type(char *name);
 int     is_built_in(char *name);
@@ -143,22 +142,16 @@ void    execute_pipes(t_tree *tree, t_setup *setup);
 
 // >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
 void	execute_redirections(t_tree *tree, t_setup *setup);
+int		red_input(t_setup *setup,t_tree *tree, t_redirections *redirection);
+int		red_append(t_setup *setup, t_tree *tree, t_redirections *redirection);
+int		red_output(t_setup *setup, t_tree *tree, t_redirections *redirection);
+int		red_in_out(t_setup *setup,t_tree *tree, t_redirections *redirection);
+int		red_heredoc(t_setup *setup, t_tree *tree);
 
 // >>>>>>>>>>>>>>>>>>> heredoc >>>>>>>>>>>>>>>>>>>>>>
-void	process_heredoc(t_tree *tree, t_setup *setup);
-int		red_heredoc(t_tree *tree, t_setup *setup);
-
-
-// int		process_heredocs(t_command *cmd, t_setup *setup);
-// int		heredoc(t_tree *tree, t_setup *setup);
-// void		process_heredocs_in_tree(t_tree *tree, t_setup *setup);
-// void	process_heredocs(t_tree *tree, t_setup *setup);
-
-// void	red_input(t_tree *tree, t_setup *setup);
-// void	red_output(t_tree *tree, t_setup *setup);
-// int		red_input(t_tree *tree, t_setup *setup);
-// int		red_output(t_tree *tree, t_setup *setup);
-int		red_in_out(t_tree *tree, t_setup *setup, t_redirections *redirection);
-int		red_append(t_tree *tree, t_setup *setup, t_redirections *redirection);
+void	heredoc_process(t_setup *setup, t_tree *tree);
+void	close_fds(t_setup *setup);
+char	*get_file_name(t_setup *setup);
+int		refresh_fds(t_setup *setup, char *file_name);
 
 # endif

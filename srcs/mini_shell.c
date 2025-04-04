@@ -5,9 +5,11 @@
 // >>> heredoc have to be form A-Z order
 // adsf | ls | eadsf >>> test the exit status of it 
 // < Makefile > 5
+// < Makefile | cat >>> segv
+// ls || cat >>> segv
 // ls >
-// ls || cat
-
+// < Makefile > 5 << l cat >>> delimiter problem
+// echo $? >>> not working
 
 t_setup	*start_setup(int argc, char **argv, char **env)
 {
@@ -29,7 +31,7 @@ t_setup	*start_setup(int argc, char **argv, char **env)
 
 int		main(int argc, char **argv, char **env)
 {
-    t_setup  *setup;
+    t_setup			*setup;
 
     setup = start_setup(argc, argv, env);
 	if (!setup)
@@ -42,14 +44,14 @@ int		main(int argc, char **argv, char **env)
         if (setup->input[0] == '\0')
             continue ;
         setup->token = tokenize(setup);
-        if (!setup->token)
+        if (!setup->token || ft_strlen(setup->token->value) == 0)
 			continue ;
-        setup->cmd = pars_tokens(setup);
+        
+		setup->cmd = pars_tokens(setup);
         setup->tree = build_tree_commande(setup->cmd);
-		// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		process_heredoc(setup->tree, setup);
+		heredoc_process(setup, setup->tree);
 		setup->i = 0;
-		// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
         execution(setup->tree, setup);
 		add_history(setup->input);
 		free(setup->input);

@@ -43,8 +43,8 @@ void    echo_cmd(t_setup *setup)
 	if (!setup->cmd->args[1])
 		printf("\n");
 	// >>>>>>>>>>>>>>	just test	>>>>>>>>>>>>>>>>>>
-	else if (ft_strcmp(setup->cmd->args[1], "$?") == 0)
-		printf("%d\n", setup->exit_stat);
+	// else if (ft_strcmp(setup->cmd->args[1], "$?") == 0)
+	// 	printf("%d\n", setup->exit_stat);
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	else if (is_n_option(setup->cmd->args[i]) == 0)
 	{

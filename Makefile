@@ -14,9 +14,8 @@ SRC = srcs/mini_shell.c libft/ft_strlen.c libft/ft_split.c libft/ft_strjoin.c li
 	execution/redirections/red_input.c execution/redirections/red_output.c execution/redirections/heredoc.c \
 	execution/redirections/red_append.c execution/redirections/redirections.c execution/redirections/red_in_out.c \
 	parsing/expand.c execution/redirections/heredoc_utils.c libft/ft_itoa.c execution/built-ins/built_in_utils.c \
-	libft/ft_isalpha.c libft/ft_isalnum.c
+	libft/ft_isalpha.c libft/ft_isalnum.c execution/redirections/red_heredoc.c
 										
-
 OBJ = $(SRC:.c=.o)
 NAME = minishell
 RM = rm -rf
