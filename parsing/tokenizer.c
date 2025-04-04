@@ -78,11 +78,40 @@ char *strip_quotes(char *str, t_setup *setup)
 
 int check_syntax(char *input, int len, int *i)
 {
+//////////////////////////////////////  for pip in bigging or in midel or in the end
+  int j;
 
-  if(input[0] == '|' || input[len - 1] == '|')
+  j = 0;
+  if(input[*i] == '|')
+  {
+    if(*i == 0)
+      return(1);
+    if(*i > 0 && input[*i - 1] == '|')
+      return(1);
+  }
+  if(input[len - 1] == '|')
     return(1);
-  else if(input[len - 1] == '<')
-    return(1);
+//////////////////////////////////////  check if there is only spaces or tabs after redir 
+  if(input[*i] == '<' || input[*i] == '>')
+  {
+    if(*i + 1 < len && input[*i] == input[*i + 1]) // check for << or >>
+    {
+      j = *i + 2;
+      while(j < len && (input[j] == ' ' || input[j] == '\t'))
+        j++;
+      if(j >= len && input[j] == '\0')
+        return(1);
+    }
+    else  // check for < or >
+    {
+      j = *i + 1;
+      while(j < len && (input[j] == ' ' || input[j] == '\t'))
+        j++;
+      if(j >= len || input[j] == '\0')
+        return(1);
+    }
+  }
+  ////////////////////////////////////////////  original checks                  
   else if(input[len - 1] == '<' && input[len - 2] == '<')
     return(1);
   else if(input[0] == '<' && input[1] == '\0')
@@ -114,6 +143,11 @@ int check_quotes_syntax(t_setup *setup) // fuc to check if quoest match inclosed
   len = strlen(setup->input);
   while(setup->input[i] != '\0')
   {
+    if(setup->input[i] != '\0' && (setup->input[i] == ' ' || setup->input[i] == '\t'))
+    {
+      i++;
+      continue;
+    }
     if(check_syntax(setup->input, len, &i) != 0)
     {
       in_quoets = 1;
