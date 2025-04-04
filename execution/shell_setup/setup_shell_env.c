@@ -39,6 +39,7 @@ t_setup *shell_env_setup(char **env)
 	setup->heredoc = malloc(sizeof(t_heredoc));
 	if (!setup->heredoc)
 		return (NULL);
+	setup->heredoc->delimiter = NULL;
 	get_pwd(setup);
     set_env(setup, "OLDPWD", setup->pwd);
 
