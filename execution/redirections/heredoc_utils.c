@@ -1,6 +1,6 @@
 # include "mini_shell.h"
 
-void	close_fds(t_setup *setup)
+void	close_heredoc_fds(t_setup *setup)
 {
 	int i;
 	int	count;
@@ -43,7 +43,7 @@ int	refresh_fds(t_setup *setup, char *file_name)
 	if (!setup->heredoc->fd[count])
 	{
 		ft_perror(setup, NULL, EXIT_FAILURE);
-		return (close_fds(setup),free(file_name), 1);
+		return (close_heredoc_fds(setup),free(file_name), 1);
 	}
 	free(file_name);
 	return (0);

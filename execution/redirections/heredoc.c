@@ -1,8 +1,7 @@
 # include "mini_shell.h"
 
-void	loding_heredoc(t_setup *setup, t_tree *tree)
+void	loding_heredoc(t_setup *setup)
 {
-	(void)tree;
 	char	*input;
 
 	while (true)
@@ -20,39 +19,33 @@ void	loding_heredoc(t_setup *setup, t_tree *tree)
 	}
 }
 
-// char	*get_delimiter(t_redirections *redirection)
 void	get_delimiter(t_setup *setup, t_redirections *redirection)
 {
-
 	if (setup->heredoc->delimiter)
 		free(setup->heredoc->delimiter);
 
 	setup->heredoc->delimiter = ft_strdup(redirection->file_name);
-	// printf("delimiter -> %s\n", redirection->file_name);
 	redirection = redirection->next;
 	return ;
 }
 
-int	get_heredoc_fds(t_tree *tree, t_setup *setup, t_redirections *red)
+int	get_heredoc_fds(t_setup *setup, t_redirections *red)
 {
-	(void)red;
 	char	*file_name;
 	int		count;
-	
+
 	count = setup->heredoc->count;
 	file_name = get_file_name(setup);
 	if (!file_name)
-		return (close_fds(setup), 1);	// >>> check later on
+		return (close_heredoc_fds(setup), 1);	// >>> check later on to fix
 	setup->heredoc->fd[count] = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	if (setup->heredoc->fd[count] == -1)
-		return (close_fds(setup), free(file_name), 1);
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		return (close_heredoc_fds(setup), free(file_name), 1);
 	get_delimiter(setup, red);
-	loding_heredoc(setup, tree);
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	// >>> refresh the offset of the fd
-	if (refresh_fds(setup, file_name) == 1)
-		return (1);
+	loding_heredoc(setup);
+	if (refresh_fds(setup, file_name) == 1)	// >>> refresh the offset of the fd
+		return (close_heredoc_fds(setup), free(file_name), 1);
+	free(file_name);
 	return (0);
 }
 
@@ -70,12 +63,12 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
         {
             if (redir->type == TOKEN_HERDOC)
 			{
-                if (get_heredoc_fds(tree, setup, redir) == 1)
+                if (get_heredoc_fds(setup, redir) == 1)
 				{
 					ft_perror(setup, "heredoc process failed\n", EXIT_FAILURE);
 					break;
 				}
-				setup->i++;
+				setup->i++;		// >>> index of the array of fds
 				setup->heredoc->count++;
 			}
 			redir = redir->next;

@@ -19,6 +19,7 @@ t_setup  *init_setup_struct()
     set_env->envp = NULL;
     set_env->exit_stat = 0;   // >>> to see litter on
 	set_env->heredoc = NULL;
+	set_env->idx_fds = 0;
     return (set_env);
 }
 

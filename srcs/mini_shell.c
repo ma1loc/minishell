@@ -10,6 +10,7 @@
 // ls >
 // < Makefile > 5 << l cat >>> delimiter problem
 // echo $? >>> not working
+// Makefile > cat
 
 t_setup	*start_setup(int argc, char **argv, char **env)
 {
@@ -46,12 +47,10 @@ int		main(int argc, char **argv, char **env)
         setup->token = tokenize(setup);
         if (!setup->token || ft_strlen(setup->token->value) == 0)
 			continue ;
-        
 		setup->cmd = pars_tokens(setup);
         setup->tree = build_tree_commande(setup->cmd);
 		heredoc_process(setup, setup->tree);
 		setup->i = 0;
-
         execution(setup->tree, setup);
 		add_history(setup->input);
 		free(setup->input);

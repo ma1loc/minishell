@@ -1,81 +1,52 @@
 #include "mini_shell.h"
 
+void	restored_org_red(int std_in, int std_out)
+{
+	dup2(std_in, STDIN_FILENO);
+    dup2(std_out, STDOUT_FILENO);
+    close(std_in);
+    close(std_out);
+}
+
+int	get_red(t_setup *setup, t_tree *tree, t_redirections *red)
+{
+	int	status;
+
+	status = 0;
+	if (red->type == TOKEN_RED_IN)
+		status = red_input(setup, tree, red);
+	else if (red->type == TOKEN_RED_OUT)
+		status = red_output(setup, tree, red);
+	else if (red->type == TOKEN_RED_INOUT)
+		status = red_in_out(setup, tree, red);	// >>> have to remove it later on, no need
+	else if (red->type == TOKEN_APPEND)
+		status = red_append(setup, tree, red);
+	else if (red->type == TOKEN_HERDOC)
+		status = red_heredoc(setup, tree);
+	return (status);
+}
+
 void	execute_redirections(t_tree *tree, t_setup *setup)
 {
 	int				status;
     int				save_stdin;
     int				save_stdout;
-    t_redirections	*current;
+    t_redirections	*red;
 
 	status = 0;
 	save_stdin = dup(STDIN_FILENO);
 	save_stdout = dup(STDOUT_FILENO);
-    current = tree->cmd->redirections;
-    while (current != NULL)
+    red = tree->cmd->redirections;
+    while (red != NULL)
     {
-        if (current->type == TOKEN_RED_IN)
-            status = red_input(setup, tree, current);
-        else if (current->type == TOKEN_RED_OUT)
-			status = red_output(setup, tree, current);
-		else if (current->type == TOKEN_RED_INOUT)
-			status = red_in_out(setup, tree, current);
-		else if (current->type == TOKEN_APPEND)
-			status = red_append(setup, tree, current);
-		else if (current->type == TOKEN_HERDOC)
-			status = red_heredoc(setup, tree);
+        status = get_red(setup, tree, red);
 		if (status == -1)
 			break;
-		current = current->next;
+		red = red->next;
     }
 	if (status == -1)
-	{
-		dup2(save_stdin, STDIN_FILENO);
-    	dup2(save_stdout, STDOUT_FILENO);
-    	close(save_stdin);
-    	close(save_stdout);
-		return ;
-	}
+		return (restored_org_red(save_stdin, save_stdout), (void)0);
 	if (status == 0)
 		execute_commands(tree, setup);
-    dup2(save_stdin, STDIN_FILENO);
-    dup2(save_stdout, STDOUT_FILENO);
-    close(save_stdin);
-    close(save_stdout);
+	restored_org_red(save_stdin, save_stdout);
 }
-
-
-// void	execute_redirections(t_tree *tree, t_setup *setup)
-// {
-// 	int status;
-//     int save_stdin;
-//     int save_stdout;
-//     t_redirections *current;
-
-// 	// result = -1;
-// 	status = 0;
-// 	save_stdin = dup(STDIN_FILENO);
-// 	save_stdout = dup(STDOUT_FILENO);
-//     current = tree->cmd->redirections;
-//     while (current != NULL)
-//     {
-// 		if (current->type == TOKEN_RED_IN)
-// 	        status = red_input(setup, tree, current);
-//     	else if (current->type == TOKEN_RED_OUT)
-// 			status = red_output(setup, tree, current);
-// 		else if (current->type == TOKEN_RED_INOUT)
-// 				status = red_in_out(setup, tree, current);
-// 		else if (current->type == TOKEN_APPEND)
-// 			status = red_append(setup, tree, current);
-// 		else if (current->type == TOKEN_HERDOC)
-// 				status = red_heredoc(setup, tree);
-// 		if (status == -1)
-// 				break;
-// 		current = current->next;
-//     }
-// 	if (status != -1)
-// 		execute_commands(tree, setup);
-//     dup2(save_stdin, STDIN_FILENO);
-//     dup2(save_stdout, STDOUT_FILENO);
-//     close(save_stdin);
-//     close(save_stdout);
-// }

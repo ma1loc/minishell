@@ -15,6 +15,7 @@
 # include "../parsing/tokenizer.h"
 
 # define PATH_MAX 4096
+# define FDS 256
 
 // >>> to remove litter on
 typedef struct s_token t_token;
@@ -81,7 +82,7 @@ typedef struct s_env
 typedef struct s_heredoc
 {
 	int		count;     // >>> number of heredocs
-	int		fd[256];   // >>> store heredoc pipe fds (read ends)
+	int		fd[FDS];   // >>> store heredoc pipe fds (read ends)
 	char	*delimiter;
 }	t_heredoc;
 
@@ -101,6 +102,8 @@ typedef struct s_setup
     char        **envp;
     int         exit_stat;
 	t_heredoc	*heredoc;
+	int			idx_fds;
+	int			open_fds[FDS];
 }   t_setup;
 
 // >>>>>>>>>>>>>>>>>>>> built_in_cmds <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -150,7 +153,7 @@ int		red_heredoc(t_setup *setup, t_tree *tree);
 
 // >>>>>>>>>>>>>>>>>>> heredoc >>>>>>>>>>>>>>>>>>>>>>
 void	heredoc_process(t_setup *setup, t_tree *tree);
-void	close_fds(t_setup *setup);
+void	close_heredoc_fds(t_setup *setup);
 char	*get_file_name(t_setup *setup);
 int		refresh_fds(t_setup *setup, char *file_name);
 
