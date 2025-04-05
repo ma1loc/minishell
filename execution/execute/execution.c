@@ -52,7 +52,7 @@ void	execution(t_tree *tree, t_setup *setup)
 		if(tree->cmd->redirections == NULL)
 			execute_commands(tree, setup);
 		else
-			execute_redirections(tree, setup);
+			execute_redirections(tree, setup);	// used open
 	}
 	else if (tree->type == TOKEN_PIPE)
 		execute_pipes(tree, setup);

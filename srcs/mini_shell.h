@@ -51,13 +51,14 @@ int		ft_strncmp(char *s1, char *s2, size_t n);
 char	*ft_strdup(char *s1);
 void	ft_putstr_fd(char *s, int fd);
 int     ft_strcmp(char *s1, char *s2);
-void	*ft_memset(void *str, int c, size_t n);
+void	*ft_memset(void *s, int c, size_t len);
 int     ft_isdigit(char *str);
 int     ft_atoi(const char *str);
 char	*ft_strchr(char *s, int c);
 char	*ft_itoa(int n);
 int		ft_isalpha(int c);
 int		ft_isalnum(int c);
+
 
 t_env	*ft_lstlast(t_env *lst);
 void	ft_lstadd_back(t_env **lst, t_env *new);
@@ -102,8 +103,8 @@ typedef struct s_setup
     char        **envp;
     int         exit_stat;
 	t_heredoc	*heredoc;
-	int			idx_fds;
-	int			open_fds[FDS];
+	// int			idx_fds;
+	// int			fds_backups[FDS];
 }   t_setup;
 
 // >>>>>>>>>>>>>>>>>>>> built_in_cmds <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

@@ -52,8 +52,22 @@ int		main(int argc, char **argv, char **env)
 		heredoc_process(setup, setup->tree);
 		setup->i = 0;
         execution(setup->tree, setup);
+		close_heredoc_fds(setup);
 		add_history(setup->input);
 		free(setup->input);
+
+		// print the heredoc fds to check is steal there
+		int i = 0;
+		if (setup->heredoc->fd[i])
+		{
+			while (setup->heredoc->fd[i])
+			{
+				printf("fd[%d] -> %d\n", i, setup->heredoc->fd[i]);
+				i++;
+			}
+		}
+		else
+			printf("fds is done\n");
     }
     return 0;
 }

@@ -3,11 +3,9 @@
 void	close_heredoc_fds(t_setup *setup)
 {
 	int i;
-	int	count;
 
 	i = 0;
-	count = setup->heredoc->count;
-	while (i <= count)
+	while (setup->heredoc->fd[i])
 	{
 		close(setup->heredoc->fd[i]);
 		i++;
@@ -45,6 +43,5 @@ int	refresh_fds(t_setup *setup, char *file_name)
 		ft_perror(setup, NULL, EXIT_FAILURE);
 		return (close_heredoc_fds(setup),free(file_name), 1);
 	}
-	free(file_name);
 	return (0);
 }
