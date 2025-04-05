@@ -40,7 +40,7 @@ t_setup *shell_env_setup(char **env)
 		return (NULL);
 	setup->heredoc->delimiter = NULL;
 	ft_memset(setup->heredoc->fd, 0, sizeof(setup->heredoc->fd));
-	setup->heredoc->count = 0;	
+	ft_memset(setup->heredoc->file_name, 0, sizeof(setup->heredoc->file_name));
 	get_pwd(setup);
     set_env(setup, "OLDPWD", setup->pwd);
 

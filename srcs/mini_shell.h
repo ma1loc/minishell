@@ -82,9 +82,10 @@ typedef struct s_env
 
 typedef struct s_heredoc
 {
-	int		count;     // >>> number of heredocs
-	int		fd[FDS];   // >>> store heredoc pipe fds (read ends)
 	char	*delimiter;
+	// int		count;     // >>> number of heredocs
+	int		fd[FDS];   // >>> store heredoc pipe fds (read ends)
+	char	*file_name[256];	// >>> sotre file name to unlink them later
 }	t_heredoc;
 
 // >>> start init all the env
@@ -157,5 +158,7 @@ void	heredoc_process(t_setup *setup, t_tree *tree);
 void	close_heredoc_fds(t_setup *setup);
 char	*get_file_name(t_setup *setup);
 int		refresh_fds(t_setup *setup, char *file_name);
+void	rm_tmp_files(t_setup *setup);
+
 
 # endif

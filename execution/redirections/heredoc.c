@@ -12,7 +12,6 @@ void	loding_heredoc(t_setup *setup)
 			free(input);
 			break;
 		}
-		// setup->heredoc->fd[setup->i] => fd
 		write(setup->heredoc->fd[setup->i], input, ft_strlen(input));
 		write(setup->heredoc->fd[setup->i], "\n", 1);
 		free(input);
@@ -32,14 +31,15 @@ void	get_delimiter(t_setup *setup, t_redirections *redirection)
 int	get_heredoc_fds(t_setup *setup, t_redirections *red)
 {
 	char	*file_name;
-	int		count;
+	int		i;
 
-	count = setup->heredoc->count;
+	i = setup->i;
 	file_name = get_file_name(setup);
+	setup->heredoc->file_name[setup->i] = ft_strdup(file_name);
 	if (!file_name)
 		return (close_heredoc_fds(setup), 1);	// >>> check later on to fix
-	setup->heredoc->fd[count] = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-	if (setup->heredoc->fd[count] == -1)
+	setup->heredoc->fd[i] = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	if (setup->heredoc->fd[i] == -1)
 		return (close_heredoc_fds(setup), free(file_name), 1);
 	get_delimiter(setup, red);
 	loding_heredoc(setup);
@@ -69,7 +69,6 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
 					break;
 				}
 				setup->i++;		// >>> index of the array of fds
-				setup->heredoc->count++;
 			}
 			redir = redir->next;
 		}
@@ -80,7 +79,6 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
 
 void	heredoc_process(t_setup *setup, t_tree *tree)
 {
-	setup->heredoc->count = 0;	// >>> count how many heredocs there
+	setup->i = 0;
 	init_heredoc(setup, tree);
 }
-
