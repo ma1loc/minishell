@@ -1,30 +1,32 @@
 # include "mini_shell.h"
 
-void	rm_tmp_files(t_setup *setup)
+void	cleanup_heredoc(t_setup *setup)
 {
 	int i;
 
 	i = 0;
-	while (setup->heredoc->file_name[i])
+	if (setup->heredoc->fd[i])
 	{
-		// printf("tmp file[%d] -> %s\n", i, setup->heredoc->file_name[i]);
-		unlink(setup->heredoc->file_name[i]);
-		free(setup->heredoc->file_name[i]);
-		i++;
+		while (setup->heredoc->fd[i])
+		{
+			close(setup->heredoc->fd[i]);
+			i++;
+		}
+		ft_memset(setup->heredoc->fd, 0, sizeof(setup->heredoc->fd));
 	}
-}
-
-void	close_heredoc_fds(t_setup *setup)
-{
-	int i;
-
 	i = 0;
-	while (setup->heredoc->fd[i])
+	if (setup->heredoc->file_name[i])
 	{
-		// printf("close [%d]\n", i);
-		close(setup->heredoc->fd[i]);
-		i++;
+		// printf("tmp file[%d] -> %s\n", i, setup->heredoc->file_name[i]);	
+		while (setup->heredoc->file_name[i])
+		{
+			unlink(setup->heredoc->file_name[i]);
+			free(setup->heredoc->file_name[i]);
+			i++;
+		}
+		ft_memset(setup->heredoc->file_name, 0, sizeof(setup->heredoc->file_name));
 	}
+	return (free(setup->heredoc->delimiter), setup->heredoc->delimiter = NULL, (void)0);
 }
 
 char	*get_file_name(t_setup *setup)
@@ -56,7 +58,7 @@ int	refresh_fds(t_setup *setup, char *file_name)
 	if (!setup->heredoc->fd[i])
 	{
 		ft_perror(setup, NULL, EXIT_FAILURE);
-		return (close_heredoc_fds(setup),free(file_name), 1);
+		return (cleanup_heredoc(setup), free(file_name),1);
 	}
 	return (0);
 }

@@ -11,6 +11,7 @@
 // < Makefile > 5 << l cat >>> delimiter problem
 // echo $? >>> not working
 // Makefile > cat
+// minishell$ cat << EOF | grep success | tee output.txt | wc -l >> log.txt
 
 t_setup	*start_setup(int argc, char **argv, char **env)
 {
@@ -52,8 +53,7 @@ int		main(int argc, char **argv, char **env)
 		heredoc_process(setup, setup->tree);
 		setup->i = 0;	// to check out later!!!
         execution(setup->tree, setup);
-		close_heredoc_fds(setup);
-		rm_tmp_files(setup);
+		cleanup_heredoc(setup);
 		add_history(setup->input);
 		free(setup->input);
     }

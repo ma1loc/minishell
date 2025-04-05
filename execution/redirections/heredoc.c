@@ -35,16 +35,16 @@ int	get_heredoc_fds(t_setup *setup, t_redirections *red)
 
 	i = setup->i;
 	file_name = get_file_name(setup);
-	setup->heredoc->file_name[setup->i] = ft_strdup(file_name);
 	if (!file_name)
-		return (close_heredoc_fds(setup), 1);	// >>> check later on to fix
+	return (cleanup_heredoc(setup), 1);
+	setup->heredoc->file_name[setup->i] = ft_strdup(file_name);
 	setup->heredoc->fd[i] = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-	if (setup->heredoc->fd[i] == -1)
-		return (close_heredoc_fds(setup), free(file_name), 1);
+	if (setup->heredoc->fd[i] < 0)
+		return (cleanup_heredoc(setup), free(file_name), 1);
 	get_delimiter(setup, red);
 	loding_heredoc(setup);
-	if (refresh_fds(setup, file_name) == 1)	// >>> refresh the offset of the fd
-		return (close_heredoc_fds(setup), free(file_name), 1);
+	if (refresh_fds(setup, file_name) == 1)		// >>> refresh the offset of the fd
+		return (cleanup_heredoc(setup), free(file_name), 1);
 	free(file_name);
 	return (0);
 }

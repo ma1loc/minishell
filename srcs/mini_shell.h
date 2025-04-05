@@ -155,10 +155,8 @@ int		red_heredoc(t_setup *setup, t_tree *tree);
 
 // >>>>>>>>>>>>>>>>>>> heredoc >>>>>>>>>>>>>>>>>>>>>>
 void	heredoc_process(t_setup *setup, t_tree *tree);
-void	close_heredoc_fds(t_setup *setup);
 char	*get_file_name(t_setup *setup);
 int		refresh_fds(t_setup *setup, char *file_name);
-void	rm_tmp_files(t_setup *setup);
-
+void	cleanup_heredoc(t_setup *setup);
 
 # endif
