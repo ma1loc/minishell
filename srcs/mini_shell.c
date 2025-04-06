@@ -11,7 +11,9 @@
 // < Makefile > 5 << l cat >>> delimiter problem
 // echo $? >>> not working
 // Makefile > cat
+// export a="ls |cat"
 // minishell$ cat << EOF | grep success | tee output.txt | wc -l >> log.txt
+// export a+="hello_world" -> to fix later on
 
 t_setup	*start_setup(int argc, char **argv, char **env)
 {

@@ -110,21 +110,20 @@ typedef struct s_setup
 	// int			fds_backups[FDS];
 }   t_setup;
 
+
 // >>>>>>>>>>>>>>>>>>>> built_in_cmds <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 void    echo_cmd(t_setup *setup);       // the echo command fun. [done]
 void    cd_cmd(t_setup *setup);         // the cd command fun. [done]
 void	pwd_cmd(t_setup *setup);        // the pwd path print fun. [done]
-// void	get_pwd(t_setup *setup);
 int		get_pwd(t_setup *setup);
 t_env	*init_env(char **env, t_env *env_list);
 void	env_cmd(t_setup *setup);
 void	unset_cmd(t_setup *setup);
-// void    unset_cmd(t_setup *setup, char *key);
 void	set_env(t_setup *setup, char *key, char *value);
-
 int		cd(t_setup *setup);
 void	exit_cmd(t_setup  *setup);
 void	export_cmd(t_setup	*setup);
+
 
 // >>> hellping functions
 void	ft_perror(t_setup *setup, char *msg, int exit_stat);
@@ -132,6 +131,9 @@ void	free_the_spliting(char **split);
 int		is_valid_identifier(char *key);
 void	free_env_list(t_env *env_list);
 int		is_valid_number(char *str);
+char	*char_to_str(char c);
+char	*ft_strjoin_free(char *s1, char *s2);
+char	*char_to_str(char c);
 
 // >>> the execution will start here
 // int     command_type(char *name);
@@ -141,11 +143,13 @@ t_setup *init_setup_struct();
 char	*path_resolver(t_setup *setup);
 char	*split_path(char *path, char *cmd);
 
+
 // >>>>>>>>>>>>>>>>> execution >>>>>>>>>>>>>>>>>>>>
 void    execution(t_tree *tree, t_setup *setup);
 void	execute_internals(t_command *cmd, t_setup *setup);
 void    execute_commands(t_tree *tree, t_setup *setup);
 void    execute_pipes(t_tree *tree, t_setup *setup);
+
 
 // >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
 void	execute_redirections(t_tree *tree, t_setup *setup);
@@ -155,10 +159,13 @@ int		red_output(t_setup *setup, t_tree *tree, t_redirections *redirection);
 int		red_in_out(t_setup *setup,t_tree *tree, t_redirections *redirection);
 int		red_heredoc(t_setup *setup, t_tree *tree);
 
+
 // >>>>>>>>>>>>>>>>>>> heredoc >>>>>>>>>>>>>>>>>>>>>>
 void	heredoc_process(t_setup *setup, t_tree *tree);
 char	*get_file_name(t_setup *setup);
 int		refresh_fds(t_setup *setup, char *file_name);
+int		should_expand(t_setup *setup);
+void	parsing_heredoc_input(t_setup *setup, char *input);
 void	cleanup_heredoc(t_setup *setup);
 
 # endif

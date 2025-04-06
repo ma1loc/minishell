@@ -8,6 +8,7 @@
 // minishell$ ls
 // Command not found
 // minishell$ 
+// export a+="hello_world" to hendel it
 
 
 void export_display(t_setup *setup)
