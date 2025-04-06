@@ -8,8 +8,8 @@
 // minishell$ ls
 // Command not found
 // minishell$ 
-// export a+="hello_world" to hendel it
-
+// export a+="hello_world" >>> to handel it
+// export a="" >>> to handel it
 
 void export_display(t_setup *setup)
 {
@@ -133,9 +133,12 @@ void export_cmd(t_setup *setup)
     {
         while (args[i])
         {
+			printf("args -> %s\n", args[i]);
             if (ft_strchr(args[i], '='))
             {
                 dividing_args = ft_split(args[i], '=');
+				printf("dividing_args[0] -> %s\n", dividing_args[0]);
+				printf("dividing_args[1] -> %s\n", dividing_args[1]);
                 if (!dividing_args)
                 {
                     ft_perror(setup, "export: memory allocation failed\n", EXIT_FAILURE);

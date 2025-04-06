@@ -28,19 +28,10 @@ char	*get_env_val(t_setup *setup, char *key)	// >>> value
 	return (NULL);
 }
 
-void	parsing_heredoc_input(t_setup *setup, char *input)
-{
 	// if the delimiter have qutes no expand
 	// parsing the qutes
 	// delemiter most check if there's qutes other wayse if it single or double just print it with it's qutes
 	// update input with it's env value
-	int		i;
-	int		start;
-	char	*key;
-	char	*value;
-	char	*result;
-	char	*_char;
-	
 	// >>> here i have to get the env key
 	// >>> but first thing i have to check it if valid or not, i mean the fist char
 	// >>> i have to split it
@@ -51,6 +42,16 @@ void	parsing_heredoc_input(t_setup *setup, char *input)
 	// >>>> to check it <<<<
 	// handel -> double $ signe
 	// handel -> $?
+
+void	parsing_heredoc_input(t_setup *setup, char *input)
+{
+	int		i;
+	int		start;
+	char	*result;
+	char	*_char;
+	char	*key;
+	char	*value;
+	
 	i = 0;
 	result = NULL;
 	key = NULL;
