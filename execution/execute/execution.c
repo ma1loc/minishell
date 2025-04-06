@@ -56,4 +56,8 @@ void	execution(t_tree *tree, t_setup *setup)
 	}
 	else if (tree->type == TOKEN_PIPE)
 		execute_pipes(tree, setup);
+
+	if (setup->heredoc_flag)
+		cleanup_heredoc(setup);
+
 }

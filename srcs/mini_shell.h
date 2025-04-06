@@ -52,6 +52,7 @@ char	*ft_strdup(char *s1);
 void	ft_putstr_fd(char *s, int fd);
 int     ft_strcmp(char *s1, char *s2);
 void	*ft_memset(void *s, int c, size_t len);
+char	*ft_substr(char *s1, unsigned int start, size_t len);
 int     ft_isdigit(char *str);
 int     ft_atoi(const char *str);
 char	*ft_strchr(char *s, int c);
@@ -83,7 +84,7 @@ typedef struct s_env
 typedef struct s_heredoc
 {
 	char	*delimiter;
-	// int		count;     // >>> number of heredocs
+	int		deleimiter_flag[256];	// >>> expand or not
 	int		fd[FDS];   // >>> store heredoc pipe fds (read ends)
 	char	*file_name[256];	// >>> sotre file name to unlink them later
 }	t_heredoc;
@@ -104,6 +105,7 @@ typedef struct s_setup
     char        **envp;
     int         exit_stat;
 	t_heredoc	*heredoc;
+	int			heredoc_flag;
 	// int			idx_fds;
 	// int			fds_backups[FDS];
 }   t_setup;

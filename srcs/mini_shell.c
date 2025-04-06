@@ -51,9 +51,7 @@ int		main(int argc, char **argv, char **env)
 		setup->cmd = pars_tokens(setup);
         setup->tree = build_tree_commande(setup->cmd);
 		heredoc_process(setup, setup->tree);
-		setup->i = 0;	// to check out later!!!
         execution(setup->tree, setup);
-		cleanup_heredoc(setup);
 		add_history(setup->input);
 		free(setup->input);
     }
