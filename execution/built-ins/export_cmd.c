@@ -117,12 +117,52 @@ void set_env(t_setup *setup, char *key, char *value)
             status = add_new_key_value(setup, key, value);
     }
 }
+// export: `a++=l': not a valid identifier
+// export: `a+l': not a valid identifier
+// yanflous@e2r5p4:/home/yanflous$ export a+=+=+=l
+// yanflous@e2r5p4:/home/yanflous$ export a+=+ =+=l
+// bash: export: `=+=l': not a valid identifier
+// export SHLVL=-198892983983928398293982838928392809878979878
+// yanflous@e2r5p4:/home/yanflous$ export SHLVL=1000 
+// yanflous@e2r5p4:/home/yanflous$ exit^C            
+// yanflous@e2r5p4:/home/yanflous$ bash
+// bash: warning: shell level (1001) too high, resetting to 1
+// parsing the value of the exporot key to expand
 
-void export_cmd(t_setup *setup)
+//	'nothing'->0 '='->1 '+='->2 'error->-1'
+int	export_operation(char *arg)
 {
-    char **args;
-    char **dividing_args;
-    int i;
+	char *plus_equal;
+	size_t key_len;
+	char *key;
+	char *dividing_args;
+
+	plus_equal = ft_strnstr(arg, "+=", ft_strlen(arg));
+	if (plus_equal)
+	{
+		printf("plus_equal -> %s\n", plus_equal);
+
+		key_len = plus_equal - arg;
+		key = ft_substr(arg, 0, key_len);
+		printf("key_len -> %zu\n", key_len);
+		printf("key -> %s\n", key);
+		if (!is_valid_identifier(key))
+			return (-1);
+		free(key);
+		dividing_args = ft_split(arg, '+=');
+		printf("arg[0] -> %s\n", dividing_args[0]);
+		printf("arg[1] -> %s\n", dividing_args[1]);
+	}
+	return (0);
+}
+
+
+void	export_cmd(t_setup *setup)
+{
+    char	**args;
+    // char	**dividing_args;
+	int		operation_type;
+    int		i;
     
     i = 1;
     args = setup->cmd->args;
@@ -131,24 +171,33 @@ void export_cmd(t_setup *setup)
         export_display(setup);
     else
     {
+		printf("else\n");
         while (args[i])
         {
-			printf("args -> %s\n", args[i]);
-            if (ft_strchr(args[i], '='))
-            {
-                dividing_args = ft_split(args[i], '=');
-				printf("dividing_args[0] -> %s\n", dividing_args[0]);
-				printf("dividing_args[1] -> %s\n", dividing_args[1]);
-                if (!dividing_args)
-                {
-                    ft_perror(setup, "export: memory allocation failed\n", EXIT_FAILURE);
-                    return;
-                }
-                set_env(setup, dividing_args[0], dividing_args[1]);
-                free_the_spliting(dividing_args);
-            }
-            else
-                set_env(setup, args[i], NULL);
+			operation_type = export_operation(args[i]);
+			printf("operation_type -> %d\n", operation_type);
+			if (operation_type == -1)
+			{
+        		ft_perror(setup, "export: not a valid identifier\n", EXIT_FAILURE);
+				break;
+			}
+            // else if (ft_strchr(args[i], '='))	// >>> here i have to check the operator
+            // {
+            //     dividing_args = ft_split(args[i], '=');
+            //     if (!dividing_args)
+            //     {
+            //         ft_perror(setup, "export: memory allocation failed\n", EXIT_FAILURE);
+            //         return;
+            //     }
+			// 	if (!dividing_args[1])
+			// 		dividing_args[1] = ft_strdup("");
+            //     set_env(setup, dividing_args[0], dividing_args[1]);
+            //     free(dividing_args[0]);
+            //     free(dividing_args[1]);
+            //     free(dividing_args);
+            // }
+            // else
+            //     set_env(setup, args[i], NULL);
             i++;
         }
     }

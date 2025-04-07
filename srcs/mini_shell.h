@@ -35,8 +35,9 @@ typedef struct s_expand t_expand;
 // >>>>>>>>>>>>>>>>>>>>>>>
 
 // >>> define the built_in and external cmd
-// # define BUILT_IN 1
-// # define EXTERNAL 0
+# define EQUAL 1
+# define APPEND 2
+
 
 // >>> true or false (readable)
 #define true	1
@@ -54,6 +55,7 @@ int     ft_strcmp(char *s1, char *s2);
 void	*ft_memset(void *s, int c, size_t len);
 char	*ft_substr(char *s1, unsigned int start, size_t len);
 int     ft_isdigit(char *str);
+char	*ft_strnstr(char *str, char *to_find, size_t n);
 int     ft_atoi(const char *str);
 char	*ft_strchr(char *s, int c);
 char	*ft_itoa(int n);

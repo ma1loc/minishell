@@ -14,6 +14,9 @@
 // export a="ls |cat"
 // minishell$ cat << EOF | grep success | tee output.txt | wc -l >> log.txt
 // export a+="hello_world" -> to fix later on
+// ls   -la >>> command not found in tab char and newline
+// is i have to update the SHLVL=1???
+// env -i ./minishell
 
 t_setup	*start_setup(int argc, char **argv, char **env)
 {
