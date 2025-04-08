@@ -23,7 +23,7 @@
 //	'nothing'->0 '='->1 '+='->2 'error->-1'
 
 // to fix the allocation
-void	update_env(t_setup *setup, char *key, char *value)
+void	update_env(t_setup *setup, char *key, char *value, t_gc *gc)
 {
 	t_env	*env;
 
@@ -37,39 +37,36 @@ void	update_env(t_setup *setup, char *key, char *value)
 	{
 		if (env->value)
 			free(env->value);
-		env->value = ft_strdup(value);
+		env->value = ft_strdup(value, gc);
 		if (!env->value)
-			ft_perror(setup, "export: memory allocation failed\n", EXIT_FAILURE);
+			allocation_failed_msg(gc);
 	}
 	else
 	{
 		env = ft_lstlast(setup->env);
 		if (!env)
 		{
-			setup->env = malloc(sizeof(t_env));
+			setup->env = gc_malloc(gc, sizeof(t_env));
 			env = setup->env;
 		}
 		else
 		{
-			env->next = malloc(sizeof(t_env));
+			env->next = gc_malloc(gc, sizeof(t_env));
 			env = env->next;
 		}
 		if (!env)
-		{
-			ft_perror(setup, "export: memory allocation failed\n", EXIT_FAILURE);
-			return ;
-		}
-		env->key = ft_strdup(key);
-		env->value = ft_strdup(value);
+			allocation_failed_msg(gc);
+		env->key = ft_strdup(key, gc);
+		env->value = ft_strdup(value, gc);
 		env->next = NULL;
 		if (!env->key || !env->value)
-			ft_perror(setup, "export: memory allocation failed\n", EXIT_FAILURE);
+			allocation_failed_msg(gc);
 	}
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-void	append_to_env(t_setup *setup, char *key, char *value)
+void	append_to_env(t_setup *setup, char *key, char *value, t_gc *gc)
 {
 	t_env	*env;
 	char	*new_value;
@@ -80,15 +77,15 @@ void	append_to_env(t_setup *setup, char *key, char *value)
 	{
 		if (env->value)
 		{
-			new_value = ft_strjoin(env->value, value);
+			new_value = ft_strjoin(env->value, value, gc);
 			if (!new_value)
-				ft_perror(setup, "export: memory allocation failed\n", EXIT_FAILURE);
-			free(env->value);
+				allocation_failed_msg(gc);
+			gc_free(gc, env->value);
 			env->value = new_value;
 		}
 		else
-			env->value = ft_strdup(value);
+			env->value = ft_strdup(value, gc);
 	}
 	else
-		update_env(setup, key, value);
+		update_env(setup, key, value, gc);
 }

@@ -1,6 +1,6 @@
 #include "mini_shell.h"
 
-void exit_cmd(t_setup *setup)
+void exit_cmd(t_setup *setup, t_gc *gc)
 {
     int	input;
 
@@ -18,11 +18,13 @@ void exit_cmd(t_setup *setup)
         if (is_valid_number(setup->cmd->args[1]))
         {
             input = ft_atoi(setup->cmd->args[1]);
+			gc_destroy(gc);
             exit(input);	// >>> NOTE to free before
         }
         else
 		{
-            ft_perror(setup, "exit: numeric argument required\n", SYNTAX_ERROR);
+            ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
+			gc_destroy(gc);
 			exit (SYNTAX_ERROR);	// >>> NOTE to free before
 		}
     }

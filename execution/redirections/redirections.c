@@ -26,7 +26,7 @@ int	get_red(t_setup *setup, t_tree *tree, t_redirections *red)
 	return (status);
 }
 
-void	execute_redirections(t_tree *tree, t_setup *setup)
+void	execute_redirections(t_tree *tree, t_setup *setup, t_gc *gc)
 {
 	int				status;
     int				save_stdin;
@@ -47,6 +47,6 @@ void	execute_redirections(t_tree *tree, t_setup *setup)
 	if (status == -1)
 		return (restored_org_red(save_stdin, save_stdout), (void)0);
 	if (status == 0)
-		execute_commands(tree, setup);
+		execute_commands(tree, setup, gc);
 	restored_org_red(save_stdin, save_stdout);
 }

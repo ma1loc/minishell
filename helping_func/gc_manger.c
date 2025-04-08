@@ -25,21 +25,45 @@ void *gc_malloc(t_gc *gc, size_t size)
     if (!ptr)
         return NULL;
 
-    node = malloc(sizeof(t_mem));  // Allocate a t_mem node
+    node = malloc(sizeof(t_mem));
     if (!node) {
         free(ptr);
         return NULL;
     }
 
     node->ptr = ptr;
-    node->next = gc->mem_list;  // Set the next pointer to the current list
-    gc->mem_list = node;        // Add the node to the start of the list
+    node->next = gc->mem_list;
+    gc->mem_list = node;
     gc->total_allocs++;
     gc->total_bytes += size;
 
     return ptr;
 }
 
+void gc_free(t_gc *gc, void *ptr)
+{
+    if (!gc || !ptr)
+        return;
+    
+    t_mem *curr = gc->mem_list;
+    t_mem *prev = NULL;
+    
+    while (curr) {
+        if (curr->ptr == ptr) {
+            if (prev)
+                prev->next = curr->next;
+            else
+                gc->mem_list = curr->next;
+            
+            free(ptr);
+            free(curr);
+            gc->total_allocs--;
+            return;
+        }
+        prev = curr;
+        curr = curr->next;
+    }
+}
 
 void	gc_cleanup(t_gc *gc)
 {

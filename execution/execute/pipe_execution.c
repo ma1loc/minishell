@@ -40,7 +40,7 @@ pid_t    set_second_fork(t_setup  *setup, pid_t pid_1, int *fd)
     return (pid_2);
 }
 
-void first_child_process(t_setup *setup, t_tree *tree, int *fd)
+void first_child_process(t_setup *setup, t_tree *tree, int *fd, t_gc *gc)
 {
     close(fd[0]);
     if (dup2(fd[1], STDOUT_FILENO) == -1)
@@ -58,21 +58,21 @@ void first_child_process(t_setup *setup, t_tree *tree, int *fd)
             {
 				// setup->cmd->redirections = tree->cmd->redirections->next;
 				setup->cmd = tree->left->cmd;
-				execute_redirections(tree->left, setup);
+				execute_redirections(tree->left, setup, gc);
             }
             else
             {
                 setup->cmd = tree->left->cmd;
-                execute_commands(tree->left, setup);
+                execute_commands(tree->left, setup, gc);
             }
         }
         else
-            execution(tree->left, setup);
+            execution(tree->left, setup, gc);
     }
     exit(EXIT_SUCCESS);
 }
 
-void second_child_process(t_setup *setup, t_tree *tree, int *fd)
+void second_child_process(t_setup *setup, t_tree *tree, int *fd, t_gc *gc)
 {
     close(fd[1]);
     if (dup2(fd[0], STDIN_FILENO) == -1)
@@ -90,21 +90,21 @@ void second_child_process(t_setup *setup, t_tree *tree, int *fd)
             {
 				// setup->cmd->redirections = tree->cmd->redirections->next;
                 setup->cmd = tree->right->cmd;
-				execute_redirections(tree->right, setup);
+				execute_redirections(tree->right, setup, gc);
             }
             else
             {
                 setup->cmd = tree->right->cmd;
-                execute_commands(tree->right, setup);
+                execute_commands(tree->right, setup, gc);
             }
         }
         else
-            execution(tree->right, setup);
+            execution(tree->right, setup, gc);
     }
     exit(EXIT_SUCCESS);
 }
 
-void    execute_pipes(t_tree *tree, t_setup *setup)
+void    execute_pipes(t_tree *tree, t_setup *setup, t_gc *gc)
 {
     int fd[2];
     pid_t pid_1;
@@ -116,11 +116,11 @@ void    execute_pipes(t_tree *tree, t_setup *setup)
     // >>> first child process left side
     pid_1 = set_first_fork(setup, fd);
     if (pid_1 == 0)
-        first_child_process(setup, tree, fd);
+        first_child_process(setup, tree, fd, gc);
     // >>> second child process right side
     pid_2 = set_second_fork(setup, pid_1, fd);
     if (pid_2 == 0)
-        second_child_process(setup, tree, fd);
+        second_child_process(setup, tree, fd, gc);
     // >>> parent process
     close(fd[0]);
     close(fd[1]);

@@ -1,11 +1,11 @@
 #include "mini_shell.h"
 
-void    execute_externals(t_setup *setup)
+void    execute_externals(t_setup *setup, t_gc *gc)
 {
     pid_t     pid;
     int     status;
 
-    setup->cmd_path = path_resolver(setup);
+    setup->cmd_path = path_resolver(setup, gc);
     if (!setup->cmd_path)
 		return(ft_perror(setup ,"Command not found\n", CMD_NOT_FOUND), (void)0); // >>> exit status to set litter on
         
@@ -29,35 +29,35 @@ void    execute_externals(t_setup *setup)
 	}
 }
 
-void	execute_commands(t_tree *tree, t_setup *setup)
+void	execute_commands(t_tree *tree, t_setup *setup, t_gc *gc)
 {
 	if (!tree)
 		return ;
 	else if (is_built_in(tree->name))
 	{
-		execute_internals(tree->cmd, setup);
+		execute_internals(tree->cmd, setup, gc);
 		return ;
 	}
 	else
 	{
-		execute_externals(setup);
+		execute_externals(setup, gc);
 		return ;
 	}
 }
 
-void	execution(t_tree *tree, t_setup *setup)
+void	execution(t_tree *tree, t_setup *setup, t_gc *gc)
 {
 	if (tree->type == TOKEN_WORD)
 	{
 		if(tree->cmd->redirections == NULL)
-			execute_commands(tree, setup);
+			execute_commands(tree, setup, gc);
 		else
-			execute_redirections(tree, setup);	// used open
+			execute_redirections(tree, setup, gc);	// used open
 	}
 	else if (tree->type == TOKEN_PIPE)
-		execute_pipes(tree, setup);
+		execute_pipes(tree, setup, gc);
 
 	if (setup->heredoc_flag)
-		cleanup_heredoc(setup);
+		cleanup_heredoc(setup, gc);
 
 }

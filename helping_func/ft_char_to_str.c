@@ -1,12 +1,12 @@
 #include "mini_shell.h"
 
-char *char_to_str(char c)
+char *char_to_str(char c, t_gc *gc)
 {
 	char	*str;
 
-    str = malloc(2);
+    str = gc_malloc(gc, 2);
     if (!str)
-        return (NULL);
+        allocation_failed_msg(gc);
     str[0] = c;
     str[1] = '\0';
     return (str);

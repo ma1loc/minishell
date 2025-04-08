@@ -38,27 +38,41 @@ typedef struct s_expand t_expand;
 # define EQUAL 1
 # define APPEND 2
 
-
 // >>> true or false (readable)
 #define true	1
 #define false	0
 
+
+typedef struct s_mem
+{
+	void	*ptr;
+	struct	s_mem *next;
+}	t_mem;
+
+typedef struct s_gc
+{
+	t_mem	*mem_list;
+	int		total_allocs;
+	size_t	total_bytes;
+}	t_gc;
+
+
 // >>> libft
 size_t	ft_strlen(char *str);
-char	**ft_split(char *str, char separator);
-char	*ft_strjoin(char *s1, char *s2);
+char	**ft_split(char *str, char separator, t_gc *gc);
 int     ft_strcmp(char *s1, char *s2);
 int		ft_strncmp(char *s1, char *s2, size_t n);
-char	*ft_strdup(char *s1);
+char	*ft_strdup(char *s1, t_gc *gc);
+char	*ft_strjoin(char *s1, char *s2, t_gc *gc);
 void	ft_putstr_fd(char *s, int fd);
 int     ft_strcmp(char *s1, char *s2);
 void	*ft_memset(void *s, int c, size_t len);
-char	*ft_substr(char *s1, unsigned int start, size_t len);
+char	*ft_substr(char *s1, size_t start, size_t len, t_gc *gc);
 int     ft_isdigit(char *str);
 char	*ft_strnstr(char *str, char *to_find, size_t n);
 int     ft_atoi(const char *str);
 char	*ft_strchr(char *s, int c);
-char	*ft_itoa(int n);
+char	*ft_itoa(int n, t_gc *gc);
 int		ft_isalpha(int c);
 int		ft_isalnum(int c);
 
@@ -77,7 +91,7 @@ void	ft_lstadd_back(t_env **lst, t_env *new);
 
 typedef struct s_env
 {
-    char    *key;
+	char    *key;
     char    *value;
     struct  s_env *next;
 }   t_env;
@@ -91,16 +105,6 @@ typedef struct s_heredoc
 	char	*file_name[256];	// >>> sotre file name to unlink them later
 }	t_heredoc;
 
-typedef struct s_mem {
-    void *ptr;
-    struct s_mem *next;
-} t_mem;
-
-typedef struct s_gc {
-    t_mem *mem_list;
-    int total_allocs;
-    size_t total_bytes;
-} t_gc;
 
 // >>> start init all the env
 typedef struct s_setup
@@ -121,7 +125,6 @@ typedef struct s_setup
 	int			heredoc_flag;
 	// int			idx_fds;
 	// int			fds_backups[FDS];
-	t_gc		*gc;
 }   t_setup;
 
 typedef enum e_export_type
@@ -133,56 +136,57 @@ typedef enum e_export_type
 
 
 
-
 // >>>>>>>>>>>>>>>>>>>> built_in_cmds <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+void    cd_cmd(t_setup *setup, t_gc *gc);         // the cd command fun. [done]
+void	pwd_cmd(t_setup *setup, t_gc *gc);        // the pwd path print fun. [done]
+int		get_pwd(t_setup *setup, t_gc *gc);
 void    echo_cmd(t_setup *setup);       // the echo command fun. [done]
-void    cd_cmd(t_setup *setup);         // the cd command fun. [done]
-void	pwd_cmd(t_setup *setup);        // the pwd path print fun. [done]
-int		get_pwd(t_setup *setup);
-t_env	*init_env(char **env, t_env *env_list);
+t_env	*init_env(char **env, t_env *env_list, t_gc *gc);
 void	env_cmd(t_setup *setup);
 void	unset_cmd(t_setup *setup);
-void	set_env(t_setup *setup, char *key, char *value);
+void	set_env(t_setup *setup, char *key, char *value, t_gc *gc);
 int		cd(t_setup *setup);
-void	exit_cmd(t_setup  *setup);
-void	export_cmd(t_setup	*setup);
+void	exit_cmd(t_setup  *setup, t_gc *gc);
+void	export_cmd(t_setup *setup, t_gc *gc);
 t_export_type	get_export_type(char *arg);
 void	export_display(t_setup *setup);
-int		export_key_only(t_setup *setup, char *key);
-void	append_to_env(t_setup *setup, char *key, char *value);
+int		export_key_only(t_setup *setup, char *key, t_gc *gc);
+// void	update_env(t_setup *setup, char *key, char *value);
+void	update_env(t_setup *setup, char *key, char *value, t_gc *gc);
+// void	append_to_env(t_setup *setup, char *key, char *value);
+void	append_to_env(t_setup *setup, char *key, char *value, t_gc *gc);
 t_env	*get_env_key(t_setup *setup, char *key);
-void	update_env(t_setup *setup, char *key, char *value);
 
 
 
 // >>> hellping functions
 void	ft_perror(t_setup *setup, char *msg, int exit_stat);
-void	free_the_spliting(char **split);
+// void	free_the_spliting(char **split);
 int		is_valid_identifier(char *key);
-void	free_env_list(t_env *env_list);
+// void	free_env_list(t_env *env_list);
 int		is_valid_number(char *str);
-char	*char_to_str(char c);
-char	*ft_strjoin_free(char *s1, char *s2);
-char	*char_to_str(char c);
+char	*char_to_str(char c, t_gc *gc);
+void	allocation_failed_msg(t_gc *gc);
 
 // >>> the execution will start here
 // int     command_type(char *name);
 int     is_built_in(char *name);
-t_setup *shell_env_setup(char **env);
-t_setup *init_setup_struct();
-char	*path_resolver(t_setup *setup);
-char	*split_path(char *path, char *cmd);
+t_setup *shell_env_setup(char **env, t_gc *gc);
+t_setup *init_setup_struct(t_gc *gc);
+char	*path_resolver(t_setup *setup, t_gc *gc);
+// char	*split_path(char *path, char *cmd);
 
 
 // >>>>>>>>>>>>>>>>> execution >>>>>>>>>>>>>>>>>>>>
-void    execution(t_tree *tree, t_setup *setup);
-void	execute_internals(t_command *cmd, t_setup *setup);
-void    execute_commands(t_tree *tree, t_setup *setup);
-void    execute_pipes(t_tree *tree, t_setup *setup);
+// void    execution(t_tree *tree, t_setup *setup);
+void	execution(t_tree *tree, t_setup *setup, t_gc *gc);
+void	execute_internals(t_command *cmd, t_setup *setup, t_gc *gc);
+void	execute_commands(t_tree *tree, t_setup *setup, t_gc *gc);
+void    execute_pipes(t_tree *tree, t_setup *setup, t_gc *gc);
 
 
 // >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
-void	execute_redirections(t_tree *tree, t_setup *setup);
+void	execute_redirections(t_tree *tree, t_setup *setup, t_gc *gc);
 int		red_input(t_setup *setup,t_tree *tree, t_redirections *redirection);
 int		red_append(t_setup *setup, t_tree *tree, t_redirections *redirection);
 int		red_output(t_setup *setup, t_tree *tree, t_redirections *redirection);
@@ -191,12 +195,12 @@ int		red_heredoc(t_setup *setup, t_tree *tree);
 
 
 // >>>>>>>>>>>>>>>>>>> heredoc >>>>>>>>>>>>>>>>>>>>>>
-void	heredoc_process(t_setup *setup, t_tree *tree);
-char	*get_file_name(t_setup *setup);
-int		refresh_fds(t_setup *setup, char *file_name);
+void	heredoc_process(t_setup *setup, t_tree *tree, t_gc *gc);
+char	*get_file_name(t_setup *setup, t_gc *gc);
+int		refresh_fds(t_setup *setup, char *file_name, t_gc *gc);
 int		should_expand(t_setup *setup);
-void	parsing_heredoc_input(t_setup *setup, char *input);
-void	cleanup_heredoc(t_setup *setup);
+void	parsing_heredoc_input(t_setup *setup, char *input, t_gc *gc);
+void	cleanup_heredoc(t_setup *setup, t_gc *gc);
 
 // >>>>>>>>>>>>>>>>>>>>>>> gc >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 t_gc	*gc_init();
@@ -204,6 +208,7 @@ void	*gc_malloc(t_gc *gc, size_t size);
 void	gc_cleanup(t_gc *gc);
 void	gc_destroy(t_gc *gc);
 void	gc_print_stats(t_gc *gc);	// >>> to remove later on
+void	gc_free(t_gc *gc, void *ptr);
 
 
 # endif

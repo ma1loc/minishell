@@ -4,7 +4,7 @@
 // int add_new_key_value(t_setup *setup, char *key, char *value)
 // ft_perror(setup, "export: memory allocation failed\n", EXIT_FAILURE);
 
-int export_key_only(t_setup *setup, char *key)
+int export_key_only(t_setup *setup, char *key, t_gc *gc)
 {
     t_env *new_node;
 	t_env *last_node;
@@ -14,20 +14,15 @@ int export_key_only(t_setup *setup, char *key)
 		ft_perror(setup, "export: not a valid identifier\n", EXIT_FAILURE);
 		return (-1);
 	}
-    new_node = malloc(sizeof(t_env));
+    new_node = gc_malloc(gc, sizeof(t_env));
     if (!new_node)
         return (-1);
 
-    new_node->key = ft_strdup(key);
+    new_node->key = ft_strdup(key, gc);
     if (!new_node->key)
-    {
-        free(new_node);
-        return (-1);
-    }
+		allocation_failed_msg(gc);
     new_node->value = NULL;
     new_node->next = NULL;
-
-
     if (!setup->env)
         setup->env = new_node;
     else
@@ -41,7 +36,7 @@ int export_key_only(t_setup *setup, char *key)
 
 
 // the parsing expand i have to use it to here
-void	handle_export_argument(t_setup *setup, char *arg)
+void	handle_export_argument(t_setup *setup, char *arg, t_gc *gc)
 {
 	char			*key;
 	char			*value;
@@ -52,20 +47,20 @@ void	handle_export_argument(t_setup *setup, char *arg)
 	type = get_export_type(arg);
 	if (type == APPEND_VALUE)
 	{
-		key = ft_substr(arg, 0, ft_strchr(arg, '+') - arg);
-		value = ft_substr(arg, ft_strchr(arg, '=') - arg + 1, ft_strlen(arg));
-		append_to_env(setup, key, value);
+		key = ft_substr(arg, 0, ft_strchr(arg, '+') - arg, gc);
+		value = ft_substr(arg, ft_strchr(arg, '=') - arg + 1, ft_strlen(arg), gc);
+		append_to_env(setup, key, value, gc);
 	}
 	else if (type == ASSIGN_VALUE)
 	{
-		key = ft_substr(arg, 0, ft_strchr(arg, '=') - arg);
-		value = ft_substr(arg, ft_strchr(arg, '=') - arg + 1, ft_strlen(arg));
-		update_env(setup, key, value);
+		key = ft_substr(arg, 0, ft_strchr(arg, '=') - arg, gc);
+		value = ft_substr(arg, ft_strchr(arg, '=') - arg + 1, ft_strlen(arg), gc);
+		update_env(setup, key, value, gc);
 	}
 	else
 	{
-		key = ft_strdup(arg);
-		export_key_only(setup, key);
+		key = ft_strdup(arg, gc);
+		export_key_only(setup, key, gc);
 	}
 	free(key);
 	if (value)
@@ -75,7 +70,7 @@ void	handle_export_argument(t_setup *setup, char *arg)
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-void	export_cmd(t_setup *setup)
+void	export_cmd(t_setup *setup, t_gc *gc)
 {
     char	**args;
     int		i;
@@ -89,7 +84,7 @@ void	export_cmd(t_setup *setup)
     {
         while (args[i])
         {
-			handle_export_argument(setup, args[i]);
+			handle_export_argument(setup, args[i], gc);
 			i++;
         }
     }

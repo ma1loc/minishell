@@ -31,7 +31,7 @@ int	delim_count(char *str, char separator)
 	return (count);
 }
 
-char	*get_the_word(char *str, int *index, char separator)
+char	*get_the_word(char *str, int *index, char separator, t_gc *gc)
 {
 	int		start;
 	char	*word;
@@ -48,7 +48,7 @@ char	*get_the_word(char *str, int *index, char separator)
 		(*index)++;
 		count++;
 	}
-	word = malloc(sizeof(char) * (count + 1));
+	word = gc_malloc(gc, sizeof(char) * (count + 1));
 	if (!word)
 		return (NULL);
 	i = 0;
@@ -60,7 +60,7 @@ char	*get_the_word(char *str, int *index, char separator)
 	return (word[i] = '\0', word);
 }
 
-char	**ft_split(char *str, char separator)
+char	**ft_split(char *str, char separator, t_gc *gc)
 {
 	char	**new_str;
 	int		word_count;
@@ -70,20 +70,16 @@ char	**ft_split(char *str, char separator)
 	if (!str)
 		return (NULL);
 	word_count = delim_count(str, separator);
-	new_str = malloc(sizeof(char *) * (word_count + 1));
+	new_str = gc_malloc(gc, sizeof(char *) * (word_count + 1));
 	if (!new_str)
 		return (NULL);
 	i = 0;
 	index = 0;
 	while (i < word_count)
 	{
-		new_str[i] = get_the_word(str, &index, separator);
+		new_str[i] = get_the_word(str, &index, separator, gc);
 		if (!new_str[i])
-		{
-			while (i > 0)
-				free(new_str[--i]);
-			return (free(new_str), NULL);
-		}
+			return (NULL);
 		i++;
 	}
 	return (new_str[i] = NULL, new_str);

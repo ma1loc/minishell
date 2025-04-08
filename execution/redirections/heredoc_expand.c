@@ -43,7 +43,7 @@ char	*get_env_val(t_setup *setup, char *key)	// >>> value
 	// handel -> double $ signe
 	// handel -> $?
 
-void	parsing_heredoc_input(t_setup *setup, char *input)
+void	parsing_heredoc_input(t_setup *setup, char *input, t_gc *gc)
 {
 	int		i;
 	int		start;
@@ -65,16 +65,16 @@ void	parsing_heredoc_input(t_setup *setup, char *input)
 			start = ++i;
 			while (ft_isalnum(input[i]) || input[i] == '_')
 				i++;
-			key = ft_substr(input, start, i - start);
+			key = ft_substr(input, start, i - start, gc);
 			value = get_env_val(setup, key);
 			if (value)
-				result = ft_strjoin_free(result, value);
+				result = ft_strjoin(result, value, gc);
 			free(key);
 		}
 		else
 		{
-			_char = char_to_str(input[i]);
-			result = ft_strjoin_free(result, _char);
+			_char = char_to_str(input[i], gc);
+			result = ft_strjoin(result, _char, gc);
 			i++;
 		}
 	}
