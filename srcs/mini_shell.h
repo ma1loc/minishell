@@ -91,6 +91,17 @@ typedef struct s_heredoc
 	char	*file_name[256];	// >>> sotre file name to unlink them later
 }	t_heredoc;
 
+typedef struct s_mem {
+    void *ptr;
+    struct s_mem *next;
+} t_mem;
+
+typedef struct s_gc {
+    t_mem *mem_list;
+    int total_allocs;
+    size_t total_bytes;
+} t_gc;
+
 // >>> start init all the env
 typedef struct s_setup
 {
@@ -110,7 +121,17 @@ typedef struct s_setup
 	int			heredoc_flag;
 	// int			idx_fds;
 	// int			fds_backups[FDS];
+	t_gc		*gc;
 }   t_setup;
+
+typedef enum e_export_type
+{
+	KEY_ONLY,
+	ASSIGN_VALUE,
+	APPEND_VALUE
+}	t_export_type;
+
+
 
 
 // >>>>>>>>>>>>>>>>>>>> built_in_cmds <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -125,6 +146,13 @@ void	set_env(t_setup *setup, char *key, char *value);
 int		cd(t_setup *setup);
 void	exit_cmd(t_setup  *setup);
 void	export_cmd(t_setup	*setup);
+t_export_type	get_export_type(char *arg);
+void	export_display(t_setup *setup);
+int		export_key_only(t_setup *setup, char *key);
+void	append_to_env(t_setup *setup, char *key, char *value);
+t_env	*get_env_key(t_setup *setup, char *key);
+void	update_env(t_setup *setup, char *key, char *value);
+
 
 
 // >>> hellping functions
@@ -169,5 +197,13 @@ int		refresh_fds(t_setup *setup, char *file_name);
 int		should_expand(t_setup *setup);
 void	parsing_heredoc_input(t_setup *setup, char *input);
 void	cleanup_heredoc(t_setup *setup);
+
+// >>>>>>>>>>>>>>>>>>>>>>> gc >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+t_gc	*gc_init();
+void	*gc_malloc(t_gc *gc, size_t size);
+void	gc_cleanup(t_gc *gc);
+void	gc_destroy(t_gc *gc);
+void	gc_print_stats(t_gc *gc);	// >>> to remove later on
+
 
 # endif

@@ -18,6 +18,10 @@
 // is i have to update the SHLVL=1???
 // env -i ./minishell
 
+// char *ft_strdup_gc(char *s, t_gc *gc);
+// char *ft_substr_gc(char *s, int start, int len, t_gc *gc);
+// char *ft_strjoin_gc(char *s1, char *s2, t_gc *gc);
+
 t_setup	*start_setup(int argc, char **argv, char **env)
 {
 	(void)argv;
@@ -26,13 +30,16 @@ t_setup	*start_setup(int argc, char **argv, char **env)
 	setup = NULL;
     if (argc > 1)	// >>> check this will inter or not >>>>
 	{
-        ft_perror(NULL, "No extra args, please ;)\n", EXIT_FAILURE); // exit status litter on
+        ft_perror(NULL, "No extra args, please ;)\n", EXIT_FAILURE); // >>> exit status litter on
 		return (NULL);
 	}
     setup = shell_env_setup(env);
 	if (!setup)
-		return (NULL);
+		return (NULL);	// >>> here i have to free and exit;
 	setup->envp = env;
+	setup->gc = gc_init();
+	if (!setup->gc)
+		return (NULL); // >>> to check it later on
 	return (setup);
 }
 
@@ -60,5 +67,6 @@ int		main(int argc, char **argv, char **env)
 		add_history(setup->input);
 		free(setup->input);
     }
+	
     return 0;
 }
