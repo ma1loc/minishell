@@ -17,7 +17,6 @@ void	cleanup_heredoc(t_setup *setup, t_gc *gc)
 	i = 0;
 	if (setup->heredoc->file_name[i])
 	{
-		// printf("tmp file[%d] -> %s\n", i, setup->heredoc->file_name[i]);	
 		while (setup->heredoc->file_name[i])
 		{
 			unlink(setup->heredoc->file_name[i]);
@@ -26,9 +25,6 @@ void	cleanup_heredoc(t_setup *setup, t_gc *gc)
 		}
 		ft_memset(setup->heredoc->file_name, 0, sizeof(setup->heredoc->file_name));
 	}
-	// to check it later on
-	// return (free(setup->heredoc->delimiter), setup->heredoc->delimiter = NULL, (void)0);
-	return (free(setup->heredoc->delimiter), setup->heredoc->delimiter = NULL, (void)0);
 }
 
 char	*get_file_name(t_setup *setup, t_gc *gc)

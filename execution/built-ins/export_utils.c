@@ -36,7 +36,7 @@ void	update_env(t_setup *setup, char *key, char *value, t_gc *gc)
 	if (env)
 	{
 		if (env->value)
-			free(env->value);
+			gc_free(gc, env->value);
 		env->value = ft_strdup(value, gc);
 		if (!env->value)
 			allocation_failed_msg(gc);

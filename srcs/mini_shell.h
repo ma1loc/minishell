@@ -70,13 +70,10 @@ void	*ft_memset(void *s, int c, size_t len);
 char	*ft_substr(char *s1, size_t start, size_t len, t_gc *gc);
 int     ft_isdigit(char *str);
 char	*ft_strnstr(char *str, char *to_find, size_t n);
-int     ft_atoi(const char *str);
 char	*ft_strchr(char *s, int c);
 char	*ft_itoa(int n, t_gc *gc);
 int		ft_isalpha(int c);
 int		ft_isalnum(int c);
-
-
 t_env	*ft_lstlast(t_env *lst);
 void	ft_lstadd_back(t_env **lst, t_env *new);
 
@@ -120,11 +117,11 @@ typedef struct s_setup
     char        *oldpwd;
     char        *cmd_path;
     char        **envp;
+	char		**exec_env;	// >>> for the execve();
     int         exit_stat;
 	t_heredoc	*heredoc;
 	int			heredoc_flag;
-	// int			idx_fds;
-	// int			fds_backups[FDS];
+	int			fork_flag;
 }   t_setup;
 
 typedef enum e_export_type
@@ -135,7 +132,6 @@ typedef enum e_export_type
 }	t_export_type;
 
 
-
 // >>>>>>>>>>>>>>>>>>>> built_in_cmds <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 void    cd_cmd(t_setup *setup, t_gc *gc);         // the cd command fun. [done]
 void	pwd_cmd(t_setup *setup, t_gc *gc);        // the pwd path print fun. [done]
@@ -144,37 +140,31 @@ void    echo_cmd(t_setup *setup);       // the echo command fun. [done]
 t_env	*init_env(char **env, t_env *env_list, t_gc *gc);
 void	env_cmd(t_setup *setup);
 void	unset_cmd(t_setup *setup);
-void	set_env(t_setup *setup, char *key, char *value, t_gc *gc);
 int		cd(t_setup *setup);
 void	exit_cmd(t_setup  *setup, t_gc *gc);
 void	export_cmd(t_setup *setup, t_gc *gc);
 t_export_type	get_export_type(char *arg);
 void	export_display(t_setup *setup);
 int		export_key_only(t_setup *setup, char *key, t_gc *gc);
-// void	update_env(t_setup *setup, char *key, char *value);
 void	update_env(t_setup *setup, char *key, char *value, t_gc *gc);
-// void	append_to_env(t_setup *setup, char *key, char *value);
 void	append_to_env(t_setup *setup, char *key, char *value, t_gc *gc);
 t_env	*get_env_key(t_setup *setup, char *key);
 
 
-
 // >>> hellping functions
 void	ft_perror(t_setup *setup, char *msg, int exit_stat);
-// void	free_the_spliting(char **split);
 int		is_valid_identifier(char *key);
-// void	free_env_list(t_env *env_list);
 int		is_valid_number(char *str);
 char	*char_to_str(char c, t_gc *gc);
 void	allocation_failed_msg(t_gc *gc);
 
+
 // >>> the execution will start here
-// int     command_type(char *name);
 int     is_built_in(char *name);
 t_setup *shell_env_setup(char **env, t_gc *gc);
 t_setup *init_setup_struct(t_gc *gc);
 char	*path_resolver(t_setup *setup, t_gc *gc);
-// char	*split_path(char *path, char *cmd);
+char    **update_exec_envp(t_setup *setup, t_gc *gc);
 
 
 // >>>>>>>>>>>>>>>>> execution >>>>>>>>>>>>>>>>>>>>
@@ -183,7 +173,10 @@ void	execution(t_tree *tree, t_setup *setup, t_gc *gc);
 void	execute_internals(t_command *cmd, t_setup *setup, t_gc *gc);
 void	execute_commands(t_tree *tree, t_setup *setup, t_gc *gc);
 void    execute_pipes(t_tree *tree, t_setup *setup, t_gc *gc);
-
+void    set_pipe(t_setup *setup, int *fd);
+pid_t	set_first_fork(t_setup  *setup, int *fd);
+pid_t	set_second_fork(t_setup  *setup, pid_t pid_1, int *fd);
+pid_t	set_fork(t_setup *setup, t_gc *gc);
 
 // >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
 void	execute_redirections(t_tree *tree, t_setup *setup, t_gc *gc);
@@ -201,6 +194,7 @@ int		refresh_fds(t_setup *setup, char *file_name, t_gc *gc);
 int		should_expand(t_setup *setup);
 void	parsing_heredoc_input(t_setup *setup, char *input, t_gc *gc);
 void	cleanup_heredoc(t_setup *setup, t_gc *gc);
+
 
 // >>>>>>>>>>>>>>>>>>>>>>> gc >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 t_gc	*gc_init();

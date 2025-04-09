@@ -13,7 +13,7 @@ void	unset_key(t_setup *setup, char *key)
 	{
 		if (ft_strcmp(curr->key, key) == 0)
 		{
-			if (prev == NULL)	// >>> but this condition what is the time to be ture
+			if (prev == NULL)
                 setup->env = curr->next;
             else
                 prev->next = curr->next;
@@ -34,10 +34,10 @@ void	unset_cmd(t_setup *setup)
     char	**args;
     int		i;
 
-	i = 1;	// skip the command itself
-	args = setup->cmd->args;	// >>> just to be readable
+	i = 1;
+	args = setup->cmd->args;
 
-    if (!args || !args[1])		// >>> here the args alrady include the command itself (i think i have to remove it!!! (no need for the !args check))
+    if (!args[1])
 		return (setup->exit_stat = 0, (void)0);
 
     while (args[i])
@@ -50,5 +50,5 @@ void	unset_cmd(t_setup *setup)
         unset_key(setup, args[i]);
 		i++;
     }
-	setup->exit_stat = 0; // what ever if the unset fail or not will return 0 in the exit status
+	setup->exit_stat = 0;
 }

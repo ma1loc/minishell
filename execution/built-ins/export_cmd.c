@@ -16,8 +16,7 @@ int export_key_only(t_setup *setup, char *key, t_gc *gc)
 	}
     new_node = gc_malloc(gc, sizeof(t_env));
     if (!new_node)
-        return (-1);
-
+        allocation_failed_msg(gc);
     new_node->key = ft_strdup(key, gc);
     if (!new_node->key)
 		allocation_failed_msg(gc);

@@ -19,10 +19,6 @@
 // env -i ./minishell
 // echo yassin > a > b >c > /dev/stdout
 
-// char *ft_strdup_gc(char *s, t_gc *gc);
-// char *ft_substr_gc(char *s, int start, int len, t_gc *gc);
-// char *ft_strjoin_gc(char *s1, char *s2, t_gc *gc);
-
 t_setup	*start_setup(int argc, char **argv, char **env, t_gc *gc)
 {
 	(void)argv;
@@ -37,7 +33,7 @@ t_setup	*start_setup(int argc, char **argv, char **env, t_gc *gc)
     setup = shell_env_setup(env, gc);
 	if (!setup)
 		return (NULL);	// >>> here i have to free and exit;
-	setup->envp = env;	// >>> i have to get the defult env
+	setup->envp = env;
 	return (setup);
 }
 
@@ -47,7 +43,7 @@ int		main(int argc, char **argv, char **env)
 	t_gc			*gc;
 
 	gc = gc_init();
-    setup = start_setup(argc, argv, env, gc);	// done gc
+    setup = start_setup(argc, argv, env, gc);
 	if (!setup)
 		return (1);
     while (true)
@@ -66,7 +62,6 @@ int		main(int argc, char **argv, char **env)
         execution(setup->tree, setup, gc);
 		add_history(setup->input);
 		free(setup->input);
-		gc_print_stats(gc);
     }
 	gc_destroy(gc);
     return 0;

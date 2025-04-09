@@ -26,7 +26,8 @@ void *gc_malloc(t_gc *gc, size_t size)
         return NULL;
 
     node = malloc(sizeof(t_mem));
-    if (!node) {
+    if (!node)
+	{
         free(ptr);
         return NULL;
     }
@@ -45,18 +46,23 @@ void gc_free(t_gc *gc, void *ptr)
     if (!gc || !ptr)
         return;
     
-    t_mem *curr = gc->mem_list;
-    t_mem *prev = NULL;
+    t_mem *curr;
+    t_mem *prev;
+
+	curr = gc->mem_list;
+	prev = NULL;
     
-    while (curr) {
-        if (curr->ptr == ptr) {
+    while (curr)
+	{
+        if (curr->ptr == ptr)
+		{
             if (prev)
                 prev->next = curr->next;
             else
                 gc->mem_list = curr->next;
-            
             free(ptr);
             free(curr);
+			// >>> to remove it later
             gc->total_allocs--;
             return;
         }
@@ -103,6 +109,6 @@ void	gc_print_stats(t_gc *gc)
         return;
     
     printf("Memory usage:\n");
-    printf("  Total allocations: %d\n", gc->total_allocs);
-    printf("  Total bytes: %zu\n", gc->total_bytes);
+    printf(">>> Total allocations: %d\n", gc->total_allocs);
+    printf(">>> Total bytes: %zu\n", gc->total_bytes);
 }

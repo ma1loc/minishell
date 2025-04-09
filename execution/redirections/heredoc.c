@@ -39,22 +39,22 @@ void	get_delimiter(t_setup *setup, t_redirections *red, t_gc *gc)
 
 int	get_heredoc_fds(t_setup *setup, t_redirections *red, t_gc *gc)
 {
-	char	*file_name;
-	int		i;
-
+	t_heredoc	*heredoc;
+	char		*file_name;
+	int			i;
+	
 	i = setup->i;
+	heredoc = setup->heredoc;
 	file_name = get_file_name(setup, gc);
-	if (!file_name)
-	return (cleanup_heredoc(setup, gc), 1);
-	setup->heredoc->file_name[setup->i] = ft_strdup(file_name, gc);
-	if (!setup->heredoc->file_name[setup->i])
+	heredoc->file_name[setup->i] = ft_strdup(file_name, gc);
+	if (!heredoc->file_name[setup->i])
 		allocation_failed_msg(gc);
-	setup->heredoc->fd[i] = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-	if (setup->heredoc->fd[i] < 0)
+	heredoc->fd[i] = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	if (heredoc->fd[i] < 0)
 		return (cleanup_heredoc(setup, gc), 1);
 	get_delimiter(setup, red, gc);
 	loding_heredoc(setup, gc);
-	if (refresh_fds(setup, file_name, gc) == 1)		// >>> refresh the offset of the fd
+	if (refresh_fds(setup, file_name, gc) == 1)
 		return (cleanup_heredoc(setup, gc), 1);
 	gc_free(gc, file_name);
 	return (0);
@@ -91,8 +91,7 @@ void	init_heredoc(t_setup *setup, t_tree *tree, t_gc *gc)
 
 void	heredoc_process(t_setup *setup, t_tree *tree, t_gc *gc)
 {
-	// >>> to remove later on
-	setup->heredoc->deleimiter_flag[0] = 1;
+	setup->heredoc->deleimiter_flag[0] = 1;	// >>> to remove later on
 
 
 	setup->heredoc_flag = 0;
