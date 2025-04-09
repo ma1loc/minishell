@@ -1,47 +1,45 @@
 # include "mini_shell.h"
 
-t_setup  *init_setup_struct()
+t_setup	*init_setup(t_gc *gc)
 {
-    t_setup  *set_env;
+	t_setup	*setup;
 
-	set_env = malloc(sizeof(t_setup));
-	if (!set_env)
-        return (NULL);
-	set_env->i = 0;
-    set_env->input = NULL;
-    set_env->env = NULL;
-    set_env->token = NULL;
-    set_env->cmd = NULL;
-	set_env->tree = NULL;
-    set_env->pwd = NULL;
-    set_env->oldpwd = NULL;
-    set_env->cmd_path = NULL;
-    set_env->envp = NULL;
-    set_env->exit_stat = 0;   // >>> to see litter on
-	set_env->heredoc = NULL;
-    return (set_env);
+	setup = gc_malloc(gc, sizeof(t_setup));
+	if (!setup)
+		allocation_failed_msg(gc);
+	setup->i = 0;
+	setup->input = NULL;
+	setup->env = NULL;
+	setup->token = NULL;
+	setup->cmd = NULL;
+	setup->tree = NULL;
+	setup->pwd = NULL;
+	setup->oldpwd = NULL;
+	setup->cmd_path = NULL;
+	setup->envp = NULL;
+	setup->exec_env = NULL;	// >>> for the execve();
+	setup->exit_stat = 0;
+	setup->heredoc = NULL;
+	return (setup);
 }
 
 // >>> setup the env of the minishell
 // return NULL here
-t_setup *shell_env_setup(char **env)
+t_setup	*shell_env_setup(char **env, t_gc *gc)
 {
-    t_setup  *setup;
+    t_setup	*setup;
 
-    setup = init_setup_struct();
-    if (!setup)
-		ft_perror(setup, "Error: memory allocation failed\n", EXIT_FAILURE);
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    setup->env = init_env(env, setup->env);
-    if (!setup->env)
-		ft_perror(setup, "Error: failed to set env\n", EXIT_FAILURE); // to free latter on
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	setup->heredoc = malloc(sizeof(t_heredoc));
+	setup = init_setup(gc);
+	setup->env = init_env(env, setup->env, gc);
+	setup->exec_env = update_exec_envp(setup, gc);
+	setup->heredoc = gc_malloc(gc, sizeof(t_heredoc));
 	if (!setup->heredoc)
-		return (NULL);
+		allocation_failed_msg(gc);
 	setup->heredoc->delimiter = NULL;
-	get_pwd(setup);
-    set_env(setup, "OLDPWD", setup->pwd);
-
-    return (setup);
+	ft_memset(setup->heredoc->fd, 0, sizeof(setup->heredoc->fd));
+	ft_memset(setup->heredoc->file_name, 0, sizeof(setup->heredoc->file_name));
+	get_pwd(setup, gc);
+	update_env(setup, "PWD", setup->pwd, gc);
+	update_env(setup, "OLDPWD", setup->pwd, gc);
+	return (setup);
 }

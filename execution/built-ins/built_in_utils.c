@@ -38,34 +38,3 @@ int is_valid_identifier(char *key)
 	}
 	return (1);
 }
-
-void free_the_spliting(char **split)
-{
-    int i;
-    
-    i = 0;
-    while (split[i])
-    {
-        free(split[i]);
-        i++;
-    }
-    free(split);
-}
-
-void free_env_list(t_env *env_list)
-{
-    t_env *current;
-    t_env *next;
-    
-    current = env_list;
-    while (current)
-    {
-        next = current->next;
-        if (current->key)
-            free(current->key);
-        if (current->value)
-            free(current->value);
-        free(current);
-        current = next;
-    }
-}

@@ -1,21 +1,21 @@
 #include "mini_shell.h"
 
-void	execute_internals(t_command *cmd, t_setup *setup)
+void	execute_internals(t_command *cmd, t_setup *setup, t_gc *gc)
 {
 	if (ft_strcmp(cmd->name, "echo") == 0)			// >>> [done to check]
 		echo_cmd(setup);
 	else if (ft_strcmp(cmd->name, "cd") == 0)		// >>> [done to check!!!]
-		cd_cmd(setup);
+		cd_cmd(setup, gc);
 	else if (ft_strcmp(cmd->name, "pwd") == 0)		// >>> [done to check!!!]
-		pwd_cmd(setup);
+		pwd_cmd(setup, gc);
     else if (ft_strcmp(cmd->name, "unset") == 0)	// >>> [done to check!!!]
 		unset_cmd(setup);
     else if (ft_strcmp(cmd->name, "env") == 0)		// >>> [done to check]
 		env_cmd(setup);
     else if (ft_strcmp(cmd->name, "exit") == 0)		// >>> [done to check!!!]
-	    exit_cmd(setup);
+	    exit_cmd(setup, gc);
     else if (ft_strcmp(cmd->name, "export") == 0)	// >>> [done to check!!!]
-        export_cmd(setup);
+        export_cmd(setup, gc);
 }
 
 int is_built_in(char *name)  

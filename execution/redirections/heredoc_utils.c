@@ -1,50 +1,59 @@
 # include "mini_shell.h"
 
-void	close_fds(t_setup *setup)
+void	cleanup_heredoc(t_setup *setup, t_gc *gc)
 {
 	int i;
-	int	count;
 
 	i = 0;
-	count = setup->heredoc->count;
-	while (i <= count)
+	if (setup->heredoc->fd[i])
 	{
-		close(setup->heredoc->fd[i]);
-		i++;
+		while (setup->heredoc->fd[i])
+		{
+			close(setup->heredoc->fd[i]);
+			i++;
+		}
+		ft_memset(setup->heredoc->fd, 0, sizeof(setup->heredoc->fd));
+	}
+	i = 0;
+	if (setup->heredoc->file_name[i])
+	{
+		while (setup->heredoc->file_name[i])
+		{
+			unlink(setup->heredoc->file_name[i]);
+			gc_free(gc, setup->heredoc->file_name[i]);
+			i++;
+		}
+		ft_memset(setup->heredoc->file_name, 0, sizeof(setup->heredoc->file_name));
 	}
 }
 
-char	*get_file_name(t_setup *setup)
+char	*get_file_name(t_setup *setup, t_gc *gc)
 {
 	char	*file_num;
 	char	*file_name;
 
-	file_num = ft_itoa(setup->heredoc->count);
+	file_num = ft_itoa(setup->i, gc);
 	if (!file_num)
-		return (NULL);
-	file_name = ft_strjoin("/tmp/heredoc", file_num);
+		allocation_failed_msg(gc);
+	file_name = ft_strjoin("/tmp/heredoc", file_num, gc);
 	if (!file_name)
-	{
-		free(file_num);
-		return (NULL);
-	}
-	free(file_num);
+		allocation_failed_msg(gc);
+	gc_free(gc, file_num);
 	return (file_name);
 }
 
 // >>> refresh the offset of the fd
-int	refresh_fds(t_setup *setup, char *file_name)
+int	refresh_fds(t_setup *setup, char *file_name, t_gc *gc)
 {
-	int	count;
+	int i;
 
-	count = setup->heredoc->count;
-	close(setup->heredoc->fd[count]);
-	setup->heredoc->fd[count] = open(file_name, O_RDONLY, 0644);
-	if (!setup->heredoc->fd[count])
+	i = setup->i;
+	close(setup->heredoc->fd[i]);
+	setup->heredoc->fd[i] = open(file_name, O_RDONLY, 0644);
+	if (!setup->heredoc->fd[i])
 	{
 		ft_perror(setup, NULL, EXIT_FAILURE);
-		return (close_fds(setup),free(file_name), 1);
+		return (cleanup_heredoc(setup, gc), free(file_name),1);
 	}
-	free(file_name);
 	return (0);
 }

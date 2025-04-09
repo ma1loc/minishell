@@ -12,14 +12,14 @@
 
 #include "mini_shell.h"
 
-char	*ft_strdup(char *s1)
+char	*ft_strdup(char *s1, t_gc *gc)
 {
 	char	*dup;
 	size_t	s_len;
 	size_t	i;
 
 	s_len = ft_strlen(s1);
-	dup = malloc(sizeof(char) * (s_len + 1));
+	dup = gc_malloc(gc, sizeof(char) * (s_len + 1));
 	if (!dup)
 		return (NULL);
 	i = 0;

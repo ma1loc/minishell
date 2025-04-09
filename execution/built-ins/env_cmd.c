@@ -1,31 +1,21 @@
 #include "mini_shell.h"
 
-int seting_env(t_env *new_node, char **split_env)
+void	seting_env(t_env *new_node, char **split_env, t_gc *gc)
 {
-    new_node->key = ft_strdup(split_env[0]);
+    new_node->key = ft_strdup(split_env[0], gc);
     if (!new_node->key)
-    {
-        free(new_node);
-        free_the_spliting(split_env);
-        return (-1);
-    }
+		allocation_failed_msg(gc);
     if (split_env[1])
     {
-        new_node->value = ft_strdup(split_env[1]);
+        new_node->value = ft_strdup(split_env[1], gc);
         if (!new_node->value)
-        {
-            free(new_node->key);
-            free(new_node);
-            free_the_spliting(split_env);
-            return (-1);
-        }
+			allocation_failed_msg(gc);
     }
     else
         new_node->value = NULL;
-    return (0);
 }
 
-t_env *init_env(char **env, t_env *env_list)
+t_env *init_env(char **env, t_env *env_list, t_gc *gc)
 {
     t_env *new_node;
     char **split_env;
@@ -34,19 +24,14 @@ t_env *init_env(char **env, t_env *env_list)
     i = 0;
     while (env[i])
     {
-        new_node = malloc(sizeof(t_env));
+        new_node = gc_malloc(gc, sizeof(t_env));
         if (!new_node)
-            return (free_env_list(env_list), NULL);
-        split_env = ft_split(env[i], '=');
+            allocation_failed_msg(gc);
+        split_env = ft_split(env[i], '=', gc);
         if (!split_env)
-        {
-            free(new_node);
-            return (free_env_list(env_list), NULL);
-        }
-        if (seting_env(new_node, split_env) == -1)
-            return (free_env_list(env_list), NULL);
+			allocation_failed_msg(gc);
+        seting_env(new_node, split_env, gc);
         new_node->next = NULL;
-        free_the_spliting(split_env);
         ft_lstadd_back(&env_list, new_node);
         i++;
     }

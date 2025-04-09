@@ -38,14 +38,14 @@ static char	*is_zero(char *ptr)
 	return (ptr);
 }
 
-char	*ft_itoa(int n)
+char	*ft_itoa(int n, t_gc *gc)
 {
 	size_t			n_len;
 	char			*ptr;
 	unsigned int	nbr;
 
 	n_len = nbr_len(n);
-	ptr = malloc(sizeof(char) * (n_len + 1));
+	ptr = gc_malloc(gc, sizeof(char) * (n_len + 1));
 	if (!ptr)
 		return (NULL);
 	ptr[n_len] = '\0';

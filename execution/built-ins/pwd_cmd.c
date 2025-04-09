@@ -1,6 +1,6 @@
 #include "mini_shell.h"
 
-int	get_pwd(t_setup *setup)
+int	get_pwd(t_setup *setup, t_gc *gc)
 {
     char buf_path[PATH_MAX];
     char *path;
@@ -9,14 +9,11 @@ int	get_pwd(t_setup *setup)
     path = getcwd(buf_path, sizeof(buf_path));
     if (path)
     {
-        new_pwd = ft_strdup(path);
+        new_pwd = ft_strdup(path, gc);
         if (!new_pwd)
-        {
-            ft_perror(setup, "pwd: memory allocation failed\n", EXIT_FAILURE);
-            return (-1);
-        }
+			allocation_failed_msg(gc);
         if (setup->pwd)
-            free(setup->pwd);   
+            gc_free(gc, setup->pwd);
         setup->pwd = new_pwd;
         setup->exit_stat = 0;
     }
@@ -28,8 +25,8 @@ int	get_pwd(t_setup *setup)
 	return (0);
 }
 
-void	pwd_cmd(t_setup *setup)
+void	pwd_cmd(t_setup *setup, t_gc *gc)
 {
-	if (get_pwd(setup) == 0)
+	if (get_pwd(setup, gc) == 0)
 		printf("%s\n", setup->pwd);
 }

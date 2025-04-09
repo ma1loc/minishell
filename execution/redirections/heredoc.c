@@ -1,8 +1,11 @@
 # include "mini_shell.h"
 
-void	loding_heredoc(t_setup *setup, t_tree *tree)
+// tests
+// $HOME '$HOME' "$HOME"
+// }: bad substitution
+
+void	loding_heredoc(t_setup *setup, t_gc *gc)
 {
-	(void)tree;
 	char	*input;
 
 	while (true)
@@ -13,50 +16,51 @@ void	loding_heredoc(t_setup *setup, t_tree *tree)
 			free(input);
 			break;
 		}
-		// setup->heredoc->fd[setup->i] => fd
-		write(setup->heredoc->fd[setup->i], input, ft_strlen(input));
-		write(setup->heredoc->fd[setup->i], "\n", 1);
+		if (should_expand(setup))
+			parsing_heredoc_input(setup, input, gc);
+		else
+		{
+			write(setup->heredoc->fd[setup->i], input, ft_strlen(input));
+			write(setup->heredoc->fd[setup->i], "\n", 1);
+		}
 		free(input);
 	}
 }
 
-// char	*get_delimiter(t_redirections *redirection)
-void	get_delimiter(t_setup *setup, t_redirections *redirection)
+void	get_delimiter(t_setup *setup, t_redirections *red, t_gc *gc)
 {
-
 	if (setup->heredoc->delimiter)
-		free(setup->heredoc->delimiter);
+		gc_free(gc, setup->heredoc->delimiter);
 
-	setup->heredoc->delimiter = ft_strdup(redirection->file_name);
-	// printf("delimiter -> %s\n", redirection->file_name);
-	redirection = redirection->next;
+	setup->heredoc->delimiter = ft_strdup(red->file_name, gc);
+	red = red->next;
 	return ;
 }
 
-int	get_heredoc_fds(t_tree *tree, t_setup *setup, t_redirections *red)
+int	get_heredoc_fds(t_setup *setup, t_redirections *red, t_gc *gc)
 {
-	(void)red;
-	char	*file_name;
-	int		count;
+	t_heredoc	*heredoc;
+	char		*file_name;
+	int			i;
 	
-	count = setup->heredoc->count;
-	file_name = get_file_name(setup);
-	if (!file_name)
-		return (close_fds(setup), 1);	// >>> check later on
-	setup->heredoc->fd[count] = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-	if (setup->heredoc->fd[count] == -1)
-		return (close_fds(setup), free(file_name), 1);
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	get_delimiter(setup, red);
-	loding_heredoc(setup, tree);
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	// >>> refresh the offset of the fd
-	if (refresh_fds(setup, file_name) == 1)
-		return (1);
+	i = setup->i;
+	heredoc = setup->heredoc;
+	file_name = get_file_name(setup, gc);
+	heredoc->file_name[setup->i] = ft_strdup(file_name, gc);
+	if (!heredoc->file_name[setup->i])
+		allocation_failed_msg(gc);
+	heredoc->fd[i] = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	if (heredoc->fd[i] < 0)
+		return (cleanup_heredoc(setup, gc), 1);
+	get_delimiter(setup, red, gc);
+	loding_heredoc(setup, gc);
+	if (refresh_fds(setup, file_name, gc) == 1)
+		return (cleanup_heredoc(setup, gc), 1);
+	gc_free(gc, file_name);
 	return (0);
 }
 
-void	init_heredoc(t_setup *setup, t_tree *tree)
+void	init_heredoc(t_setup *setup, t_tree *tree, t_gc *gc)
 {
 	t_redirections *redir;
 
@@ -70,24 +74,28 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
         {
             if (redir->type == TOKEN_HERDOC)
 			{
-                if (get_heredoc_fds(tree, setup, redir) == 1)
+				setup->heredoc_flag = 1;
+                if (get_heredoc_fds(setup, redir, gc) == 1)
 				{
 					ft_perror(setup, "heredoc process failed\n", EXIT_FAILURE);
 					break;
 				}
-				setup->i++;
-				setup->heredoc->count++;
+				setup->i++;		// >>> index of the array of fds
 			}
 			redir = redir->next;
 		}
 	}
-	init_heredoc(setup, tree->left);
-	init_heredoc(setup, tree->right);
+	init_heredoc(setup, tree->left, gc);
+	init_heredoc(setup, tree->right, gc);
 }
 
-void	heredoc_process(t_setup *setup, t_tree *tree)
+void	heredoc_process(t_setup *setup, t_tree *tree, t_gc *gc)
 {
-	setup->heredoc->count = 0;	// >>> count how many heredocs there
-	init_heredoc(setup, tree);
-}
+	setup->heredoc->deleimiter_flag[0] = 1;	// >>> to remove later on
 
+
+	setup->heredoc_flag = 0;
+	setup->i = 0;
+	init_heredoc(setup, tree, gc);
+	setup->i = 0;	// >>> restor it to defule to use it again in the execution
+}
