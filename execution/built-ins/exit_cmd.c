@@ -1,13 +1,47 @@
 #include "mini_shell.h"
 
-int	ft_atoi(const char *str)
+void	numeric_error(t_gc *gc)
+{
+	ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
+	gc_destroy(gc);
+	exit (SYNTAX_ERROR);
+}
+
+int	filter_input(char *str, t_gc *gc, int sign)
+{
+	int				i;
+	unsigned long	result;
+	int				exit_status;
+
+	i = 0;
+	result = 0;
+	exit_status = 0;
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		result = result * 10 + (str[i] - '0');
+		if (result > 9223372036854775807 && sign == 1)
+			numeric_error(gc);
+		if (result > 9223372036854775807 && sign == -1)
+		{
+			exit_status = result * sign;
+			if (exit_status < 0)
+				numeric_error(gc);
+		}
+		i++;
+	}
+	return (result * sign);
+}
+
+int	ft_atoi(char *str, t_gc *gc)
 {
 	int					sign;
 	unsigned long		result;
 	int					i;
+	int					exit_status;
 
 	sign = 1;
 	result = 0;
+	exit_status = 0;
 	i = 0;
 	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
 		i++;
@@ -17,20 +51,10 @@ int	ft_atoi(const char *str)
 			sign = -1;
 		i++;
 	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		result = result * 10 + (str[i] - '0');
-		if (result > 9223372036854775807 && sign == 1)
-			return (-1);
-		if (result > 9223372036854775807 && sign == -1)
-			return (0);
-		i++;
-	}
-	return (result * sign);
+	result = filter_input(str + i, gc, sign);
+	return (result);
 }
 
-// handel the max int 9223372036854775807
-// if > 9223372036854775807 -> numeric argument required
 void exit_cmd(t_setup *setup, t_gc *gc)
 {
     int	input;
@@ -48,15 +72,10 @@ void exit_cmd(t_setup *setup, t_gc *gc)
     {
         if (is_valid_number(setup->cmd->args[1]))
         {
-            input = ft_atoi(setup->cmd->args[1]);
-			gc_destroy(gc);
+            input = ft_atoi(setup->cmd->args[1], gc);
             exit(input);	// >>> NOTE to free before
         }
         else
-		{
-            ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
-			gc_destroy(gc);
-			exit (SYNTAX_ERROR);	// >>> NOTE to free before
-		}
+			numeric_error(gc);
     }
 }
