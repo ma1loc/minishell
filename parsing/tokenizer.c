@@ -4,27 +4,15 @@
 #include <string.h>
 #include "../srcs/mini_shell.h"
 
-char *strip_quotes(char *str, t_setup *setup)
+t_quotes_info strip_quotes(char *str)
 {
+    t_quotes_info info;
     char *result;
     int len;
     int i;
     int j;
 
-    t_expand *expand = NULL;
-    setup->expand = expand;
-    // if previously allocated, free the memory and set it to NULL
-    if (setup->expand != NULL)
-    {
-        free(setup->expand);
-    }
-
-    // Allocate new memory for setup->expand
-    setup->expand = malloc(sizeof(t_expand));
-    if (!setup->expand)
-      return NULL;
-
-    setup->expand->quotes_type = 0;
+    info.quotes_type = 0;
     int in_dquote = 0;
     int in_squote = 0;
 
@@ -32,9 +20,8 @@ char *strip_quotes(char *str, t_setup *setup)
     result = malloc(len + 1);
     if (!result)
     {
-      free(setup->expand);
-      setup->expand = NULL;
-      return NULL;
+      info.stripped_text = NULL;
+      return info;
     }
     i = 0;  // index for original string
     j = 0;  // index for result string
@@ -45,7 +32,7 @@ char *strip_quotes(char *str, t_setup *setup)
           if (in_dquote == 0)
           {
             in_dquote = 1;
-            setup->expand->quotes_type = 2;
+            info.quotes_type = 2;
           }
           else
             in_dquote = 0;
@@ -55,7 +42,7 @@ char *strip_quotes(char *str, t_setup *setup)
           if (in_squote == 0)
           {
             in_squote = 1;
-            setup->expand->quotes_type = 1;
+            info.quotes_type = 1;
           }
           else
             in_squote = 0;
@@ -65,14 +52,15 @@ char *strip_quotes(char *str, t_setup *setup)
         i++;
     }
     result[j] = '\0';
-    if (j == 0 && len > 0)
-        return result;
+    info.stripped_text = result;
+    // if (j == 0 && len > 0)
+    //     return result;
     if (j == 0 && len == 0)
     {
         free(result);
-        return NULL;
+        info.stripped_text = NULL;
     }
-    return result;
+    return info;
 }
 
 
@@ -171,7 +159,6 @@ int check_quotes_syntax(t_setup *setup) // fuc to check if quoest match inclosed
   if(in_quoets)
   {
     ft_perror(setup, "syntax error near unexpected token\n", SYNTAX_ERROR);
-   // ft_perror()   put later the msg and exit status with this func
     return(1);
   }
   return(0);
@@ -179,7 +166,7 @@ int check_quotes_syntax(t_setup *setup) // fuc to check if quoest match inclosed
 
 
 
-t_token *add_token( t_token **head, char *value, t_token_type type) // function creat new token and add it to the linked list
+t_token *add_token( t_token **head, char *value, t_token_type type, int quotes_type) // function creat new token and add it to the linked list
 {
   t_token *new_token;
   t_token *current;
@@ -187,11 +174,19 @@ t_token *add_token( t_token **head, char *value, t_token_type type) // function 
   new_token = malloc(sizeof(t_token));
   if(!new_token)
     return(NULL);
-
+  
   new_token->value = strdup(value);  // copy the value
   new_token->type = type;
   new_token->next = NULL;
 
+  new_token->quotes_info = malloc(sizeof(t_quotes_info));
+  if(!new_token->quotes_info)
+  {
+    free(new_token->value);
+    free(new_token);
+    return(NULL);
+  }
+  new_token->quotes_info->quotes_type = quotes_type;
   if(*head == NULL)      // if list empty make this token the first in the list
   {
    *head = new_token;
@@ -226,17 +221,22 @@ t_token *tokenize(t_setup *setup)
     return (free(state), NULL);
   while(input[state->i] != '\0')
   {
-    if(input[state->i] == ' ')    // skip spaces between tokens
-      process_spaces(state, &tokens, setup);
+    if(input[state->i] == ' ' || input[state->i] == '\t')    // skip spaces or tabsbetween tokens
+      process_spaces(state, &tokens);
     else if(input[state->i] == '|' || input[state->i] == '<' || input[state->i] == '>')  // Handle special tokens (pipe, redirections)
-      process_special_tokens(input, state, &tokens, setup);
+      process_special_tokens(input, state, &tokens);
+    else if(input[state->i] == '$')
+      process_dollar(input, state, &tokens);
     else if(input[state->i] == '"' || input[state->i] == '\'') // Handle quoted sections within a word
-      process_quotes(input, state, setup);
+      process_quotes(input, state, setup, &tokens);
     else
       process_normal_word(input,state);  // just a regular character in a word
   }
-  process_remainder_text(state, &tokens, setup);  // don't forget any remaining text in the buffer
-  tokens = expand_env_vars(tokens, setup);  // expand them before return to return expanded tokens
+  process_remainder_text(state, &tokens);  // don't forget any remaining text in the buffer
+  // print_tokens(tokens); /////////////// remove it 
+  tokens = expand_env_vars(tokens, setup); // expand them before return to return expanded tokens
+  // printf("------> after expansion\n");
+  // print_tokens(tokens);
   return (free(state), tokens);
 }
 
@@ -244,7 +244,7 @@ t_token *tokenize(t_setup *setup)
 // {
 //   while(tokens != NULL)
 //   {
-//     printf("token => [%s], type => [%d]\n ", tokens->value, tokens->type);
+//     printf("token => [%s], type => [%d], quotes_type => [%d], is_space => [%d]\n", tokens->value, tokens->type, tokens->quotes_info->quotes_type, tokens->is_space);
 //     tokens = tokens->next;
 //   }
 // }

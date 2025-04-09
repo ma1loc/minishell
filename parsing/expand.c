@@ -1,6 +1,26 @@
 #include "tokenizer.h"
 #include "../srcs/mini_shell.h"
 
+// if(*ptr == '$' && !ft_isalpha(*ptr + 1) && *(ptr + 1) != '_')
+//       {
+//         expand_env_in_string(ptr, setup);
+//         while(*ptr != '$' && *ptr != '\0')
+//         {
+//           buff[buff_index++] = *ptr;
+//           ptr++;
+//           break;
+//         }
+//       }
+
+//>>> tests
+// echo $HOME$ HOMEASDF >>> not valid //
+// echo $HOME$*ASDF >>> not valid ..
+// echo {$HOME}$  >>> not valid //
+// echo "$PATH" '#PATH' $PATH >>> valid
+// echo "$PATH"'#PATH'$PATH   >>> not valid
+// minishell$
+
+
 char *get_env_value(char *name, t_setup *setup)
 {
   t_env *env;
@@ -17,22 +37,25 @@ char *get_env_value(char *name, t_setup *setup)
   }
   return(NULL);
 }
-int check_num_dolar(char *str)
-{
-  int i;
-  int count;
-  i = 0;
-  count = 0;
-  while(str[i] != '\0')
-  {
-    if(str[i] == '$')
-      count++;
-    i++;
-  }
-  if(count % 2 == 0)
-    return(1); // mean is odd
-  return(0); // even
-}
+// int check_num_dolar(char *str)
+// {
+//   int i;
+//   int count;
+//   i = 0;
+//   count = 0;
+//   while(str[i] != '\0')
+//   {
+//     if(str[i] == '$' && str[i + 1] == '$')
+//     {
+//       count++;
+//       i++;
+//     }
+//     i++;
+//   }
+//   if(count % 2 == 1)
+//     return(1); // mean is odd 
+//   return(0); // even
+// }
 char *expand_env_in_string(char *str, t_setup *setup)
 {
   // t_expand *expand;
@@ -44,56 +67,55 @@ char *expand_env_in_string(char *str, t_setup *setup)
   char *var_start;
   char var_name[256];
   char buff[1024];
-  int is_braced;
+  t_token *token;
 
+  token = setup->token;
   if(!str)
     return(NULL);
-  if (!setup || !setup->expand)
+  if (!setup->token || !setup->token->quotes_info)
+  {
     return(NULL);
-  if(setup->expand->quotes_type == 1)
-    return(NULL);
+  }
+  // if(setup->token->quotes_info->quotes_type == 1)
+  //   return(NULL);
     
   ptr = str;
-
+  // printf("-> %s\n", token->value);
   while(*ptr)
   {
-    if(*ptr == '$' && (check_num_dolar(str) != 1) && (setup->expand->quotes_type == 0 || setup->expand->quotes_type == 2))
+    if(*ptr == '$' && (token->quotes_info->quotes_type == 0 || token->quotes_info->quotes_type == 2))
     {
-      if (*ptr == '$' && *(ptr + 1) == '?') 
+      if (*(ptr + 1) == '?') // expand exit stat
       {
-        // copy $? literally without expansion
-        buff[buff_index++] = *ptr++;
-        buff[buff_index++] = *ptr++;
+        char *exit = ft_itoa(setup->exit_stat); 
+        strcpy(buff + buff_index, exit);
+        buff_index += strlen(exit);
+        ptr += 2;
+        free(exit);
         continue;
       }
-      else if(*ptr == '$' && *(ptr + 1) == '#')
-        return (NULL);
-      // reset variable collection
-      var_index = 0;
-      is_braced = 0;
-      ptr++;
-      var_start = ptr;  // save start var
-      if(*ptr == '{')
+      if(*(ptr + 1) == '\0')
       {
-        is_braced = 1;
-        ptr++;
-        var_start = ptr;
+        buff[buff_index++] = *ptr;
+        break;
       }
-      while(*var_start != '\0' && (isalnum(*var_start) || *var_start == '_'))
+      // reset variable collection
+      ptr++;
+      var_index = 0;
+      var_start = ptr;  // save start var
+      while(*var_start != '\0' && *var_start != '$' && (isalnum(*var_start) || *var_start == '_'))
       {
         var_name[var_index++] = *var_start++;
       }
-      var_name[var_index] = '\0';
-      if(is_braced == 1 && *ptr == '}')
-        ptr++;
+      var_name[var_index] = '\0'; 
       env_value = get_env_value(var_name, setup);
       if(env_value != NULL)
       {
           strcpy(buff + buff_index, env_value);
           buff_index += strlen(env_value);
-      }
-      else
-        ptr = var_start - 1; // skep
+        }
+      ptr = var_start; // skip to the end of variable name
+      continue;     // skip the ptr++ at end of loop
     }
     else
       buff[buff_index++] = *ptr;
@@ -101,7 +123,6 @@ char *expand_env_in_string(char *str, t_setup *setup)
   }
   buff[buff_index] = '\0';
   rslt = strdup(buff);
-  // free(setup->expand);
   return(rslt);
 }
 
@@ -111,6 +132,7 @@ t_token *expand_env_vars(t_token *tokens, t_setup *setup)
   char *expanded;
 
   current = tokens;
+  setup->token = current;
   while(current)
   {
     expanded = expand_env_in_string(current->value, setup);
@@ -120,6 +142,7 @@ t_token *expand_env_vars(t_token *tokens, t_setup *setup)
         current->value = expanded;
     }
     current = current->next;
+    setup->token = current;
     }
     return(tokens);
   }

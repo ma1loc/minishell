@@ -18,10 +18,11 @@ typedef enum e_token_type
   TOKEN_RED_INOUT,
 } t_token_type;
 
-typedef struct s_expand  
+typedef struct s_quotes_info  
 {
+  char *stripped_text;
   int quotes_type;
-} t_expand;
+} t_quotes_info;
 
 typedef struct s_tokinizer_state // struct for state of the token to use i and j and buff
 {
@@ -36,7 +37,8 @@ typedef struct s_token  // struct for tokenize input
   char *value; // text of the token
   t_token_type type;  // token type
   struct s_token *next;
-
+  t_quotes_info *quotes_info;
+  int is_space;
 } t_token;
 
 typedef struct s_args_list // struct for linked list for args
@@ -101,50 +103,36 @@ void add_redirection_to_list( t_command *cmd, char *file_name, t_token_type type
 void free_redirections(t_redirections *redir);
 
 //////////////////////
-void process_spaces(t_tokinizer_state *state, t_token **tokens, t_setup *setup);
-// void process_spaces(t_tokinizer_state *state, t_setup *setup);
+void process_spaces(t_tokinizer_state *state, t_token **tokens);
 
-void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tokens, t_setup *setup);
-// void process_special_tokens(t_tokinizer_state *state, t_setup *setup);
-
+void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tokens);
 
 void process_operators(char *input, t_tokinizer_state *state, t_token **tokens);
-// void process_operators(t_tokinizer_state *state, t_setup *setup);
 
-
-void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup);
-
-
+void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup, t_token **tokens);
 
 void process_normal_word(char *input, t_tokinizer_state *state);
-void process_remainder_text(t_tokinizer_state *state, t_token **tokens, t_setup *setup);
+void process_remainder_text(t_tokinizer_state *state, t_token **tokens);
 
 ///////////////////////
-// void process_token(t_commande_state *state, t_token *current, t_args_list **list_args);
 void process_token(t_commande_state *state, t_token *current, t_args_list **list_args);
 
 void creat_node_next_commande(t_commande_state *state);
 void creat_node_pipe_commande(t_commande_state *state);
 t_command *creat_new_node_command(t_command *commandes);
-// void process_token_type_word(t_commande_state *state, t_token *current, t_args_list **list_args);
 void process_token_type_pipe(t_commande_state *state, t_args_list **list_args);
-t_token *process_token_type_redir_in_her(t_commande_state *state, t_token *current);
-// void process_token_type_redir_out_app(t_commande_state *state, t_token *current);
+t_token *process_token_type_redir(t_commande_state *state, t_token *current);
 void process_args_last_cmd(t_commande_state *state, t_args_list *list_args);
 ///////////////////////
-// t_token *expand_env_vars(t_token *tokens, t_setup *setup);
 t_token *expand_env_vars(t_token *tokens, t_setup *setup);
 char *get_env_value(char *name, t_setup *setup);
-// char *expand_env_in_string(char *str, t_setup *setup);
 char *expand_env_in_string(char *str, t_setup *setup);
+void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens);
 
 
-
-
-t_token *add_token( t_token **head, char *value, t_token_type type);
-char *strip_quotes(char *str, t_setup *setup);
-// char *strip_quotes(t_setup *setup);
-void    ft_perror(t_setup *setup, char *msg, int exit_stat);
+t_token *add_token( t_token **head, char *value, t_token_type type, int quotes_type);
+t_quotes_info strip_quotes(char *str);
+void    ft_perror(t_setup *setup, char *msg, int exit_stat);  /// remove it later
 
 
 #endif

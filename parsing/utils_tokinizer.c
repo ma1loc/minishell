@@ -43,19 +43,19 @@
 //     ft_exit(setup, exit_stat);
 // }
 
-//////////////////////////////////////////////////////////////////////
-void process_spaces(t_tokinizer_state *state, t_token **tokens, t_setup *setup)
+////////////////////////////////////////////////////////////////////// 
+void process_spaces(t_tokinizer_state *state, t_token **tokens)
 {
-  char *stripped;
+  t_quotes_info info;
 
   if(state->j > 0)
   {
     state->buff[state->j] = '\0';
-    stripped = strip_quotes(state->buff, setup);
-    if(stripped != NULL)
+    info = strip_quotes(state->buff);
+    if(info.stripped_text != NULL)
     {
-      add_token(tokens, stripped, TOKEN_WORD);
-      free(stripped);
+      add_token(tokens, info.stripped_text, TOKEN_WORD, info.quotes_type);
+      free(info.stripped_text);
     }
     state->j = 0;
   }
@@ -63,50 +63,52 @@ void process_spaces(t_tokinizer_state *state, t_token **tokens, t_setup *setup)
 }
 void process_operators(char *input, t_tokinizer_state *state, t_token **tokens)
 {
+  t_quotes_info info;
+
   if(input[state->i] == '|')
   {
-    add_token(tokens, "|", TOKEN_PIPE);
+    add_token(tokens, "|", TOKEN_PIPE, info.quotes_type);
     state->i++;
   }
   else if(input[state->i] == '>' && input[state->i + 1] == '>')
   {
-    add_token(tokens, ">>", TOKEN_APPEND);
+    add_token(tokens, ">>", TOKEN_APPEND, info.quotes_type);
     state->i += 2;
   }
   else if(input[state->i] == '<' && input[state->i + 1] == '<')
   {
-    add_token(tokens, "<<", TOKEN_HERDOC);
+    add_token(tokens, "<<", TOKEN_HERDOC, info.quotes_type);
     state->i += 2;
   }
   else if(input[state->i] == '<' && input[state->i + 1] == '>')
   {
-    add_token(tokens, "<>", TOKEN_RED_INOUT);
+    add_token(tokens, "<>", TOKEN_RED_INOUT, info.quotes_type);
     state->i += 2;
   }
   else if(input[state->i] == '>')
   {
-    add_token(tokens, ">", TOKEN_RED_OUT);
+    add_token(tokens, ">", TOKEN_RED_OUT, info.quotes_type);
     state->i++;
   }
   else if(input[state->i] == '<')
   {
-    add_token(tokens, "<", TOKEN_RED_IN);
+    add_token(tokens, "<", TOKEN_RED_IN, info.quotes_type);
     state->i++;
   }
 }
 
-void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tokens, t_setup *setup)
+void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tokens)
 {
-  char *stripped;
+  t_quotes_info info;
 
   if(state->j > 0)
   {
     state->buff[state->j] = '\0';  //save any buffered word first
-    stripped = strip_quotes(state->buff, setup);
-    if(stripped != NULL)
+    info = strip_quotes(state->buff);
+    if(info.stripped_text != NULL)
     {
-      add_token(tokens, stripped, TOKEN_WORD);
-      free(stripped);
+      add_token(tokens, info.stripped_text, TOKEN_WORD, info.quotes_type);
+      free(info.stripped_text);
     }
     state->j = 0;
   }
@@ -114,35 +116,66 @@ void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tok
 
 }
 
-void process_remainder_text(t_tokinizer_state *state, t_token **tokens, t_setup *setup)
+void process_remainder_text(t_tokinizer_state *state, t_token **tokens)
 {
-  char *stripped;
+  t_quotes_info info;
 
   if(state->j > 0)
   {
     state->buff[state->j] = '\0';
-    stripped = strip_quotes(state->buff, setup);
-    if(stripped != NULL)
+    info = strip_quotes(state->buff);
+    if(info.stripped_text != NULL)
     {
-      add_token(tokens, stripped, TOKEN_WORD);
-      free(stripped);
+      add_token(tokens, info.stripped_text, TOKEN_WORD, info.quotes_type);
+      free(info.stripped_text);
     }
-    state->j = 0;   // in_word = 0;
+    state->j = 0;
   }
 }
 
+void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
+{
 
-void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup)
+  t_quotes_info info;
+  t_token *new_token;
+  int is_space = -1;
+  
+  state->buff[state->j++] = input[state->i++];
+  if (input[state->i] == '?') // expand exit stat ($?)
+    state->buff[state->j++] = input[state->i++];
+  while (input[state->i] != '\0' && (isalnum(input[state->i]) || input[state->i] == '_'))
+  {
+      state->buff[state->j++] = input[state->i++];  
+  }
+  if(input[state->i] == ' ')
+      is_space = 1;
+  state->buff[state->j] = '\0';  //save any buffered word first
+  info = strip_quotes(state->buff);
+  if(info.stripped_text != NULL)
+  {
+    new_token = add_token(tokens, info.stripped_text, TOKEN_WORD, info.quotes_type);
+    new_token->is_space = is_space;
+    free(info.stripped_text);
+  }
+  state->j = 0;
+}
+
+
+void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup, t_token **tokens)
 {
   {
     char quote_char;
 
     quote_char = input[state->i];
     state->buff[state->j++] = input[state->i++]; // Add opening quote
-
     // Copy everything inside quotes
     while(input[state->i] != '\0' && input[state->i] != quote_char)
     {
+      if( input[state->i] == '$' && quote_char == '"')
+      {
+        process_dollar(input, state, tokens);
+        continue;
+      }
       state->buff[state->j++] = input[state->i++];
     }
 

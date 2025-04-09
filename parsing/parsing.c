@@ -74,6 +74,7 @@ t_command *pars_tokens(t_setup *setup) // main func parsing tokens
   state->current_cmd = commandes;   // track current commande
   current = setup->token; // linked list of tokens
   process_token(state, current, &list_args);
+  // print_tokens(current);
   free(state);
   return(commandes);
 }
