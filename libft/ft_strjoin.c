@@ -25,7 +25,7 @@ static void	mem_fill(char *str, char *ptr, size_t idx)
 	}
 }
 
-char	*ft_strjoin(char *s1, char *s2, t_gc *gc)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*ptr;
 	size_t	t_len;
@@ -34,12 +34,12 @@ char	*ft_strjoin(char *s1, char *s2, t_gc *gc)
 		return (NULL);
 	if (!s1)
 	{
-		ptr = ft_strdup(s2, gc);
+		ptr = ft_strdup(s2);
 		return (ptr);
 	}
 	if (!s2)
 	{
-		ptr = ft_strdup(s1, gc);
+		ptr = ft_strdup(s1);
 		return (ptr);
 	}
 	t_len = ft_strlen(s1) + ft_strlen(s2);

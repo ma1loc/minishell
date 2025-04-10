@@ -31,7 +31,7 @@ int	delim_count(char *str, char separator)
 	return (count);
 }
 
-char	*get_the_word(char *str, int *index, char separator, t_gc *gc)
+char	*get_the_word(char *str, int *index, char separator)
 {
 	int		start;
 	char	*word;
@@ -60,7 +60,7 @@ char	*get_the_word(char *str, int *index, char separator, t_gc *gc)
 	return (word[i] = '\0', word);
 }
 
-char	**ft_split(char *str, char separator, t_gc *gc)
+char	**ft_split(char *str, char separator)
 {
 	char	**new_str;
 	int		word_count;
@@ -77,7 +77,7 @@ char	**ft_split(char *str, char separator, t_gc *gc)
 	index = 0;
 	while (i < word_count)
 	{
-		new_str[i] = get_the_word(str, &index, separator, gc);
+		new_str[i] = get_the_word(str, &index, separator);
 		if (!new_str[i])
 			return (NULL);
 		i++;

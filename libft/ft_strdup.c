@@ -12,7 +12,7 @@
 
 #include "mini_shell.h"
 
-char	*ft_strdup(char *s1, t_gc *gc)
+char	*ft_strdup(char *s1)
 {
 	char	*dup;
 	size_t	s_len;

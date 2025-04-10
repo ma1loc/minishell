@@ -1,18 +1,18 @@
 #include "mini_shell.h"
 
-void    execute_externals(t_setup *setup, t_gc *gc)
+void    execute_externals(t_setup *setup)
 {
     pid_t     pid;
     int     status;
 
 	pid = 0;
-    setup->cmd_path = path_resolver(setup, gc);
+    setup->cmd_path = path_resolver(setup);
     if (!setup->cmd_path)
 	{
 		ft_perror(setup ,"command not found\n", CMD_NOT_FOUND);
 		return ;
 	}
-	pid = set_fork(setup, gc);
+	pid = set_fork(setup);
     if (pid == 0)
     {
         if (execve(setup->cmd_path, setup->cmd->args, setup->exec_env) == -1)
@@ -28,40 +28,40 @@ void    execute_externals(t_setup *setup, t_gc *gc)
 	}
 }
 
-void	execute_commands(t_tree *tree, t_setup *setup, t_gc *gc)
+void	execute_commands(t_tree *tree, t_setup *setup)
 {
 	if (!tree)
 		return ;
-	else if (is_built_in(tree->name))
+	if (is_built_in(tree->name))
 	{
-		execute_internals(tree->cmd, setup, gc);
+		execute_internals(tree->cmd, setup);
 		return ;
 	}
-	execute_externals(setup, gc);
+	execute_externals(setup);
 }
 
-void	execution(t_tree *tree, t_setup *setup, t_gc *gc)
+void	execution(t_tree *tree, t_setup *setup)
 {
 	if (tree->type == TOKEN_WORD)
 	{
 		if(tree->cmd->redirections == NULL)
 		{
 			setup->fork_flag = 1;
-			execute_commands(tree, setup, gc);
+			execute_commands(tree, setup);
 		}
 		else
 		{
 			setup->fork_flag = 1;
-			execute_redirections(tree, setup, gc);
+			execute_redirections(tree, setup);
 		}
 	}
 	else if (tree->type == TOKEN_PIPE)
 	{
 		setup->fork_flag = 0;
-		execute_pipes(tree, setup, gc);
+		execute_pipes(tree, setup);
 	}
 	if (setup->heredoc_flag)
-		cleanup_heredoc(setup, gc);
-	setup->exec_env = update_exec_envp(setup, gc);
+		cleanup_heredoc(setup);
+	setup->exec_env = update_exec_envp(setup);
 	setup->fork_flag = 0;
 }

@@ -3,21 +3,21 @@
 //	>>> here i have to get the path of the command, i mean the path the 
 //	will the cmd will be there and executed.
 
-char	*split_path(char *path, char *cmd, t_gc *gc)
+char	*split_path(char *path, char *cmd)
 {
 	int		i;
 	char	**split_path;
 	char	*add_to_path;
 	char	*full_path;
 
-	split_path = ft_split(path, ':', gc);
+	split_path = ft_split(path, ':');
 	if (!split_path)
 		allocation_failed_msg(gc);
 	i = 0;
 	while (split_path[i])
 	{
-		add_to_path = ft_strjoin(split_path[i], "/", gc);
-		full_path = ft_strjoin(add_to_path, cmd, gc);
+		add_to_path = ft_strjoin(split_path[i], "/");
+		full_path = ft_strjoin(add_to_path, cmd);
 		if (!add_to_path || !full_path)
 			allocation_failed_msg(gc);
 		gc_free(gc, add_to_path);
@@ -44,7 +44,7 @@ int		is_directory(t_setup *setup, char *cmd_path)
 	return (0);
 }
 
-char	*is_valid_str(char *cmd, t_gc *gc)
+char	*is_valid_str(char *cmd)
 {
 	char	*dup;
 
@@ -53,7 +53,7 @@ char	*is_valid_str(char *cmd, t_gc *gc)
 	if ((ft_strchr(cmd, '/') != NULL) || (access(cmd, F_OK | X_OK) == 0))
 
 	{
-		dup = ft_strdup(cmd, gc);
+		dup = ft_strdup(cmd);
 		if (!dup)
 			allocation_failed_msg(gc);
 		return (dup);
@@ -61,7 +61,7 @@ char	*is_valid_str(char *cmd, t_gc *gc)
 	return (NULL);
 }
 
-char	*path_resolver(t_setup *setup, t_gc *gc)
+char	*path_resolver(t_setup *setup)
 {
 	char	*path;
 	char	*cmd;
@@ -74,14 +74,14 @@ char	*path_resolver(t_setup *setup, t_gc *gc)
 	env_list = setup->env;
 	if (is_directory(setup, cmd))
 		return (NULL);
-	dup = is_valid_str(cmd, gc);
+	dup = is_valid_str(cmd);
 	if (dup)
 		return (dup);
     while (env_list && ft_strcmp(env_list->key, "PATH") != 0)
 		env_list = env_list->next;
 	if (!env_list)
 		return (NULL);
-	path = split_path(env_list->value, cmd, gc);
+	path = split_path(env_list->value, cmd);
 	if (!path)
 		return (NULL);
 	return (path);

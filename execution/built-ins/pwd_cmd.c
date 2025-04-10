@@ -1,6 +1,6 @@
 #include "mini_shell.h"
 
-int	get_pwd(t_setup *setup, t_gc *gc)
+int	get_pwd(t_setup *setup)
 {
     char buf_path[PATH_MAX];
     char *path;
@@ -9,9 +9,9 @@ int	get_pwd(t_setup *setup, t_gc *gc)
     path = getcwd(buf_path, sizeof(buf_path));
     if (path)
     {
-        new_pwd = ft_strdup(path, gc);
+        new_pwd = ft_strdup(path);
         if (!new_pwd)
-			allocation_failed_msg(gc);
+			allocation_failed_msg();
         if (setup->pwd)
             gc_free(gc, setup->pwd);
         setup->pwd = new_pwd;
@@ -25,8 +25,8 @@ int	get_pwd(t_setup *setup, t_gc *gc)
 	return (0);
 }
 
-void	pwd_cmd(t_setup *setup, t_gc *gc)
+void	pwd_cmd(t_setup *setup)
 {
-	if (get_pwd(setup, gc) == 0)
+	if (get_pwd(setup) == 0)
 		printf("%s\n", setup->pwd);
 }

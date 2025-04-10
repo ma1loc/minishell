@@ -12,7 +12,7 @@
 
 #include "mini_shell.h"
 
-char	*ft_substr(char *s1, size_t start, size_t len, t_gc *gc)
+char	*ft_substr(char *s1, size_t start, size_t len)
 {
 	size_t		s1_len;
 	char		*ptr;
@@ -22,7 +22,7 @@ char	*ft_substr(char *s1, size_t start, size_t len, t_gc *gc)
 		return (NULL);
 	s1_len = ft_strlen(s1);
 	if (start >= s1_len)
-		return (ft_strdup("", gc));
+		return (ft_strdup(""));
 	if (len > s1_len - start)
 		len = s1_len - start;
 	ptr = gc_malloc(gc, sizeof(char) * (len + 1));

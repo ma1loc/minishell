@@ -9,7 +9,7 @@ void	set_pipe(t_setup *setup, int *fd)
     }
 }
 
-pid_t	set_fork(t_setup *setup, t_gc *gc)
+pid_t	set_fork(t_setup *setup)
 {
 	pid_t	pid;
 

@@ -1,6 +1,6 @@
 # include "mini_shell.h"
 
-void    free_old_envp(t_setup *setup, t_gc *gc)
+void    free_old_envp(t_setup *setup)
 {
     int i;
 
@@ -28,7 +28,7 @@ int     count_envp(t_env *env)
     return (env_len);
 }
 
-char    **update_exec_envp(t_setup *setup, t_gc *gc)
+char    **update_exec_envp(t_setup *setup)
 {
     int     envp_len;
     char    **envp_update;
@@ -38,7 +38,7 @@ char    **update_exec_envp(t_setup *setup, t_gc *gc)
     int     i;
 
     if (setup->exec_env)
-        free_old_envp(setup, gc);
+        free_old_envp(setup);
     envp_len = count_envp(setup->env);
     envp_update = gc_malloc(gc, sizeof(char *) * (envp_len + 1));
     if (!envp_update)
@@ -47,8 +47,8 @@ char    **update_exec_envp(t_setup *setup, t_gc *gc)
     current_env = setup->env;
     while (current_env)
     {
-        key = ft_strjoin(current_env->key, "=", gc);
-        full_line = ft_strjoin(key, current_env->value, gc);
+        key = ft_strjoin(current_env->key, "=");
+        full_line = ft_strjoin(key, current_env->value);
         gc_free(gc, key);
         envp_update[i] = full_line;
         current_env = current_env->next;
