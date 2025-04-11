@@ -240,14 +240,14 @@ t_token *tokenize(t_setup *setup)
   return (free(state), tokens);
 }
 
-// void print_tokens( t_token *tokens) //////////////// print tokens
-// {
-//   while(tokens != NULL)
-//   {
-//     printf("token => [%s], type => [%d], quotes_type => [%d], is_space => [%d]\n", tokens->value, tokens->type, tokens->quotes_info->quotes_type, tokens->is_space);
-//     tokens = tokens->next;
-//   }
-// }
+void print_tokens( t_token *tokens) //////////////// print tokens
+{
+  while(tokens != NULL)
+  {
+    printf("token => [%s], type => [%d], quotes_type => [%d], is_space => [%d]\n", tokens->value, tokens->type, tokens->quotes_info->quotes_type, tokens->is_space);
+    tokens = tokens->next;
+  }
+}
 
 
 // void free_tokens(t_token *tokens)
