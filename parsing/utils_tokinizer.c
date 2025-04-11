@@ -133,6 +133,49 @@ void process_remainder_text(t_tokinizer_state *state, t_token **tokens)
   }
 }
 
+// void process_dollar_in_quotes(char *input, t_tokinizer_state *state, t_token **tokens)
+// {
+
+//   t_quotes_info info;
+//   t_token *new_token;
+//   int is_space = -1;
+//   char quote_char;
+  
+//   state->buff[state->j++] = input[state->i++];
+//   if (input[state->i] == '?') // expand exit stat ($?)
+//     state->buff[state->j++] = input[state->i++];
+//   while (input[state->i] != '\0' && (isalnum(input[state->i]) || input[state->i] == '_'))
+//   {
+//       state->buff[state->j++] = input[state->i++];  
+//   }
+//   while(input[state->i] == ' ' || input[state->i] == '\t')
+//   {
+//     state->buff[state->j++] = input[state->i++];
+//     is_space = 1;
+//   }
+//   if(input[state->i] == '\'' && (input[state->i + 1] == '$' || !isalnum(input[state->i])))
+//   {
+//     quote_char = input[state->i];
+//     state->buff[state->j++] = input[state->i++];
+//     while (input[state->i] != '\0' && input[state->i] != '"')
+//     {
+//       state->buff[state->j++] = input[state->i++];  
+//     }
+//     if(input[state->i] == quote_char)
+//       state->buff[state->j++] = input[state->i++];
+//   }
+//   if(input[state->i] == '"')
+//     state->buff[state->j++] = input[state->i++];
+//   state->buff[state->j] = '\0';  //save any buffered word first
+//   info = strip_quotes(state->buff);
+//   if(info.stripped_text != NULL)
+//   {
+//     new_token = add_token(tokens, info.stripped_text, TOKEN_WORD, info.quotes_type);
+//     new_token->is_space = is_space;
+//     free(info.stripped_text);
+//   }
+//   state->j = 0;
+// }
 void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
 {
 
@@ -147,8 +190,9 @@ void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
   {
       state->buff[state->j++] = input[state->i++];  
   }
-  if(input[state->i] == ' ')
-      is_space = 1;
+  if(input[state->i] == ' ' || input[state->i] == '\t')
+    is_space = 1;
+
   state->buff[state->j] = '\0';  //save any buffered word first
   info = strip_quotes(state->buff);
   if(info.stripped_text != NULL)
@@ -160,34 +204,32 @@ void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
   state->j = 0;
 }
 
-
 void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup, t_token **tokens)
 {
-  {
+    (void)setup;
     char quote_char;
-
+    t_quotes_info info;
+    t_token *new_token;
+    int is_space = -1;
     quote_char = input[state->i];
-    state->buff[state->j++] = input[state->i++]; // Add opening quote
-    // Copy everything inside quotes
+
+    state->buff[state->j++] = input[state->i++]; // add opening quote
+    // copy everything inside quotes
     while(input[state->i] != '\0' && input[state->i] != quote_char)
     {
-      if( input[state->i] == '$' && quote_char == '"')
-      {
-        process_dollar(input, state, tokens);
-        continue;
-      }
       state->buff[state->j++] = input[state->i++];
     }
 
-    if(input[state->i] == '\0')
-    {
-      // printf("syntax error\n");
-      ft_perror(setup, "syntax error near unexpected token\n", SYNTAX_ERROR);
-      return ;
-    }
-
     state->buff[state->j++] = input[state->i++]; // Add closing quote
-  }
+      state->buff[state->j] = '\0';  //save any buffered word first
+    info = strip_quotes(state->buff);
+    if(info.stripped_text != NULL)
+    {
+      new_token = add_token(tokens, info.stripped_text, TOKEN_WORD, info.quotes_type);
+      new_token->is_space = is_space;
+      free(info.stripped_text);
+    }
+    state->j = 0;
 }
 
 void process_normal_word(char *input, t_tokinizer_state *state)

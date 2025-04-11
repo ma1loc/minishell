@@ -87,7 +87,7 @@ char *expand_env_in_string(char *str, t_setup *setup)
     {
       if (*(ptr + 1) == '?') // expand exit stat
       {
-        char *exit = ft_itoa(setup->exit_stat); 
+        char *exit = ft_itoa_(setup->exit_stat); // add ft later
         strcpy(buff + buff_index, exit);
         buff_index += strlen(exit);
         ptr += 2;

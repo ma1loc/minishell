@@ -2,6 +2,8 @@
 #define TOKENIZER_H
 
 #include <stdbool.h>
+#include <string.h>
+
 // #include "../srcs/mini_shell.h"
 
 typedef struct s_setup t_setup;
@@ -133,6 +135,7 @@ void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens);
 t_token *add_token( t_token **head, char *value, t_token_type type, int quotes_type);
 t_quotes_info strip_quotes(char *str);
 void    ft_perror(t_setup *setup, char *msg, int exit_stat);  /// remove it later
-
+char	*ft_itoa_(int n);
+void process_dollar_in_quotes(char *input, t_tokinizer_state *state, t_token **tokens);
 
 #endif
