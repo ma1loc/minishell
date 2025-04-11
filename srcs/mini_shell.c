@@ -66,7 +66,7 @@ t_gc *gc = NULL;
 
 int		main(int argc, char **argv, char **env)
 {
-    t_setup			*setup;
+    t_setup	*setup;
 
 	gc = gc_init();
     setup = start_setup(argc, argv, env);
@@ -77,9 +77,9 @@ int		main(int argc, char **argv, char **env)
         setup->input = readline("minishell$ ");
         if (setup->input == NULL)
             break ;  // >>> for segnal case to free litter on
-		add_history(setup->input);
         if (setup->input[0] == '\0')
             continue ;
+		add_history(setup->input);
         setup->token = tokenize(setup);
         if (!setup->token || ft_strlen(setup->token->value) == 0)
 			continue ;

@@ -1,5 +1,18 @@
 # include "mini_shell.h"
 
+int		should_expand(t_setup *setup)
+{
+	t_token *token;
+	int quotes;
+	
+	token = setup->token->next;
+
+	quotes = token->quotes_info->quotes_type;
+	if (quotes == 0)
+		return (1);
+	return (0);
+}
+
 void	cleanup_heredoc(t_setup *setup)
 {
 	int i;
@@ -40,7 +53,6 @@ char	*get_file_name(t_setup *setup)
 	return (file_name);
 }
 
-// >>> refresh the offset of the fd
 int	refresh_fds(t_setup *setup, char *file_name)
 {
 	int i;

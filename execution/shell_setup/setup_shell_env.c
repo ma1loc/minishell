@@ -17,7 +17,7 @@ t_setup	*init_setup()
 	setup->oldpwd = NULL;
 	setup->cmd_path = NULL;
 	setup->envp = NULL;
-	setup->exec_env = NULL;	// >>> for the execve();
+	setup->exec_env = NULL;
 	setup->exit_stat = 0;
 	setup->heredoc = NULL;
 	return (setup);
@@ -56,8 +56,6 @@ t_setup	*start_setup(int argc, char **argv, char **env)
 		return (NULL);
 	}
     setup = shell_env_setup(env);
-	if (!setup)
-		return (NULL);	// >>> here i have to free and exit;
 	setup->envp = env;
 	return (setup);
 }

@@ -203,7 +203,9 @@ void	heredoc_process(t_setup *setup, t_tree *tree);
 char	*get_file_name(t_setup *setup);
 int		refresh_fds(t_setup *setup, char *file_name);
 int		should_expand(t_setup *setup);
-void	parsing_heredoc_input(t_setup *setup, char *input);
+
+void	expand_heredoc_input(t_setup *setup, char *input);
+
 void	cleanup_heredoc(t_setup *setup);
 
 

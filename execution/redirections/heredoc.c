@@ -1,9 +1,5 @@
 # include "mini_shell.h"
 
-// tests
-// $HOME '$HOME' "$HOME"
-// }: bad substitution
-
 void	loding_heredoc(t_setup *setup)
 {
 	char	*input;
@@ -12,12 +8,13 @@ void	loding_heredoc(t_setup *setup)
 	{
 		input = readline("heredoc> ");
 		if (input == NULL || ft_strcmp(input, setup->heredoc->delimiter) == 0)
-		{
-			free(input);
 			break;
-		}
+		if (input[0] == '\0')
+            continue ;
+		if (!setup->token || ft_strlen(setup->token->value) == 0)
+			continue ;
 		if (should_expand(setup))
-			parsing_heredoc_input(setup, input);
+			expand_heredoc_input(setup, input);
 		else
 		{
 			write(setup->heredoc->fd[setup->i], input, ft_strlen(input));
@@ -25,6 +22,7 @@ void	loding_heredoc(t_setup *setup)
 		}
 		free(input);
 	}
+	free(input);
 }
 
 void	get_delimiter(t_setup *setup, t_redirections *red)
@@ -81,7 +79,7 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
 					ft_perror(setup, "heredoc process failed\n", EXIT_FAILURE);
 					break;
 				}
-				setup->i++;		// >>> index of the array of fds
+				setup->i++;
 			}
 			redir = redir->next;
 		}
@@ -92,11 +90,8 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
 
 void	heredoc_process(t_setup *setup, t_tree *tree)
 {
-	setup->heredoc->deleimiter_flag[0] = 1;	// >>> to remove later on
-
-
 	setup->heredoc_flag = 0;
 	setup->i = 0;
 	init_heredoc(setup, tree);
-	setup->i = 0;	// >>> restor it to defule to use it again in the execution
+	setup->i = 0;	// >>> restor it to defult to use it again in the execution
 }

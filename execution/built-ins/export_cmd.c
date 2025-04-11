@@ -48,7 +48,6 @@ void	set_env_update(t_setup *setup, char *arg)
 	update_env(setup, key, value);
 }
 
-
 void	set_env_append(t_setup *setup, char *arg)
 {
 	int		len;
