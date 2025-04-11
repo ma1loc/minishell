@@ -24,7 +24,7 @@ int	cd(t_setup *setup)
 	return (0);
 }
 
-void    cd_cmd(t_setup *setup, t_gc *gc)
+void    cd_cmd(t_setup *setup)
 {
     char    *tmp_pwd;
 	int		status;
@@ -34,18 +34,16 @@ void    cd_cmd(t_setup *setup, t_gc *gc)
         ft_perror(setup, "cd: current directory not set\n", EXIT_FAILURE);
         return ;
     }
-    tmp_pwd = ft_strdup(setup->pwd, gc);
+    tmp_pwd = ft_strdup(setup->pwd);
 	if (!tmp_pwd)
-		allocation_failed_msg(gc);
+		allocation_failed_msg();
 	status = cd(setup);
     if (status == 0)
     {
-        if (get_pwd(setup, gc) == 0)
+        if (get_pwd(setup) == 0)
 		{
-        	// set_env(setup, "PWD", setup->pwd);
-        	update_env(setup, "PWD", setup->pwd, gc);
-        	// set_env(setup, "OLDPWD", tmp_pwd);
-        	update_env(setup, "OLDPWD", tmp_pwd, gc);
+        	update_env(setup, "PWD", setup->pwd);
+        	update_env(setup, "OLDPWD", tmp_pwd);
 		}
     }
 	gc_free(gc, tmp_pwd);

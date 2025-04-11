@@ -38,7 +38,7 @@ static char	*is_zero(char *ptr)
 	return (ptr);
 }
 
-char	*ft_itoa(int n, t_gc *gc)
+char	*ft_itoa(int n)
 {
 	size_t			n_len;
 	char			*ptr;

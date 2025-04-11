@@ -1,13 +1,13 @@
 #include "mini_shell.h"
 
-void	numeric_error(t_gc *gc)
+void	numeric_error()
 {
 	ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
 	gc_destroy(gc);
 	exit (SYNTAX_ERROR);
 }
 
-int	filter_input(char *str, t_gc *gc, int sign)
+int	filter_input(char *str, int sign)
 {
 	int				i;
 	unsigned long	result;
@@ -20,19 +20,19 @@ int	filter_input(char *str, t_gc *gc, int sign)
 	{
 		result = result * 10 + (str[i] - '0');
 		if (result > 9223372036854775807 && sign == 1)
-			numeric_error(gc);
+			numeric_error();
 		if (result > 9223372036854775807 && sign == -1)
 		{
 			exit_status = result * sign;
 			if (exit_status < 0)
-				numeric_error(gc);
+				numeric_error();
 		}
 		i++;
 	}
 	return (result * sign);
 }
 
-int	ft_atoi(char *str, t_gc *gc)
+int	a_to_i(char *str)
 {
 	int					sign;
 	unsigned long		result;
@@ -51,31 +51,42 @@ int	ft_atoi(char *str, t_gc *gc)
 			sign = -1;
 		i++;
 	}
-	result = filter_input(str + i, gc, sign);
+	result = filter_input(str + i, sign);
 	return (result);
 }
 
-void exit_cmd(t_setup *setup, t_gc *gc)
+void	exiting(t_setup *setup)
 {
     int	input;
 
 	input = 0;
+	if (is_valid_number(setup->cmd->args[1]))
+    {
+        input = a_to_i(setup->cmd->args[1]);
+		gc_destroy(gc);
+		exit(input);
+    }
+    else
+		numeric_error();
+}
+
+void	exit_cmd(t_setup *setup)
+{
+	int	exit_status;
+
+	exit_status = 0;
+	exit_status = setup->exit_stat;
     ft_putstr_fd("exit\n", STDOUT_FILENO);
     if (!setup->cmd->args[1])
-        exit(setup->exit_stat);		// >>> NOTE to free before
+	{
+		gc_destroy(gc);
+        exit(exit_status);	
+	}
     else if (setup->cmd->args[2])
     {
         ft_perror(setup, "exit: too many arguments\n", EXIT_FAILURE);
-        return;
+        return ;
     }
     else
-    {
-        if (is_valid_number(setup->cmd->args[1]))
-        {
-            input = ft_atoi(setup->cmd->args[1], gc);
-            exit(input);	// >>> NOTE to free before
-        }
-        else
-			numeric_error(gc);
-    }
+		exiting(setup);
 }

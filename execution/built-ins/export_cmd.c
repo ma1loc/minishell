@@ -1,10 +1,6 @@
 #include "mini_shell.h"
 
-// to handel the return of the functions
-// int add_new_key_value(t_setup *setup, char *key, char *value)
-// ft_perror(setup, "export: memory allocation failed\n", EXIT_FAILURE);
-
-int export_key_only(t_setup *setup, char *key, t_gc *gc)
+int export_key_only(t_setup *setup, char *key)
 {
     t_env *new_node;
 	t_env *last_node;
@@ -16,8 +12,8 @@ int export_key_only(t_setup *setup, char *key, t_gc *gc)
 	}
     new_node = gc_malloc(gc, sizeof(t_env));
     if (!new_node)
-        allocation_failed_msg(gc);
-    new_node->key = ft_strdup(key, gc);
+        allocation_failed_msg();
+    new_node->key = ft_strdup(key);
     if (!new_node->key)
 		allocation_failed_msg(gc);
     new_node->value = NULL;
@@ -33,9 +29,46 @@ int export_key_only(t_setup *setup, char *key, t_gc *gc)
     return (0);
 }
 
+void	set_env_update(t_setup *setup, char *arg)
+{
+	int		len;
+	char	*key;
+	char	*value;
+	char	*get_char;
 
-// the parsing expand i have to use it to here
-void	handle_export_argument(t_setup *setup, char *arg, t_gc *gc)
+	len = ft_strlen(arg);
+	get_char = ft_strchr(arg, '=');
+	key = ft_substr(arg, 0, get_char - arg);
+	if (!key)
+		allocation_failed_msg();
+	get_char = ft_strchr(arg, '=');
+	value = ft_substr(arg, get_char - arg + 1, len);
+	if (!value)
+		allocation_failed_msg();
+	update_env(setup, key, value);
+}
+
+void	set_env_append(t_setup *setup, char *arg)
+{
+	int		len;
+	char	*key;
+	char	*value;
+	char	*get_char;
+
+	len = ft_strlen(arg);
+	get_char = ft_strchr(arg, '+');
+	key = ft_substr(arg, 0, get_char - arg);
+	if (!key)
+		allocation_failed_msg();
+	get_char = ft_strchr(arg, '=');
+	value = ft_substr(arg, get_char - arg + 1, len);
+	if (!value)
+		allocation_failed_msg();
+	append_to_env(setup, key, value);
+}
+
+// the parsing expand
+void	handle_export_argument(t_setup *setup, char *arg)
 {
 	char			*key;
 	char			*value;
@@ -45,31 +78,20 @@ void	handle_export_argument(t_setup *setup, char *arg, t_gc *gc)
 	value = NULL;
 	type = get_export_type(arg);
 	if (type == APPEND_VALUE)
-	{
-		key = ft_substr(arg, 0, ft_strchr(arg, '+') - arg, gc);
-		value = ft_substr(arg, ft_strchr(arg, '=') - arg + 1, ft_strlen(arg), gc);
-		append_to_env(setup, key, value, gc);
-	}
+		set_env_append(setup, arg);
 	else if (type == ASSIGN_VALUE)
-	{
-		key = ft_substr(arg, 0, ft_strchr(arg, '=') - arg, gc);
-		value = ft_substr(arg, ft_strchr(arg, '=') - arg + 1, ft_strlen(arg), gc);
-		update_env(setup, key, value, gc);
-	}
+		set_env_update(setup, arg);
 	else
 	{
-		key = ft_strdup(arg, gc);
-		export_key_only(setup, key, gc);
+		key = ft_strdup(arg);
+		export_key_only(setup, key);
 	}
-	free(key);
+	gc_free(gc, key);
 	if (value)
-		free(value);
+		gc_free(gc, value);
 }
 
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-void	export_cmd(t_setup *setup, t_gc *gc)
+void	export_cmd(t_setup *setup)
 {
     char	**args;
     int		i;
@@ -83,7 +105,10 @@ void	export_cmd(t_setup *setup, t_gc *gc)
     {
         while (args[i])
         {
-			handle_export_argument(setup, args[i], gc);
+			printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+			printf("in export_cmd -> arg => %s\n", args[i]);
+			printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+			handle_export_argument(setup, args[i]);
 			i++;
         }
     }

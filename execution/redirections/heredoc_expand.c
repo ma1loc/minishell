@@ -1,17 +1,6 @@
 # include "mini_shell.h"
 
-int		should_expand(t_setup *setup)
-{
-	int i;
-
-	i = setup->i;
-	// if (setup->expand->quotes_type == 1)
-	if (setup->heredoc->deleimiter_flag[i] == 1)
-		return (1); //	>>> expand
-	return (0); //		>>> not expand
-}
-
-char	*get_env_val(t_setup *setup, char *key)	// >>> value
+char	*get_env_val(t_setup *setup, char *key)
 {
 	t_env *env;
 
@@ -28,57 +17,69 @@ char	*get_env_val(t_setup *setup, char *key)	// >>> value
 	return (NULL);
 }
 
-	// if the delimiter have qutes no expand
-	// parsing the qutes
-	// delemiter most check if there's qutes other wayse if it single or double just print it with it's qutes
-	// update input with it's env value
-	// >>> here i have to get the env key
-	// >>> but first thing i have to check it if valid or not, i mean the fist char
-	// >>> i have to split it
-	// >>> $->$		$$(skipe)	$$$->$
-	// >>> qutes in heredoc "$HOME"
-	// $HOME" '$HOME' '$HOME "$HOME $HOME' $HOME" "$HOME"
-
-	// >>>> to check it <<<<
-	// handel -> double $ signe
-	// handel -> $?
-
-void	parsing_heredoc_input(t_setup *setup, char *input, t_gc *gc)
+void	set_exit_status(t_setup *setup, char **result)
 {
-	int		i;
+	char	*value;
+
+	value = ft_itoa(setup->exit_stat);
+	if (!value)
+		allocation_failed_msg();
+	*result = ft_strjoin(*result, value);
+	gc_free(gc, value);
+}
+
+void	set_dollar_sign(t_setup *setup, char **result)
+{
+	char *value;
+
+	value = ft_itoa(setup->exit_stat);
+	if (!value)
+		allocation_failed_msg();
+	*result = ft_strjoin(*result, value);
+	gc_free(gc, value);
+}
+
+void	expand_env_variable(t_setup *setup, char *input, int *i, char **result)
+{
 	int		start;
-	char	*result;
-	char	*_char;
 	char	*key;
 	char	*value;
+
+	start = ++(*i);
+	while (ft_isalnum(input[*i]) || input[*i] == '_')
+		(*i)++;
+	key = ft_substr(input, start, *i - start);
+	value = get_env_val(setup, key);
+	if (value)
+		*result = ft_strjoin(*result, value);
+	gc_free(gc, key);
+}
+
+void	expand_heredoc_input(t_setup *setup, char *input)
+{
+	int		i;
+	char	*result;
 	
 	i = 0;
 	result = NULL;
-	key = NULL;
-	value = NULL;
-	_char = NULL; 
 	while (input[i])
 	{
-		if (input[i] == '$' && input[i + 1] &&
-		(ft_isalpha(input[i + 1]) || input[i + 1] == '_'))
+		if (input[i] == '$' && input[i + 1] == '?')
 		{
-			start = ++i;
-			while (ft_isalnum(input[i]) || input[i] == '_')
-				i++;
-			key = ft_substr(input, start, i - start, gc);
-			value = get_env_val(setup, key);
-			if (value)
-				result = ft_strjoin(result, value, gc);
-			free(key);
+			i += 2;
+			set_dollar_sign(setup, &result);
+			continue;
 		}
-		else
+		else if (input[i] == '$' && input[i + 1] &&
+			(ft_isalpha(input[i + 1]) || input[i + 1] == '_'))
 		{
-			_char = char_to_str(input[i], gc);
-			result = ft_strjoin(result, _char, gc);
-			i++;
+			expand_env_variable(setup, input, &i, &result);
+			continue;
 		}
+		result = ft_strjoin(result, char_to_str(input[i]));
+		i++;
 	}
 	write(setup->heredoc->fd[setup->i], result, ft_strlen(result));
 	write(setup->heredoc->fd[setup->i], "\n", 1);
-	free(result);
+	gc_free(gc, result);
 }

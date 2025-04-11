@@ -103,12 +103,12 @@ void	gc_destroy(t_gc *gc)
 }
 
 
-void	gc_print_stats(t_gc *gc)
-{
-    if (!gc)
-        return;
+// void	gc_print_stats(t_gc *gc)
+// {
+//     if (!gc)
+//         return;
     
-    printf("Memory usage:\n");
-    printf(">>> Total allocations: %d\n", gc->total_allocs);
-    printf(">>> Total bytes: %zu\n", gc->total_bytes);
-}
+//     printf("Memory usage:\n");
+//     printf(">>> Total allocations: %d\n", gc->total_allocs);
+//     printf(">>> Total bytes: %zu\n", gc->total_bytes);
+// }
