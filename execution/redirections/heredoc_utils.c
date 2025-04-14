@@ -2,11 +2,10 @@
 
 int		should_expand(t_setup *setup)
 {
-	t_token *token;
-	int quotes;
+	t_token	*token;
+	int 	quotes;
 	
 	token = setup->token->next;
-
 	quotes = token->quotes_info->quotes_type;
 	if (quotes == 0)
 		return (1);
@@ -66,4 +65,35 @@ int	refresh_fds(t_setup *setup, char *file_name)
 		return (cleanup_heredoc(setup), free(file_name),1);
 	}
 	return (0);
+}
+
+int is_heredoc_in_pipe(t_tree *tree)
+{
+    if (tree->left && is_heredoc(tree->left))
+        return (1);
+    if (tree->right && is_heredoc(tree->right))
+        return (1);
+    return (0);
+}
+
+int is_heredoc(t_tree *tree)
+{
+    t_redirections *redir;
+
+    if (!tree)
+	return (0);
+	
+    if (tree->cmd && tree->cmd->redirections)
+    {
+		redir = tree->cmd->redirections;
+        while (redir)
+        {
+            if (redir->type == TOKEN_HERDOC)
+                return (1);
+            redir = redir->next;
+        }
+    }
+	if (is_heredoc_in_pipe(tree))
+		return (1);
+    return (0);
 }

@@ -52,6 +52,8 @@ void	expand_env_variable(t_setup *setup, char *input, int *i, char **result)
 	value = get_env_val(setup, key);
 	if (value)
 		*result = ft_strjoin(*result, value);
+	else
+		*result = ft_strjoin(*result, "");	// esle fix the segv
 	gc_free(gc, key);
 }
 

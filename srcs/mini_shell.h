@@ -30,8 +30,8 @@ typedef struct s_expand t_expand;
 # define SYNTAX_ERROR 2
 # define CMD_NOT_FOUND 127
 # define CMD_NOT_EXEC 126
+# define EXIT_SEGINT 130
 // # define EXIT_SEVERE 128
-// # define EXIT_SEVERE 130 for the ctrl + c (heredoc case)
 // >>>>>>>>>>>>>>>>>>>>>>>
 
 // >>> define the built_in and external cmd
@@ -77,16 +77,7 @@ int		ft_isalpha(int c);
 int		ft_isalnum(int c);
 t_env	*ft_lstlast(t_env *lst);
 void	ft_lstadd_back(t_env **lst, t_env *new);
-int	ft_atoi(char *str);
-
-// >>> sig
-// void	signals(int signal);
-// void	do_sigint();
-// void	do_sigquit();
-
-// >>> export && unset
-
-// >>> struct for the env variables
+int		ft_atoi(char *str);
 
 typedef struct s_env
 {
@@ -99,7 +90,6 @@ typedef struct s_env
 typedef struct s_heredoc
 {
 	char	*delimiter;
-	int		deleimiter_flag[256];	// >>> expand or not
 	int		fd[FDS];   // >>> store heredoc pipe fds (read ends)
 	char	*file_name[256];	// >>> sotre file name to unlink them later
 }	t_heredoc;
@@ -123,6 +113,7 @@ typedef struct s_setup
 	t_heredoc	*heredoc;
 	int			heredoc_flag;
 	int			fork_flag;
+	// int			seg_heredoc_flag;
 }   t_setup;
 
 typedef enum e_export_type
@@ -158,6 +149,7 @@ int		is_valid_identifier(char *key);
 int		is_valid_number(char *str);
 char	*char_to_str(char c);
 void	allocation_failed_msg();
+void	setup_interactive_signals(void);
 
 
 // >>>>>>>>>>>>>>>>>>>>>>> gc >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -199,16 +191,17 @@ int		red_heredoc(t_setup *setup, t_tree *tree);
 
 
 // >>>>>>>>>>>>>>>>>>> heredoc >>>>>>>>>>>>>>>>>>>>>>
+int		is_heredoc(t_tree *tree);
 void	heredoc_process(t_setup *setup, t_tree *tree);
 char	*get_file_name(t_setup *setup);
 int		refresh_fds(t_setup *setup, char *file_name);
 int		should_expand(t_setup *setup);
-
 void	expand_heredoc_input(t_setup *setup, char *input);
-
 void	cleanup_heredoc(t_setup *setup);
 
-
-
+int		*exit_status();
+void	main_sigint(int sig);
+void	heredoc_sigint(int sig);
+void	do_eof(t_setup *setup);
 
 # endif

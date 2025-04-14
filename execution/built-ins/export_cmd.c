@@ -1,15 +1,18 @@
 #include "mini_shell.h"
 
+// problem of the alrady set and set a new one 
 int export_key_only(t_setup *setup, char *key)
 {
-    t_env *new_node;
-	t_env *last_node;
+    t_env	*new_node;
+	t_env	*last_node;
     
 	if (!is_valid_identifier(key))
 	{
 		ft_perror(setup, "export: not a valid identifier\n", EXIT_FAILURE);
 		return (-1);
 	}
+	if(get_env_key(setup, key))
+		return (0);
     new_node = gc_malloc(gc, sizeof(t_env));
     if (!new_node)
         allocation_failed_msg();
@@ -67,7 +70,6 @@ void	set_env_append(t_setup *setup, char *arg)
 	append_to_env(setup, key, value);
 }
 
-// the parsing expand
 void	handle_export_argument(t_setup *setup, char *arg)
 {
 	char			*key;
@@ -105,9 +107,9 @@ void	export_cmd(t_setup *setup)
     {
         while (args[i])
         {
-			printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
-			printf("in export_cmd -> arg => %s\n", args[i]);
-			printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+			// printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+			// printf("in export_cmd -> arg => %s\n", args[i]);
+			// printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
 			handle_export_argument(setup, args[i]);
 			i++;
         }
