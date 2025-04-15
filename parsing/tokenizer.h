@@ -41,6 +41,7 @@ typedef struct s_token  // struct for tokenize input
   struct s_token *next;
   t_quotes_info *quotes_info;
   int is_space;
+  int is_split;
 } t_token;
 
 typedef struct s_args_list // struct for linked list for args
@@ -126,7 +127,7 @@ void process_token_type_pipe(t_commande_state *state, t_args_list **list_args);
 t_token *process_token_type_redir(t_commande_state *state, t_token *current);
 void process_args_last_cmd(t_commande_state *state, t_args_list *list_args);
 ///////////////////////
-t_token *expand_env_vars(t_token *tokens, t_setup *setup);
+void expand_env_vars(t_token *tokens, t_setup *setup);
 char *get_env_value(char *name, t_setup *setup);
 char *expand_env_in_string(char *str, t_setup *setup);
 void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens);
@@ -137,5 +138,6 @@ t_quotes_info strip_quotes(char *str);
 void    ft_perror(t_setup *setup, char *msg, int exit_stat);  /// remove it later
 char	*ft_itoa_(int n);
 void process_dollar_in_quotes(char *input, t_tokinizer_state *state, t_token **tokens);
+void	remove_token(t_token **head, t_token *current);
 
 #endif

@@ -54,7 +54,7 @@ t_quotes_info strip_quotes(char *str)
     result[j] = '\0';
     info.stripped_text = result;
     // if (j == 0 && len > 0)
-    //     return result;
+    //     return info;
     if (j == 0 && len == 0)
     {
         free(result);
@@ -174,7 +174,6 @@ t_token *add_token( t_token **head, char *value, t_token_type type, int quotes_t
   new_token = malloc(sizeof(t_token));
   if(!new_token)
     return(NULL);
-  
   new_token->value = strdup(value);  // copy the value
   new_token->type = type;
   new_token->next = NULL;
@@ -202,6 +201,176 @@ t_token *add_token( t_token **head, char *value, t_token_type type, int quotes_t
   return(new_token);
 }
 
+t_token *add_token_at_position(t_token **head, char *value, t_token_type type, int quotes_type, t_token *position)
+{
+    t_token *new_token;
+    
+    new_token = malloc(sizeof(t_token));
+    if(!new_token)
+        return(NULL);
+    new_token->value = strdup(value);  // copy the value
+    new_token->type = type;
+    new_token->is_split = 0; // Set is_split to 0 for new tokens
+    
+    new_token->quotes_info = malloc(sizeof(t_quotes_info));
+    if(!new_token->quotes_info)
+    {
+        free(new_token->value);
+        free(new_token);
+        return(NULL);
+    }
+    new_token->quotes_info->quotes_type = quotes_type;
+    
+    if(*head == NULL || position == NULL)  // If list is empty or position is NULL, add at the beginning
+    {
+        new_token->next = *head;
+        *head = new_token;
+        return(new_token);
+    }
+    
+    // Insert after the position token
+    new_token->next = position->next;
+    position->next = new_token;
+    
+    return(new_token);
+}
+
+// void handel_is_split(t_token *tokens, t_token **head)
+// {
+//   t_quotes_info info;
+//   char *input = NULL;
+//   t_token *current = NULL;
+//   t_token *tmp = NULL;
+//   int i;
+//   int j;
+//   char buff[1024];
+
+//   i = 0;
+//   j = 0;
+//   current = tokens;
+
+//   // setup->token = tokens;
+//   input = current->value;
+
+//   if(!input)
+//     return;
+//   while(current)
+//   {
+//     if(current->is_split == 1)
+//     {
+//       while(input[i] != '\0')
+//       {
+//         if(input[i] == ' ' || input[i] == '\t')
+//         {
+//           if(j > 0)
+//           {
+//             buff[j] = '\0';
+//             info.stripped_text = buff; 
+//             add_token_at_position(head, info.stripped_text, TOKEN_WORD, info.quotes_type, current);
+//           }
+//           j = 0;
+//           i++;
+//         }
+//         else
+//           buff[j++] = input[i++];
+//       }
+//       if(j > 0)
+//       {
+//         buff[j] = '\0';
+//         info.stripped_text = buff; 
+//         add_token_at_position(head, info.stripped_text, TOKEN_WORD, info.quotes_type, current);
+//       }
+//       j = 0;
+//       i++;
+//       tmp = current;
+//       current = current->next;
+//       remove_token(head,tmp);
+//       continue;
+//     }
+//     // add_args_to_list(list_args, current);
+//     current = current->next;
+//   }
+// }
+
+void handel_is_split(t_token *tokens, t_token **head)
+{
+  t_quotes_info info;
+  char *input = NULL;
+  t_token *current = NULL;
+  t_token *prev = NULL;
+  t_token *last_inserted = NULL;
+  int i;
+  int j;
+  char buff[1024];
+
+  current = tokens;
+
+  while(current)
+  {
+    if(current->is_split == 1)
+    {
+      input = current->value;
+      if(!input)
+      {
+        current = current->next;
+        continue;
+      }
+
+      // Store previous node to use for insertion point
+      if(prev == NULL)
+        last_inserted = NULL; // We'll insert at the head
+      else
+        last_inserted = prev;
+
+      // Reset counters for this token
+      i = 0;
+      j = 0;
+      
+      // Get quotes_type from current token
+      info.quotes_type = current->quotes_info ? current->quotes_info->quotes_type : 0;
+
+      while(input[i] != '\0')
+      {
+        if(input[i] == ' ' || input[i] == '\t')
+        {
+          if(j > 0)
+          {
+            buff[j] = '\0';
+            
+            // Insert after the last inserted token
+            last_inserted = add_token_at_position(head, buff, TOKEN_WORD, info.quotes_type, last_inserted);
+            j = 0;
+          }
+          i++;
+        }
+        else
+          buff[j++] = input[i++];
+      }
+      
+      if(j > 0)
+      {
+        buff[j] = '\0';
+        
+        // Insert after the last inserted token
+        last_inserted = add_token_at_position(head, buff, TOKEN_WORD, info.quotes_type, last_inserted);
+      }
+      
+      // Store next before removing current
+      t_token *next = current->next;
+      
+      // Remove the original token
+      remove_token(head, current);
+      
+      // Move to next token
+      current = next;
+    }
+    else
+    {
+      prev = current;
+      current = current->next;
+    }
+  }
+}
 
 t_token *tokenize(t_setup *setup)
 {
@@ -233,21 +402,19 @@ t_token *tokenize(t_setup *setup)
       process_normal_word(input,state);  // just a regular character in a word
   }
   process_remainder_text(state, &tokens);  // don't forget any remaining text in the buffer
-  // print_tokens(tokens); /////////////// remove it 
-  tokens = expand_env_vars(tokens, setup); // expand them before return to return expanded tokens
-  // printf("------> after expansion\n");
-  // print_tokens(tokens);
+  expand_env_vars(tokens, setup); // expand them before return to return expanded tokens
+  handel_is_split(tokens,&tokens);
   return (free(state), tokens);
 }
 
-void print_tokens( t_token *tokens) //////////////// print tokens
-{
-  while(tokens != NULL)
-  {
-    printf("token => [%s], type => [%d], quotes_type => [%d], is_space => [%d]\n", tokens->value, tokens->type, tokens->quotes_info->quotes_type, tokens->is_space);
-    tokens = tokens->next;
-  }
-}
+// void print_tokens( t_token *tokens) //////////////// print tokens
+// {
+//   while(tokens != NULL)
+//   {
+//     printf("token => [%s], type => [%d], quotes_type => [%d], is_space => [%d] , is_split => [%d]\n", tokens->value, tokens->type, tokens->quotes_info->quotes_type, tokens->is_space, tokens->is_split);
+//     tokens = tokens->next;
+//   }
+// }
 
 
 // void free_tokens(t_token *tokens)
@@ -318,61 +485,6 @@ void print_tokens( t_token *tokens) //////////////// print tokens
 //     else
 //     printf("No pipe node found in the command list.\n");
 
-
-//     return 0;
-// }
-
-// int main(int argc , char **argv)
-// {
-//     // char *input = "\"ls\" > out";
-//     // char *input = "\"\"\"ls -la\"\"\"";
-//     // char *input = "\"\'ls -la\'\"";
-//     // char *input = "\'\'ls -la\'\'";
-//     // char *input = "echo \"hello\"";
-//     // char *input = "echo \"\"\'\"\"\'\"\"\'\'";
-//     // char *input = "\"ls\" -lla > out";
-//     // char *input = "\echo -ls\" \"  \"";
-//   // char *input = "echo \'\"\'\'\"\'";
-//   char *input = "echo \"hello\"\" word\"";
-//   // char *input = "echo \'\"\'";
-//   // char *input = """";
-
-//     // if (argc < 2)
-//     // {
-//     //     printf("Usage: %s \"command to tokenize\"\n", argv[0]);
-//     //     printf("Example: %s \"ls -la | grep .c\"\n", argv[0]);
-//     //     return 1;
-//     // }
-//     // // Use the first argument as input
-//     // input = argv[1];
-//     // For debugging, print the actual raw input
-//     printf("Raw input: %s\n", input);
-//     for (int i = 0; input[i] != '\0'; i++) {
-//         printf("%c[%d] ", input[i], input[i]);
-//     }
-//     printf("\n\n");
-//     fflush(stdout);
-//     // Tokenize the input
-//     t_token *tokens = tokenize(input);
-
-//     // Print the tokens with a clear separation
-//     printf("---------------------------------\n");
-//     printf("Tokens from tokenization:\n");
-//     printf("---------------------------------\n");
-//     print_tokens(tokens);
-//     printf("---------------------------------\n");
-
-//     // Rest of your code as before
-//     t_command *commands = pars_tokens(tokens);
-//     t_command *pipe_node = find_pipe_node(commands);
-
-//     printf("\nParsed Commands:\n");
-//     print_commands(commands);
-
-//     if (pipe_node)
-//         printf("Found a pipe node in the command list!\n");
-//     else
-//         printf("No pipe node found in the command list.\n");
 
 //     return 0;
 // }

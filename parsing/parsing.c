@@ -39,20 +39,20 @@ void add_redirection_to_list( t_command *cmd, char *file_name, t_token_type type
   // new_redir->next = NULL;
 }
 
-void free_redirections(t_redirections *redir) // free redir
-{
-  t_redirections *current_redir;
-  t_redirections *next_redir;
+// void free_redirections(t_redirections *redir) // free redir
+// {
+//   t_redirections *current_redir;
+//   t_redirections *next_redir;
 
-  current_redir = redir;
-  while(current_redir != NULL)
-  {
-    next_redir = current_redir->next;
-    free(current_redir->file_name);
-    free(current_redir);
-    current_redir = next_redir;
-  }
-}
+//   current_redir = redir;
+//   while(current_redir != NULL)
+//   {
+//     next_redir = current_redir->next;
+//     free(current_redir->file_name);
+//     free(current_redir);
+//     current_redir = next_redir;
+//   }
+// }
 
 
 t_command *pars_tokens(t_setup *setup) // main func parsing tokens

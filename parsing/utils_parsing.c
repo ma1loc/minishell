@@ -172,15 +172,6 @@ t_token *process_token_type_redir(t_commande_state *state, t_token *current)
   return(current);
 }
 
-// void process_token_type_redir_out_app(t_commande_state *state, t_token *current)
-// {
-//   if(current->next && current->next->type == TOKEN_WORD)
-//   {
-//     add_redirection_to_list(state->current_cmd, current->next->value, current->type);
-//     current = current->next;
-//   }
-// }
-
 void process_args_last_cmd(t_commande_state *state, t_args_list *list_args)
 {
   if(list_args != NULL)  // process argus for last command
