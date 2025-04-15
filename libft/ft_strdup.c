@@ -21,7 +21,7 @@ char	*ft_strdup(char *s1)
 	s_len = ft_strlen(s1);
 	dup = gc_malloc(gc, sizeof(char) * (s_len + 1));
 	if (!dup)
-		return (NULL);
+		allocation_failed_msg();
 	i = 0;
 	while (s_len > i)
 	{

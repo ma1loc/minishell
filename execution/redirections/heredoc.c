@@ -1,5 +1,6 @@
 # include "mini_shell.h"
 
+// Overriding Signal Handlers in Child Process
 void	loding_heredoc(t_setup *setup)
 {
 	char	*input;
@@ -7,12 +8,15 @@ void	loding_heredoc(t_setup *setup)
 	while (true)
 	{
 		input = readline("heredoc> ");
-		if (input == NULL || ft_strcmp(input, setup->heredoc->delimiter) == 0)
-			break;
+        if (input == NULL)
+            break ;
+        if (ft_strcmp(input, setup->heredoc->delimiter) == 0)
+        {
+            free(input);
+            break;
+        }
 		if (input[0] == '\0')
             continue ;
-		if (!setup->token || ft_strlen(setup->token->value) == 0)
-			continue ;
 		if (should_expand(setup))
 			expand_heredoc_input(setup, input);
 		else
@@ -22,12 +26,10 @@ void	loding_heredoc(t_setup *setup)
 		}
 		free(input);
 	}
-	free(input);
 }
 
 void	get_delimiter(t_setup *setup, t_redirections *red)
 {
-
 	if (setup->heredoc->delimiter)
 		gc_free(gc, setup->heredoc->delimiter);
 
@@ -88,10 +90,26 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
 	init_heredoc(setup, tree->right);
 }
 
-void	heredoc_process(t_setup *setup, t_tree *tree)
+void heredoc_process(t_setup *setup, t_tree *tree)
 {
-	setup->heredoc_flag = 0;
-	setup->i = 0;
-	init_heredoc(setup, tree);
-	setup->i = 0;	// >>> restor it to defult to use it again in the execution
+    pid_t	pid;
+    int		status;
+	int		exit_status;
+
+    pid = set_fork(setup);    
+    if (pid == 0)
+    {
+		signal(SIGINT, heredoc_sigint);
+		setup->i = 0;
+        init_heredoc(setup, tree);
+        setup->i = 0;
+        execution(tree, setup);
+		exit_status = setup->exit_stat;
+		gc_destroy(gc);
+		exit(exit_status);
+    }
+    waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		setup->exit_stat = WEXITSTATUS(status);
+	return ;
 }

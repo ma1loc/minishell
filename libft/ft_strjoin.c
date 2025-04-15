@@ -45,7 +45,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	t_len = ft_strlen(s1) + ft_strlen(s2);
 	ptr = gc_malloc(gc, sizeof(char) * (t_len + 1));
 	if (!ptr)
-		return (NULL);
+		allocation_failed_msg();
 	mem_fill(s1, ptr, 0);
 	mem_fill(s2, ptr, ft_strlen(s1));
 	ptr[t_len] = '\0';

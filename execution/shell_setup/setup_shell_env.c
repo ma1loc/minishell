@@ -23,8 +23,6 @@ t_setup	*init_setup()
 	return (setup);
 }
 
-// >>> setup the env of the minishell
-// return NULL here
 t_setup	*shell_env_setup(char **env)
 {
     t_setup	*setup;
@@ -55,6 +53,7 @@ t_setup	*start_setup(int argc, char **argv, char **env)
         ft_perror(NULL, "No extra args, please ;)\n", EXIT_FAILURE); // >>> exit status litter on
 		return (NULL);
 	}
+	gc = gc_init();
     setup = shell_env_setup(env);
 	setup->envp = env;
 	return (setup);

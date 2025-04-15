@@ -39,8 +39,6 @@ void	update_env(t_setup *setup, char *key, char *value)
 		if (env->value)
 			gc_free(gc, env->value);
 		env->value = ft_strdup(value);
-		if (!env->value)
-			allocation_failed_msg(gc);
 	}
 	else
 		add_to_env(setup, key, value);
@@ -58,8 +56,6 @@ void	append_to_env(t_setup *setup, char *key, char *value)
 		if (env->value)
 		{
 			new_value = ft_strjoin(env->value, value);
-			if (!new_value)
-				allocation_failed_msg(gc);
 			gc_free(gc, env->value);
 			env->value = new_value;
 		}

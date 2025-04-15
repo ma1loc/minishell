@@ -37,11 +37,9 @@ int	a_to_i(char *str)
 	int					sign;
 	unsigned long		result;
 	int					i;
-	int					exit_status;
 
 	sign = 1;
 	result = 0;
-	exit_status = 0;
 	i = 0;
 	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
 		i++;
