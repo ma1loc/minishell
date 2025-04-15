@@ -1829,3 +1829,4 @@
 		// printf("args[0] -> %s\n", setup->cmd->args[0]);
 		// printf("args[1] -> %s\n", setup->cmd->args[1]);
 		// printf("args[2] -> %s\n", setup->cmd->args[2]);
+// $hu -> export hu="ls -la"

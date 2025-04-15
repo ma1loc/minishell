@@ -46,6 +46,9 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		setup->cmd = pars_tokens(setup);
         setup->tree = build_tree_commande(setup->cmd);
+		printf("args[0] -> %s\n", setup->cmd->args[0]);
+		printf("args[1] -> %s\n", setup->cmd->args[1]);
+		printf("args[2] -> %s\n", setup->cmd->args[2]);
 		start_execution(setup);
 		free(setup->input);
     }
