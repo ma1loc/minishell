@@ -47,7 +47,7 @@
 void process_spaces(t_tokinizer_state *state, t_token **tokens)
 {
   t_quotes_info info;
-
+  
   if(state->j > 0)
   {
     state->buff[state->j] = '\0';
@@ -211,17 +211,29 @@ void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup, t_tok
     t_quotes_info info;
     t_token *new_token;
     int is_space = -1;
+    // if(state->j > 0)
+    // {
+    // state->buff[state->j] = '\0';
+    // info = strip_quotes(state->buff);
+    // // printf("-->%s\n", info.stripped_text);
+    // if(info.stripped_text != NULL)
+    // {
+    //   add_token(tokens, info.stripped_text, TOKEN_WORD, info.quotes_type);
+    //   free(info.stripped_text);
+    // }
+    // state->j = 0;
+    // }
     quote_char = input[state->i];
-
     state->buff[state->j++] = input[state->i++]; // add opening quote
     // copy everything inside quotes
     while(input[state->i] != '\0' && input[state->i] != quote_char)
     {
       state->buff[state->j++] = input[state->i++];
     }
-
     state->buff[state->j++] = input[state->i++]; // Add closing quote
-      state->buff[state->j] = '\0';  //save any buffered word first
+    if (input[state->i] == ' ')
+      is_space = 1;
+    state->buff[state->j] = '\0';  //save any buffered word first
     info = strip_quotes(state->buff);
     if(info.stripped_text != NULL)
     {
