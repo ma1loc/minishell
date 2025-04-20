@@ -13,7 +13,7 @@ int	get_pwd(t_setup *setup)
         if (!new_pwd)
 			allocation_failed_msg();
         if (setup->pwd)
-            gc_free(gc, setup->pwd);
+            gc_free(g_gc, setup->pwd);
         setup->pwd = new_pwd;
         setup->exit_stat = 0;
     }

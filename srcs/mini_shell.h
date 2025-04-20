@@ -15,7 +15,7 @@
 # include "../parsing/tokenizer.h"
 
 # define PATH_MAX 4096
-# define FDS 256
+# define HERE_DOC_MAX 16
 
 // >>> to remove litter on
 typedef struct s_token t_token;
@@ -31,6 +31,7 @@ typedef struct s_expand t_expand;
 # define CMD_NOT_FOUND 127
 # define CMD_NOT_EXEC 126
 # define EXIT_SEGINT 130
+# define EXIT_QUIT 131
 // # define EXIT_SEVERE 128
 // >>>>>>>>>>>>>>>>>>>>>>>
 
@@ -56,7 +57,8 @@ typedef struct s_gc
 	size_t	total_bytes;
 }	t_gc;
 
-extern t_gc *gc;	// >>> declaration on the global 
+extern t_gc *g_gc;
+
 
 // >>> libft
 size_t	ft_strlen(char *str);
@@ -90,8 +92,9 @@ typedef struct s_env
 typedef struct s_heredoc
 {
 	char	*delimiter;
-	int		fd[FDS];   // >>> store heredoc pipe fds (read ends)
-	char	*file_name[256];	// >>> sotre file name to unlink them later
+	int		fd[HERE_DOC_MAX];   // >>> store heredoc pipe fds (read ends)
+	char	*file_name[HERE_DOC_MAX];	// >>> sotre file name to unlink them later
+	int		qoutes_type;
 }	t_heredoc;
 
 
@@ -113,6 +116,7 @@ typedef struct s_setup
 	t_heredoc	*heredoc;
 	int			heredoc_flag;
 	int			fork_flag;
+	int			heredoc_counter;
 	// int			seg_heredoc_flag;
 }   t_setup;
 
@@ -160,6 +164,9 @@ void	gc_destroy(t_gc *gc);
 void	gc_print_stats(t_gc *gc);	// >>> to remove later on
 void	gc_free(t_gc *gc, void *ptr);
 
+// >>>>>>>>>>>>>>>>>>> parsing >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+int		check_space(char *str);
+
 
 // >>> the execution will start here
 t_setup	*start_setup(int argc, char **argv, char **env);
@@ -181,6 +188,7 @@ pid_t	set_first_fork(t_setup  *setup, int *fd);
 pid_t	set_second_fork(t_setup  *setup, pid_t pid_1, int *fd);
 pid_t	set_fork(t_setup *setup);
 
+
 // >>>>>>>>>>>>>>>> redirections >>>>>>>>>>>>>>>>>>
 void	execute_redirections(t_tree *tree, t_setup *setup);
 int		red_input(t_setup *setup,t_tree *tree, t_redirections *redirection);
@@ -195,13 +203,26 @@ int		is_heredoc(t_tree *tree);
 void	heredoc_process(t_setup *setup, t_tree *tree);
 char	*get_file_name(t_setup *setup);
 int		refresh_fds(t_setup *setup, char *file_name);
+// int		should_expand(t_token *token);
 int		should_expand(t_setup *setup);
 void	expand_heredoc_input(t_setup *setup, char *input);
 void	cleanup_heredoc(t_setup *setup);
+void	heredoc_counter(t_setup *setup, t_tree *tree);
+void	do_eof_heredoc(t_setup *setup);
+void	maximum_heredoc_msg();
 
+
+// >>>>>>>>>>>>>>>>>>>>>>> signals >>>>>>>>>>>>>>>>>>
 int		*exit_status();
+void	setup_signals();
 void	main_sigint(int sig);
 void	heredoc_sigint(int sig);
 void	do_eof(t_setup *setup);
+void	execute_sigint(int sig);
+void	sigint_exit_status(t_setup *setup);
+void	signal_status(t_setup *setup, int status);
+t_setup	**get_setup_ref(void);
+void	set_setup(t_setup *ptr);
+t_setup	*get_setup(void);
 
 # endif

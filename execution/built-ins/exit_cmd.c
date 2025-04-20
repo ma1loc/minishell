@@ -3,7 +3,7 @@
 void	numeric_error()
 {
 	ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
-	gc_destroy(gc);
+	gc_destroy(g_gc);
 	exit (SYNTAX_ERROR);
 }
 
@@ -61,7 +61,7 @@ void	exiting(t_setup *setup)
 	if (is_valid_number(setup->cmd->args[1]))
     {
         input = a_to_i(setup->cmd->args[1]);
-		gc_destroy(gc);
+		gc_destroy(g_gc);
 		exit(input);
     }
     else
@@ -77,7 +77,7 @@ void	exit_cmd(t_setup *setup)
     ft_putstr_fd("exit\n", STDOUT_FILENO);
     if (!setup->cmd->args[1])
 	{
-		gc_destroy(gc);
+		gc_destroy(g_gc);
         exit(exit_status);	
 	}
     else if (setup->cmd->args[2])

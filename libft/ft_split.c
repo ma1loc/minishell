@@ -48,7 +48,7 @@ char	*get_the_word(char *str, int *index, char separator)
 		(*index)++;
 		count++;
 	}
-	word = gc_malloc(gc, sizeof(char) * (count + 1));
+	word = gc_malloc(g_gc, sizeof(char) * (count + 1));
 	if (!word)
 		return (NULL);
 	i = 0;
@@ -70,7 +70,7 @@ char	**ft_split(char *str, char separator)
 	if (!str)
 		return (NULL);
 	word_count = delim_count(str, separator);
-	new_str = gc_malloc(gc, sizeof(char *) * (word_count + 1));
+	new_str = gc_malloc(g_gc, sizeof(char *) * (word_count + 1));
 	if (!new_str)
 		return (NULL);
 	i = 0;

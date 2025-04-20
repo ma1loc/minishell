@@ -4,13 +4,13 @@ t_gc	*gc_init()
 {
     t_gc *gc = malloc(sizeof(t_gc));
     if (!gc)
-        return NULL;
+        return (NULL);
     
     gc->mem_list = NULL;
-    gc->total_allocs = 0;
-    gc->total_bytes = 0;
+    // gc->total_allocs = 0;
+    // gc->total_bytes = 0;
     
-    return gc;
+    return (gc);
 }
 
 void *gc_malloc(t_gc *gc, size_t size)
@@ -19,36 +19,35 @@ void *gc_malloc(t_gc *gc, size_t size)
     void *ptr;
 
     if (!gc)
-        return NULL;
+        return (NULL);
 
     ptr = malloc(size);
     if (!ptr)
-        return NULL;
+        return (NULL);
 
     node = malloc(sizeof(t_mem));
     if (!node)
 	{
         free(ptr);
-        return NULL;
+        return (NULL);
     }
 
     node->ptr = ptr;
     node->next = gc->mem_list;
     gc->mem_list = node;
-    gc->total_allocs++;
-    gc->total_bytes += size;
+    // gc->total_allocs++;
+    // gc->total_bytes += size;
 
-    return ptr;
+    return (ptr);
 }
 
 void gc_free(t_gc *gc, void *ptr)
 {
-    if (!gc || !ptr)
-        return;
+	t_mem	*curr;
+	t_mem	*prev;
     
-    t_mem *curr;
-    t_mem *prev;
-
+	if (!gc || !ptr)
+        return ;
 	curr = gc->mem_list;
 	prev = NULL;
     
@@ -62,9 +61,9 @@ void gc_free(t_gc *gc, void *ptr)
                 gc->mem_list = curr->next;
             free(ptr);
             free(curr);
-			// >>> to remove it later
-            gc->total_allocs--;
-            return;
+			// // >>> to remove it later
+            // gc->total_allocs--;
+            return ;
         }
         prev = curr;
         curr = curr->next;
@@ -74,8 +73,8 @@ void gc_free(t_gc *gc, void *ptr)
 void	gc_cleanup(t_gc *gc)
 {
     if (!gc)
-        return;
-    
+        return ;
+
     t_mem *curr;
     t_mem *next;
 
@@ -96,19 +95,8 @@ void	gc_cleanup(t_gc *gc)
 void	gc_destroy(t_gc *gc)
 {
     if (!gc)
-        return;
-    
+        return ;
+
     gc_cleanup(gc);
     free(gc);
 }
-
-
-// void	gc_print_stats(t_gc *gc)
-// {
-//     if (!gc)
-//         return;
-    
-//     printf("Memory usage:\n");
-//     printf(">>> Total allocations: %d\n", gc->total_allocs);
-//     printf(">>> Total bytes: %zu\n", gc->total_bytes);
-// }

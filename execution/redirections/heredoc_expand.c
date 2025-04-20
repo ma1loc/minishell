@@ -25,7 +25,7 @@ void	set_exit_status(t_setup *setup, char **result)
 	if (!value)
 		allocation_failed_msg();
 	*result = ft_strjoin(*result, value);
-	gc_free(gc, value);
+	gc_free(g_gc, value);
 }
 
 void	set_dollar_sign(t_setup *setup, char **result)
@@ -36,7 +36,7 @@ void	set_dollar_sign(t_setup *setup, char **result)
 	if (!value)
 		allocation_failed_msg();
 	*result = ft_strjoin(*result, value);
-	gc_free(gc, value);
+	gc_free(g_gc, value);
 }
 
 void	expand_env_variable(t_setup *setup, char *input, int *i, char **result)
@@ -53,8 +53,8 @@ void	expand_env_variable(t_setup *setup, char *input, int *i, char **result)
 	if (value)
 		*result = ft_strjoin(*result, value);
 	else
-		*result = ft_strjoin(*result, "");	// esle fix the segv
-	gc_free(gc, key);
+		*result = ft_strjoin(*result, "");
+	gc_free(g_gc, key);
 }
 
 void	expand_heredoc_input(t_setup *setup, char *input)
@@ -83,5 +83,5 @@ void	expand_heredoc_input(t_setup *setup, char *input)
 	}
 	write(setup->heredoc->fd[setup->i], result, ft_strlen(result));
 	write(setup->heredoc->fd[setup->i], "\n", 1);
-	gc_free(gc, result);
+	gc_free(g_gc, result);
 }

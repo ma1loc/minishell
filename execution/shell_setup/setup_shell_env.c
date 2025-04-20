@@ -4,9 +4,9 @@ t_setup	*init_setup()
 {
 	t_setup	*setup;
 
-	setup = gc_malloc(gc, sizeof(t_setup));
+	setup = gc_malloc(g_gc, sizeof(t_setup));
 	if (!setup)
-		allocation_failed_msg(gc);
+		allocation_failed_msg(g_gc);
 	setup->i = 0;
 	setup->input = NULL;
 	setup->env = NULL;
@@ -30,15 +30,16 @@ t_setup	*shell_env_setup(char **env)
 	setup = init_setup();
 	setup->env = init_env(env, setup->env);
 	setup->exec_env = update_exec_envp(setup);
-	setup->heredoc = gc_malloc(gc, sizeof(t_heredoc));
+	setup->heredoc = gc_malloc(g_gc, sizeof(t_heredoc));
 	if (!setup->heredoc)
-		allocation_failed_msg(gc);
+		allocation_failed_msg(g_gc);
 	setup->heredoc->delimiter = NULL;
 	ft_memset(setup->heredoc->fd, 0, sizeof(setup->heredoc->fd));
 	ft_memset(setup->heredoc->file_name, 0, sizeof(setup->heredoc->file_name));
 	get_pwd(setup);
 	update_env(setup, "PWD", setup->pwd);
 	update_env(setup, "OLDPWD", setup->pwd);
+	setup->oldpwd = ft_strdup(setup->pwd);
 	return (setup);
 }
 
@@ -53,7 +54,7 @@ t_setup	*start_setup(int argc, char **argv, char **env)
         ft_perror(NULL, "No extra args, please ;)\n", EXIT_FAILURE); // >>> exit status litter on
 		return (NULL);
 	}
-	gc = gc_init();
+	g_gc = gc_init();
     setup = shell_env_setup(env);
 	setup->envp = env;
 	return (setup);

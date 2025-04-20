@@ -20,7 +20,7 @@ pid_t	set_fork(t_setup *setup)
 		if (pid == -1)
 		{
 			ft_perror(setup, NULL, EXIT_FAILURE);
-			gc_destroy(gc);
+			gc_destroy(g_gc);
 			exit(EXIT_FAILURE);
 		}
 	}
