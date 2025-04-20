@@ -7,10 +7,10 @@ void    free_old_envp(t_setup *setup)
     i = 0;
     while (setup->exec_env[i])
     {
-        gc_free(gc, setup->exec_env[i]);
+        gc_free(g_gc, setup->exec_env[i]);
         i++;
     }
-    gc_free(gc, setup->exec_env);  // Free the envp array itself
+    gc_free(g_gc, setup->exec_env);  // Free the envp array itself
 }
 
 int     count_envp(t_env *env)
@@ -40,16 +40,16 @@ char    **update_exec_envp(t_setup *setup)
     if (setup->exec_env)
         free_old_envp(setup);
     envp_len = count_envp(setup->env);
-    envp_update = gc_malloc(gc, sizeof(char *) * (envp_len + 1));
+    envp_update = gc_malloc(g_gc, sizeof(char *) * (envp_len + 1));
     if (!envp_update)
-        allocation_failed_msg(gc);
+        allocation_failed_msg(g_gc);
     i = 0;
     current_env = setup->env;
     while (current_env)
     {
         key = ft_strjoin(current_env->key, "=");
         full_line = ft_strjoin(key, current_env->value);
-        gc_free(gc, key);
+        gc_free(g_gc, key);
         envp_update[i] = full_line;
         current_env = current_env->next;
         i++;

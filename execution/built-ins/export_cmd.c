@@ -13,12 +13,12 @@ int export_key_only(t_setup *setup, char *key)
 	}
 	if(get_env_key(setup, key))
 		return (0);
-    new_node = gc_malloc(gc, sizeof(t_env));
+    new_node = gc_malloc(g_gc, sizeof(t_env));
     if (!new_node)
         allocation_failed_msg();
     new_node->key = ft_strdup(key);
     if (!new_node->key)
-		allocation_failed_msg(gc);
+		allocation_failed_msg(g_gc);
     new_node->value = NULL;
     new_node->next = NULL;
     if (!setup->env)
@@ -28,8 +28,8 @@ int export_key_only(t_setup *setup, char *key)
         last_node = ft_lstlast(setup->env);
         last_node->next = new_node;
     }
-    setup->exit_stat = 0;
-    return (0);
+    // setup->exit_stat = 0;
+    return (setup->exit_stat = 0, 0);
 }
 
 void	set_env_update(t_setup *setup, char *arg)
@@ -44,10 +44,12 @@ void	set_env_update(t_setup *setup, char *arg)
 	key = ft_substr(arg, 0, get_char - arg);
 	if (!key)
 		allocation_failed_msg();
+	// printf("update key -> %s\n", key);
 	get_char = ft_strchr(arg, '=');
 	value = ft_substr(arg, get_char - arg + 1, len);
 	if (!value)
 		allocation_failed_msg();
+	// printf("update value -> %s\n", value);
 	update_env(setup, key, value);
 }
 
@@ -63,10 +65,12 @@ void	set_env_append(t_setup *setup, char *arg)
 	key = ft_substr(arg, 0, get_char - arg);
 	if (!key)
 		allocation_failed_msg();
+	// printf("append key -> %s\n", key);
 	get_char = ft_strchr(arg, '=');
 	value = ft_substr(arg, get_char - arg + 1, len);
 	if (!value)
 		allocation_failed_msg();
+	// printf("append value -> %s\n", value);
 	append_to_env(setup, key, value);
 }
 
@@ -88,9 +92,9 @@ void	handle_export_argument(t_setup *setup, char *arg)
 		key = ft_strdup(arg);
 		export_key_only(setup, key);
 	}
-	gc_free(gc, key);
+	gc_free(g_gc, key);
 	if (value)
-		gc_free(gc, value);
+		gc_free(g_gc, value);
 }
 
 void	export_cmd(t_setup *setup)
@@ -107,10 +111,8 @@ void	export_cmd(t_setup *setup)
     {
         while (args[i])
         {
-			// printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
 			// printf("in export_cmd -> arg => %s\n", args[i]);
-			// printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
-			handle_export_argument(setup, args[i]);
+			handle_export_argument(setup, args[i]);	
 			i++;
         }
     }

@@ -1,16 +1,49 @@
 # include "mini_shell.h"
 
-int		should_expand(t_setup *setup)
-{
-	t_token	*token;
-	int 	quotes;
+// int		should_expand(t_setup *setup)
+// {
+// 	static t_token	*token;
+// 	int 	quotes;
+
+// 	token = setup->token->next;
+// 	quotes = token->quotes_info->quotes_type;
+// 	printf("if token -> %s\n", token->value);
+// 	if (quotes == 0 && token->type == TOKEN_WORD)
+// 		return (1);
+// 	else
+// 	{
+// 		token = token->next;
+// 		quotes = token->quotes_info->quotes_type;
+// 		printf("else token -> %s\n", token->value);
+// 		if (quotes == 0 && token->type == TOKEN_WORD)
+// 			return (1);
+// 		return (0);
+// 	}
+// 	return (0);
+
+// 	// token = setup->token;
+// 	// while (token)
+// 	// {
+// 	// 	if (token->type == TOKEN_HERDOC)
+// 	// 	{
+
+// 	// 	}
+// 	// 	token = token->next
+// 	// }
+// }
+
+// int		should_expand(t_setup *setup)
+// {
+// 	t_token	*token;
+// 	int 	quotes;
 	
-	token = setup->token->next;
-	quotes = token->quotes_info->quotes_type;
-	if (quotes == 0)
-		return (1);
-	return (0);
-}
+// 	token = setup->token->next;
+// 	quotes = token->quotes_info->quotes_type;
+// 	printf("token -> %s\n", token->next->value);
+// 	if (quotes == 0)
+// 		return (1);
+// 	return (0);
+// }
 
 void	cleanup_heredoc(t_setup *setup)
 {
@@ -31,7 +64,7 @@ void	cleanup_heredoc(t_setup *setup)
 		while (setup->heredoc->file_name[i])
 		{
 			unlink(setup->heredoc->file_name[i]);
-			gc_free(gc, setup->heredoc->file_name[i]);
+			gc_free(g_gc, setup->heredoc->file_name[i]);
 			i++;
 		}
 	}
@@ -48,7 +81,7 @@ char	*get_file_name(t_setup *setup)
 	file_name = ft_strjoin("/tmp/heredoc", file_num);
 	if (!file_name)
 		allocation_failed_msg();
-	gc_free(gc, file_num);
+	gc_free(g_gc, file_num);
 	return (file_name);
 }
 

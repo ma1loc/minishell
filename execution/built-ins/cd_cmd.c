@@ -1,50 +1,62 @@
 #include "mini_shell.h"
 
-int	cd(t_setup *setup)
+void	update_cd(t_setup *setup, char *old_pwd_value)
 {
-    int     status;
-    char    *home;
-
-	home = NULL;
-    if (setup->cmd->args[1] == NULL)
-    {
-        home = getenv("HOME");
-        if (!home)
-			return (ft_perror(setup, "cd: HOME not set\n", EXIT_FAILURE), -1);
-        status = chdir(home);
-        if (status == -1)
-            return (ft_perror(setup, NULL, EXIT_FAILURE), -1); // the cu
-    }
-    else
-    {
-        status = chdir(setup->cmd->args[1]);
-        if (status == -1)
-			return (ft_perror(setup, NULL, EXIT_FAILURE), -1); // >>> here to
-    }
-	return (0);
+	update_env(setup, "PWD", setup->pwd);
+	update_env(setup, "OLDPWD", old_pwd_value);
+    if (setup->oldpwd)
+        gc_free(g_gc, setup->oldpwd);
+    setup->oldpwd = old_pwd_value;
 }
 
-void    cd_cmd(t_setup *setup)
+void	cd_cmd(t_setup *setup)
 {
-    char    *tmp_pwd;
-	int		status;
-
-	if (!setup->pwd)
+    t_env	*pwd_env;
+    char	*old_pwd_value;
+    int		status;
+    
+    pwd_env = get_env_key(setup, "PWD");
+    if (!pwd_env)
     {
-        ft_perror(setup, "cd: current directory not set\n", EXIT_FAILURE);
+        ft_perror(setup, "cd: PWD not set in environment\n", EXIT_FAILURE);
         return ;
     }
-    tmp_pwd = ft_strdup(setup->pwd);
-	if (!tmp_pwd)
-		allocation_failed_msg();
-	status = cd(setup);
+    old_pwd_value = ft_strdup(pwd_env->value);
+    status = cd(setup);
     if (status == 0)
     {
         if (get_pwd(setup) == 0)
-		{
-        	update_env(setup, "PWD", setup->pwd);
-        	update_env(setup, "OLDPWD", tmp_pwd);
-		}
+			update_cd(setup, old_pwd_value);
+        else
+            gc_free(g_gc, old_pwd_value);
     }
-	gc_free(gc, tmp_pwd);
+    else
+        gc_free(g_gc, old_pwd_value);
 }
+
+int cd(t_setup *setup)
+{
+    int		status;
+    char	*home;
+    char	*path;
+    
+    home = NULL;
+    path = setup->cmd->args[1];
+    
+    if (path == NULL)
+    {
+        home = getenv("HOME");
+        if (!home)
+            return (ft_perror(setup, "cd: HOME not set\n", EXIT_FAILURE), -1);
+        status = chdir(home);
+        if (status == -1)
+            return (ft_perror(setup, NULL, EXIT_FAILURE), -1);
+    }
+    else
+    {
+        status = chdir(path);
+        if (status == -1)
+            return (ft_perror(setup, NULL, EXIT_FAILURE), -1);
+    }
+    return (0);
+}	

@@ -45,7 +45,7 @@ char	*ft_itoa(int n)
 	unsigned int	nbr;
 
 	n_len = nbr_len(n);
-	ptr = gc_malloc(gc, sizeof(char) * (n_len + 1));
+	ptr = gc_malloc(g_gc, sizeof(char) * (n_len + 1));
 	if (!ptr)
 		return (NULL);
 	ptr[n_len] = '\0';

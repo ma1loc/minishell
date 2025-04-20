@@ -1830,3 +1830,254 @@
 		// printf("args[1] -> %s\n", setup->cmd->args[1]);
 		// printf("args[2] -> %s\n", setup->cmd->args[2]);
 // $hu -> export hu="ls -la"
+
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+void    execute_externals(t_setup *setup)
+{
+    pid_t     pid;
+    int     status;
+
+	pid = 0;
+    setup->cmd_path = path_resolver(setup);
+    if (!setup->cmd_path)
+	{
+		ft_perror(setup ,"command not found\n", CMD_NOT_FOUND);
+		return ;
+	}
+	pid = set_fork(setup);
+    if (pid == 0)
+    {
+        if (execve(setup->cmd_path, setup->cmd->args, setup->exec_env) == -1)
+            ft_perror(setup, NULL, EXIT_FAILURE);
+		gc_destroy(gc);
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+		// ignore the signals
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, execute_sigint);
+		signal(SIGQUIT, SIG_DFL);
+        waitpid(pid, &status, 0); // the last arg -> 0 is for waitpid to act normall
+		if (WIFEXITED(status))
+            setup->exit_stat = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+        {
+            // Handle if child was terminated by a signal
+            setup->exit_stat = 128 + WTERMSIG(status);
+            if (WTERMSIG(status) == SIGINT)
+                write(STDOUT_FILENO, "\n", 1);
+        }
+		signal(SIGINT, main_sigint);	// restor the old signals
+	}
+}
+
+
+// void    execute_externals(t_setup *setup)
+// {
+//     pid_t     pid;
+//     int     status;
+
+// 	pid = 0;
+//     setup->cmd_path = path_resolver(setup);
+//     if (!setup->cmd_path)
+// 	{
+// 		ft_perror(setup ,"command not found\n", CMD_NOT_FOUND);
+// 		return ;
+// 	}
+// 	pid = set_fork(setup);
+//     if (pid == 0)
+//     {
+//         if (execve(setup->cmd_path, setup->cmd->args, setup->exec_env) == -1)
+//             ft_perror(setup, NULL, EXIT_FAILURE);
+// 		gc_destroy(gc);
+//         exit(EXIT_FAILURE);
+//     }
+//     else
+//     {
+// 		// ignore the signals
+// 		signal(SIGINT, SIG_IGN);
+// 		signal(SIGQUIT, SIG_IGN);
+// 		signal(SIGINT, execute_sigint);
+// 		signal(SIGQUIT, SIG_DFL);
+//         waitpid(pid, &status, 0); // the last arg -> 0 is for waitpid to act normall
+// 		if (WIFEXITED(status))
+//             setup->exit_stat = WEXITSTATUS(status);
+//         else if (WIFSIGNALED(status))
+//         {
+//             // Handle if child was terminated by a signal
+//             setup->exit_stat = 128 + WTERMSIG(status);
+//             if (WTERMSIG(status) == SIGINT)
+//                 write(STDOUT_FILENO, "\n", 1);
+//         }
+// 		signal(SIGINT, main_sigint);	// restor the old signals
+// 	}
+// }
+
+// void execute_externals(t_setup *setup)
+// {
+//     pid_t pid;
+//     int status;
+
+//     pid = 0;
+//     setup->cmd_path = path_resolver(setup);
+//     if (!setup->cmd_path)
+//     {
+//         ft_perror(setup, "command not found\n", CMD_NOT_FOUND);
+//         return;
+//     }
+    
+//     // Save the current signal handlers
+//     void (*old_sigint)(int) = signal(SIGINT, SIG_IGN);
+//     void (*old_sigquit)(int) = signal(SIGQUIT, SIG_IGN);
+    
+//     pid = set_fork(setup);
+//     if (pid == 0)
+//     {
+//         // In child process, set appropriate handlers
+//         signal(SIGINT, SIG_DFL);  // Default behavior in child
+//         signal(SIGQUIT, SIG_DFL); // Default behavior in child
+        
+//         if (execve(setup->cmd_path, setup->cmd->args, setup->exec_env) == -1)
+//             ft_perror(setup, NULL, EXIT_FAILURE);
+        
+//         gc_destroy(gc);
+//         exit(EXIT_FAILURE);
+//     }
+//     else
+//     {
+//         // Parent process waits with signals ignored
+//         waitpid(pid, &status, 0);
+        
+//         // Restore previous signal handlers
+//         signal(SIGINT, old_sigint);
+//         signal(SIGQUIT, old_sigquit);
+        
+//         if (WIFEXITED(status))
+//             setup->exit_stat = WEXITSTATUS(status);
+//         else if (WIFSIGNALED(status))
+//         {
+//             // Handle if child was terminated by a signal
+//             setup->exit_stat = 128 + WTERMSIG(status);
+//             if (WTERMSIG(status) == SIGINT)
+//                 write(STDOUT_FILENO, "\n", 1);
+//         }
+//     }
+// }
+
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// // ^\Quit (core dumped)
+// void	sig_quit(int sig)
+// {
+//     (void)sig;
+// 	printf("Quit (core dumped)\n");
+// 	gc_destroy(gc);
+// 	exit(EXIT_QUIT);
+// }
+
+// void	signal_status(t_setup *setup, int status)
+// {
+// 	if (WIFEXITED(status))
+// 	setup->exit_stat = WEXITSTATUS(status);
+// 	else if (WIFSIGNALED(status))
+// 	{
+// 		setup->exit_stat = 128 + WTERMSIG(status);
+// 		if (WTERMSIG(status) == SIGINT)
+// 			ft_putstr_fd("\n", STDOUT_FILENO);
+// 		if (WTERMSIG(status) == SIGQUIT)
+// 			ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
+// 	}
+// }
+
+
+ // >>> wait for both children to finish
+	// flags to know
+	// WIFEXITED
+	// WIFSIGNALED
+	// WEXITSTATUS
+	// WTERMSIG
+
+// <>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+void    cd_cmd(t_setup *setup)
+{
+    // char    *tmp_pwd;
+	int		status;
+
+	if (!setup->pwd)
+    {
+        ft_perror(setup, "cd: current directory not set\n", EXIT_FAILURE);
+        return ;
+    }
+	// tmp_pwd = get_env_char(setup);
+	// if (!tmp_pwd)
+	// 	tmp_pwd = NULL;
+	status = cd(setup);
+    if (status == 0)
+    {
+        if (get_pwd(setup) == 0)
+		{
+			if (get_env_key(setup, "PWD"))
+        		update_env(setup, "PWD", setup->pwd);
+			// if (get_env_key(setup, "OLDPWD") && tmp_pwd != NULL)
+			if (get_env_key(setup, "OLDPWD"))
+				update_env(setup, "OLDPWD", setup->oldpwd);
+			// update_env_char(setup);
+		}
+	}
+	// gc_free(g_gc, tmp_pwd);
+}
+
+
+void    echo_cmd(t_setup *setup)
+{
+	int	i;
+
+	i = 1;
+
+	if (!setup->cmd->args[1])
+		printf("\n");
+	else if (is_n_option(setup->cmd->args[i]) == 0)
+	{
+		i = 2;
+		while (is_n_option(setup->cmd->args[i]) == 0)
+		{
+			if (setup->cmd->args[i + 1] == NULL)
+				break;
+			i++;
+		}
+		echo_print(setup->cmd, i);
+	}
+	else
+	{
+		echo_print(setup->cmd, i);
+		printf("\n");
+	}
+	setup->exit_stat = 0;
+}
+
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+				// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+				printf("token before -> %s\n", setup->token->value);
+				while (setup->token)
+				{
+					if (setup->token->type == TOKEN_HERDOC)
+					{
+						setup->token = setup->token->next;
+						printf("current token -> %s\n", setup->token->value);
+						break;
+					}
+					setup->token = setup->token->next;
+				}
+				// setup->token = setup->token->next;
+				// setup->token = setup->token->next;
+				// setup->token = setup->token->next;
+				printf("token after -> %s\n", setup->token->value);
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

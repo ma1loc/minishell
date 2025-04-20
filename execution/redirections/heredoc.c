@@ -1,15 +1,49 @@
 # include "mini_shell.h"
 
-// Overriding Signal Handlers in Child Process
+// int		should_expand(t_token *token)
+// {
+// 	// t_token	*token;
+// 	int 	quotes;
+	
+// 	// token = setup->token->next;
+// 	while (token)
+// 	{
+// 		if (token->type == TOKEN_HERDOC)
+// 		{
+// 			token = token->next;
+// 			break;
+// 		}
+// 		token = token->next;
+// 	}
+// 	quotes = token->quotes_info->quotes_type;
+// 	printf("token -> %s\n", token->next->value);
+// 	if (quotes == 0)
+// 		return (1);
+// 	return (0);
+// }
+
+// int		should_expand(t_setup *setup)
+// {
+// 	t_token	*token;
+// 	int 	quotes;
+	
+// 	token = setup->token->next;
+// 	quotes = token->quotes_info->quotes_type;
+// 	printf("token to check it's qoutes -> %s\n", token->next->value);
+// 	if (quotes == 0)
+// 		return (1);
+// 	return (0);
+// }
+
 void	loding_heredoc(t_setup *setup)
 {
-	char	*input;
+	char			*input;
 
 	while (true)
 	{
 		input = readline("heredoc> ");
         if (input == NULL)
-            break ;
+			do_eof_heredoc(setup);
         if (ft_strcmp(input, setup->heredoc->delimiter) == 0)
         {
             free(input);
@@ -17,7 +51,7 @@ void	loding_heredoc(t_setup *setup)
         }
 		if (input[0] == '\0')
             continue ;
-		if (should_expand(setup))
+		if (setup->heredoc->qoutes_type == 0)
 			expand_heredoc_input(setup, input);
 		else
 		{
@@ -31,11 +65,34 @@ void	loding_heredoc(t_setup *setup)
 void	get_delimiter(t_setup *setup, t_redirections *red)
 {
 	if (setup->heredoc->delimiter)
-		gc_free(gc, setup->heredoc->delimiter);
+		gc_free(g_gc, setup->heredoc->delimiter);
 
 	setup->heredoc->delimiter = ft_strdup(red->file_name);
 	red = red->next;
 	return ;
+}
+
+void	get_delimiter_qoutes(t_setup *setup)
+{
+	setup->heredoc->qoutes_type = 0;
+
+	while (setup->token)
+	{
+		if (setup->token->type == TOKEN_HERDOC)
+		{
+			setup->token = setup->token->next;
+			// printf("current token -> %s\n", setup->token->value);
+			setup->heredoc->qoutes_type = setup->token->quotes_info->quotes_type;
+			break;
+		}
+		// printf("the token -> %s\n", setup->token->value);
+		setup->token = setup->token->next;
+		// break;
+	}
+	// setup->token = setup->token->next;
+	// setup->token = setup->token->next;
+	// setup->token = setup->token->next;
+	// printf("token after -> %s\n", setup->token->value);
 }
 
 int	get_heredoc_fds(t_setup *setup, t_redirections *red)
@@ -53,11 +110,15 @@ int	get_heredoc_fds(t_setup *setup, t_redirections *red)
 	heredoc->fd[i] = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	if (heredoc->fd[i] < 0)
 		return (cleanup_heredoc(setup), 1);
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	get_delimiter(setup, red);
+	get_delimiter_qoutes(setup);
+	// printf("token qoutes -> %d\n", setup->heredoc->qoutes_type);
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	loding_heredoc(setup);
 	if (refresh_fds(setup, file_name) == 1)
 		return (cleanup_heredoc(setup), 1);
-	gc_free(gc, file_name);
+	gc_free(g_gc, file_name);
 	return (0);
 }
 
@@ -78,6 +139,7 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
 				setup->heredoc_flag = 1;
                 if (get_heredoc_fds(setup, redir) == 1)
 				{
+					// i have to put it as a seprited msg
 					ft_perror(setup, "heredoc process failed\n", EXIT_FAILURE);
 					break;
 				}
@@ -90,6 +152,8 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
 	init_heredoc(setup, tree->right);
 }
 
+
+
 void heredoc_process(t_setup *setup, t_tree *tree)
 {
     pid_t	pid;
@@ -101,15 +165,18 @@ void heredoc_process(t_setup *setup, t_tree *tree)
     {
 		signal(SIGINT, heredoc_sigint);
 		setup->i = 0;
+		// >>>>>>>>>>>>>>>>>>>>>>>>>
         init_heredoc(setup, tree);
+		// >>>>>>>>>>>>>>>>>>>>>>>>>
         setup->i = 0;
         execution(tree, setup);
 		exit_status = setup->exit_stat;
-		gc_destroy(gc);
+		gc_destroy(g_gc);
 		exit(exit_status);
     }
     waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		setup->exit_stat = WEXITSTATUS(status);
+	signal(SIGINT, main_sigint);
 	return ;
 }

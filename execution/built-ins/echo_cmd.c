@@ -34,24 +34,17 @@ void	echo_print(t_command *cmd, int i)
 	}
 }
 
-// >>> set the exit status to 0 if success <<<
-void    echo_cmd(t_setup *setup)
+void	echo_cmd(t_setup *setup)
 {
 	int	i;
-
+	
 	i = 1;
-
 	if (!setup->cmd->args[1])
 		printf("\n");
 	else if (is_n_option(setup->cmd->args[i]) == 0)
 	{
-		i = 2;
-		while (is_n_option(setup->cmd->args[i]) == 0)
-		{
-			if (setup->cmd->args[i + 1] == NULL) 
-				break;
+		while (setup->cmd->args[i] && is_n_option(setup->cmd->args[i]) == 0)
 			i++;
-		}
 		echo_print(setup->cmd, i);
 	}
 	else

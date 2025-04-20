@@ -43,7 +43,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		return (ptr);
 	}
 	t_len = ft_strlen(s1) + ft_strlen(s2);
-	ptr = gc_malloc(gc, sizeof(char) * (t_len + 1));
+	ptr = gc_malloc(g_gc, sizeof(char) * (t_len + 1));
 	if (!ptr)
 		allocation_failed_msg();
 	mem_fill(s1, ptr, 0);

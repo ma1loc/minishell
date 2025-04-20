@@ -1,31 +1,43 @@
 #include "mini_shell.h"
 
-void    execute_externals(t_setup *setup)
+void execute_externals(t_setup *setup)
 {
-    pid_t     pid;
-    int     status;
+    pid_t	pid;
+    int		status;
 
-	pid = 0;
+    pid = 0;
     setup->cmd_path = path_resolver(setup);
     if (!setup->cmd_path)
-	{
-		ft_perror(setup ,"command not found\n", CMD_NOT_FOUND);
-		return ;
-	}
-	pid = set_fork(setup);
+    {
+        ft_perror(setup, "command not found\n", CMD_NOT_FOUND);
+        return;
+    }
+    
+    pid = set_fork(setup);
     if (pid == 0)
     {
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
         if (execve(setup->cmd_path, setup->cmd->args, setup->exec_env) == -1)
             ft_perror(setup, NULL, EXIT_FAILURE);
-		gc_destroy(gc);
+        gc_destroy(g_gc);
         exit(EXIT_FAILURE);
     }
-    else
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    waitpid(pid, &status, 0);
+    signal(SIGINT, main_sigint);
+    signal(SIGQUIT, SIG_IGN);
+    if (WIFEXITED(status))
+        setup->exit_stat = WEXITSTATUS(status);
+    else if (WIFSIGNALED(status))
     {
-        waitpid(pid, &status, 0); // the last arg -> 0 is for waitpid to act normall
-        if (WIFEXITED(status))
-            setup->exit_stat = WEXITSTATUS(status); // >>> to check later on
-	}
+        setup->exit_stat = 128 + WTERMSIG(status);
+        if (WTERMSIG(status) == SIGINT)
+            ft_putstr_fd("\n", STDOUT_FILENO);
+		if (WTERMSIG(status) == SIGQUIT)
+        	ft_putstr_fd("Quit (core dumped)\n", STDOUT_FILENO);
+    }
 }
 
 void	execute_commands(t_tree *tree, t_setup *setup)

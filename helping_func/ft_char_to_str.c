@@ -4,7 +4,7 @@ char *char_to_str(char c)
 {
 	char	*str;
 
-    str = gc_malloc(gc, 2);
+    str = gc_malloc(g_gc, 2);
     if (!str)
         allocation_failed_msg();
     str[0] = c;

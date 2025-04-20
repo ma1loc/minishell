@@ -19,7 +19,7 @@ char	*ft_strdup(char *s1)
 	size_t	i;
 
 	s_len = ft_strlen(s1);
-	dup = gc_malloc(gc, sizeof(char) * (s_len + 1));
+	dup = gc_malloc(g_gc, sizeof(char) * (s_len + 1));
 	if (!dup)
 		allocation_failed_msg();
 	i = 0;

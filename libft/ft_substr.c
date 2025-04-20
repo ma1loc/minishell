@@ -25,7 +25,7 @@ char	*ft_substr(char *s1, size_t start, size_t len)
 		return (ft_strdup(""));
 	if (len > s1_len - start)
 		len = s1_len - start;
-	ptr = gc_malloc(gc, sizeof(char) * (len + 1));
+	ptr = gc_malloc(g_gc, sizeof(char) * (len + 1));
 	if (!ptr)
 		return (NULL);
 	i = 0;

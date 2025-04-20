@@ -12,18 +12,18 @@ char	*split_path(char *path, char *cmd)
 
 	split_path = ft_split(path, ':');
 	if (!split_path)
-		allocation_failed_msg(gc);
+		allocation_failed_msg(g_gc);
 	i = 0;
 	while (split_path[i])
 	{
 		add_to_path = ft_strjoin(split_path[i], "/");
 		full_path = ft_strjoin(add_to_path, cmd);
 		if (!add_to_path || !full_path)
-			allocation_failed_msg(gc);
-		gc_free(gc, add_to_path);
+			allocation_failed_msg(g_gc);
+		gc_free(g_gc, add_to_path);
 		if (access(full_path, F_OK | X_OK) == 0)
 			return (full_path);
-		gc_free(gc, full_path);
+		gc_free(g_gc, full_path);
 		i++;
 	}
 	return (NULL);
@@ -51,11 +51,8 @@ char	*is_valid_str(char *cmd)
 	dup = NULL;
 	// if ((ft_strchr(cmd, '/') != NULL) || (access(cmd, F_OK | X_OK == 0)))
 	if ((ft_strchr(cmd, '/') != NULL) || (access(cmd, F_OK | X_OK) == 0))
-
 	{
 		dup = ft_strdup(cmd);
-		if (!dup)
-			allocation_failed_msg(gc);
 		return (dup);
 	}
 	return (NULL);

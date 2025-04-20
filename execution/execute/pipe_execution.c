@@ -59,24 +59,24 @@ void    execute_pipes(t_tree *tree, t_setup *setup)
     pid_t	pid_2;
     int		status;
 
-    // >>> seting the pipe
     set_pipe(setup, fd);
-    // >>> first child process left side
     pid_1 = set_first_fork(setup, fd);
     if (pid_1 == 0)
         first_child_process(setup, tree, fd);
-    // >>> second child process right side
     pid_2 = set_second_fork(setup, pid_1, fd);
     if (pid_2 == 0)
-        second_child_process(setup, tree, fd);	
-    // >>> parent process
+        second_child_process(setup, tree, fd);
     close(fd[0]);
     close(fd[1]);
 	if (pid_1 < 0 || pid_2 < 0)
-		return (gc_destroy(gc), exit(EXIT_FAILURE), (void)0);
-    // >>> wait for both children to finish
-    waitpid(pid_1, &status, 0);
+		return (gc_destroy(g_gc), exit(EXIT_FAILURE), (void)0);
+
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+	waitpid(pid_1, &status, 0);
+	signal_status(setup, status);
     waitpid(pid_2, &status, 0);
-	if (WIFEXITED(status))
-        setup->exit_stat = WEXITSTATUS(status);
+	signal_status(setup, status);
+	signal(SIGINT, main_sigint);
+    signal(SIGQUIT, SIG_IGN);
 }

@@ -7,21 +7,21 @@ void	add_to_env(t_setup *setup, char *key, char *value)
 	env = ft_lstlast(setup->env);
 	if (!env)
 	{
-		setup->env = gc_malloc(gc, sizeof(t_env));
+		setup->env = gc_malloc(g_gc, sizeof(t_env));
 		env = setup->env;
 	}
 	else
 	{
-		env->next = gc_malloc(gc, sizeof(t_env));
+		env->next = gc_malloc(g_gc, sizeof(t_env));
 		env = env->next;
 	}
 	if (!env)
-		allocation_failed_msg(gc);
+		allocation_failed_msg(g_gc);
 	env->key = ft_strdup(key);
 	env->value = ft_strdup(value);
 	env->next = NULL;
 	if (!env->key || !env->value)
-		allocation_failed_msg(gc);
+		allocation_failed_msg(g_gc);
 }
 
 void	update_env(t_setup *setup, char *key, char *value)
@@ -37,7 +37,7 @@ void	update_env(t_setup *setup, char *key, char *value)
 	if (env)
 	{
 		if (env->value)
-			gc_free(gc, env->value);
+			gc_free(g_gc, env->value);
 		env->value = ft_strdup(value);
 	}
 	else
@@ -56,7 +56,7 @@ void	append_to_env(t_setup *setup, char *key, char *value)
 		if (env->value)
 		{
 			new_value = ft_strjoin(env->value, value);
-			gc_free(gc, env->value);
+			gc_free(g_gc, env->value);
 			env->value = new_value;
 		}
 		else
