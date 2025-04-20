@@ -1,160 +1,122 @@
-#include "tokenizer.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/20 16:10:31 by ytabia            #+#    #+#             */
+/*   Updated: 2025/04/20 16:10:32 by ytabia           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../srcs/mini_shell.h"
+#include "tokenizer.h"
 
-//>>> tests
-// echo $HOME$ HOMEASDF >>> not valid //
-// echo $HOME$*ASDF >>> not valid ..
-// echo {$HOME}$  >>> not valid //
-// echo "$PATH" '#PATH' $PATH >>> valid
-// echo "$PATH"'#PATH'$PATH   >>> not valid
-// minishell$
-
-
-char *get_env_value(char *name, t_setup *setup)
+void	expand_env_vars(t_token *tokens, t_setup *setup)
 {
-  t_env *env;
+	t_token	*current;
+	char	*expanded;
 
-  if(!name || !setup || !setup->env)
-    return(NULL);
-  env = setup->env;
-
-  while(env)
-  {
-    if(strcmp(env->key, name) == 0)
-      return(env->value);
-    env = env->next;
-  }
-  return(NULL);
+	current = tokens;
+	setup->token = current;
+	while (current)
+	{
+		if (current->type == TOKEN_HERDOC)
+		{
+			current = current->next->next;
+			continue ;
+		}
+		expanded = expand_env_in_string(current->value, setup);
+		if (expanded != NULL)
+		{
+			free(current->value);
+			current->value = expanded;
+		}
+		current = current->next;
+		setup->token = current;
+	}
 }
 
-char *skip_spaces_while_expand(t_token *token,char *str)
+char	*expand_env_in_string(char *str, t_setup *setup)
 {
-  int i;
-  int j;
-  char *new_one;
-  
-  i = 0;
-  j = 0;
-  if (!str)
-    return NULL;
-  new_one = malloc(ft_strlen(str) + 1);
-  while (str[i])
-  {
-    if (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-    {
-      new_one[j++] = ' '; 
-      i++;
-    }
-    while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-      i++;
-    new_one[j++] = str[i++];
-    token->is_split = 1;
-  }
-  new_one[j] = '\0';
-  return new_one;
+	char			*rslt;
+	t_expand_data	data;
+	t_token			*token;
+	int				res;
+
+	token = setup->token;
+	if (!str || !token || !token->quotes_info)
+		return (NULL);
+	data.ptr = str;
+	data.buff_index = 0;
+	while (*data.ptr)
+	{
+		res = handle_dollar_expansion(&data, setup);
+		if (res == -1)
+			return (NULL);
+		if (res == 1)
+			continue ;
+		if (res == 2)
+			break ;
+		data.buff[data.buff_index++] = *data.ptr;
+		data.ptr++;
+	}
+	data.buff[data.buff_index] = '\0';
+	rslt = strdup(data.buff);
+	return (rslt);
 }
 
-char *expand_env_in_string(char *str, t_setup *setup)
+int	handle_dollar_expansion(t_expand_data *data, t_setup *setup)
 {
-  int var_index;
-  int buff_index = 0;
-  char *env_value;
-  char *rslt;
-  char *ptr;
-  char *var_start;
-  char var_name[256];
-  char buff[1024];
-  t_token *token;
+	t_token	*token;
 
-  token = setup->token;
-  if(!str)
-    return(NULL);
-  if (!setup->token || !setup->token->quotes_info)
-  {
-    return(NULL);
-  }
-    
-  ptr = str;
-  while(*ptr)
-  {
-    if(*ptr == '$' && (token->quotes_info->quotes_type == 0 || token->quotes_info->quotes_type == 2))
-    {
-      if (*(ptr + 1) == '?') // expand exit stat
-      {
-        char *exit = ft_itoa_(setup->exit_stat); // add ft later
-        strcpy(buff + buff_index, exit);
-        buff_index += strlen(exit);
-        ptr += 2;
-        free(exit);
-        continue;
-      }
-      if(*(ptr + 1) == '\0')
-      {
-        buff[buff_index++] = *ptr;
-        break;
-      }
-      // reset variable collection
-      ptr++;
-      var_index = 0;
-      var_start = ptr;  // save start var
-      while(*var_start != '\0' && *var_start != '$' && (isalnum(*var_start) || *var_start == '_'))
-      {
-        var_name[var_index++] = *var_start++;
-      }
-      var_name[var_index] = '\0'; 
-      env_value = get_env_value(var_name, setup);
-      if(env_value != NULL)
-      {
-          char *new = env_value;
-          if(token->quotes_info->quotes_type == 0 && check_space(new))
-            new = skip_spaces_while_expand(token,new);
-          strcpy(buff + buff_index, new);
-          buff_index += strlen(new);
-          //token->is_split = 1;
-      }
-      ptr = var_start; // skip to the end of variable name
-      continue;     // skip the ptr++ at end of loop
-    }
-    else
-      buff[buff_index++] = *ptr;
-    ptr++;
-  }
-  buff[buff_index] = '\0';
-  rslt = strdup(buff);
-  return(rslt);
+	token = setup->token;
+	if (*data->ptr == '$' && (token->quotes_info->quotes_type == 0
+			|| token->quotes_info->quotes_type == 2))
+	{
+		if (*(data->ptr + 1) == '?')
+		{
+			if (expand_exit_status(data, setup))
+				return (-1);
+			return (1);
+		}
+		if (*(data->ptr + 1) == '\0')
+		{
+			data->buff[data->buff_index++] = *data->ptr;
+			return (2);
+		}
+		data->ptr++;
+		data->ptr = extract_var_name(data);
+		data->env_value = get_env_value(data->var_name, setup);
+		copy_env_value_if_valid(data, token);
+		return (1);
+	}
+	return (0);
 }
 
-int check_space(char *str)
+int	expand_exit_status(t_expand_data *data, t_setup *setup)
 {
-  int i;
+	char	*exit;
 
-  i = 0;
-  while(str[i])
-  {
-    if(str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-      return(1);
-    i++;
-  }
-  return(0);
+	exit = ft_itoa_(setup->exit_stat);
+	if (!exit)
+		return (1);
+	strcpy(data->buff + data->buff_index, exit);
+	data->buff_index += strlen(exit);
+	data->ptr += 2;
+	free(exit);
+	return (0);
 }
 
-void expand_env_vars(t_token *tokens, t_setup *setup)
+char	*extract_var_name(t_expand_data *data)
 {
-  t_token *current;
-  char *expanded;
-  // t_args_list *list_args = NULL;
+	char	*start;
 
-  current = tokens;
-  setup->token = current;
-  while(current)
-  {
-    expanded = expand_env_in_string(current->value, setup);
-    if(expanded != NULL)
-    {
-        free(current->value);
-        current->value = expanded;
-    }
-    current = current->next;
-    setup->token = current;
-  }
+	start = data->ptr;
+	data->var_index = 0;
+	while (*start && *start != '$' && (isalnum(*start) || *start == '_'))
+		data->var_name[data->var_index++] = *start++;
+	data->var_name[data->var_index] = '\0';
+	return (start);
 }
