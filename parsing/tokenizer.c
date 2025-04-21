@@ -75,7 +75,7 @@ int check_quotes_syntax(t_setup *setup)
     int     in_quotes;
     char    quoest_char;
     int     len;
-    
+
     i = 0;
     in_quotes = 0;
     quoest_char = 0;
@@ -83,13 +83,13 @@ int check_quotes_syntax(t_setup *setup)
     while (setup->input[i] != '\0')
     {
         i = skip_whitespace(setup->input, i);
-        
+
         if (check_syntax(setup->input, len, &i) != 0)
         {
             in_quotes = 1;
             break;
         }
-        
+
         check_unclosed_quotes(setup, &i, &in_quotes, &quoest_char);
         i++;
     }
@@ -162,7 +162,21 @@ t_token	*tokenize(t_setup *setup)
 		return (free(state), NULL);
 	tokenize_loop(input, state, setup, &tokens);
 	process_remainder_text(state, &tokens);
+	// print_tokens(tokens);
 	expand_env_vars(tokens, setup);
 	handel_is_split(tokens, &tokens);
+	print_tokens(tokens);
 	return (free(state), tokens);
+}
+
+void print_tokens(t_token *tokens)  // remov later
+{
+	t_token *current;
+
+	current = tokens;
+	while(current)
+	{
+		printf("token [%s]\n", current->value);
+		current = current->next;
+	}
 }

@@ -30,7 +30,7 @@ void	process_token(t_commande_state *state, t_token *current, t_args_list **list
 	}
 }
 
-t_command *pars_tokens(t_setup *setup) // main func parsing tokens
+t_command *pars_tokens(t_setup *setup)
 {
   t_command *commandes;
   t_token *current;
@@ -62,14 +62,10 @@ t_args_list *add_args_to_list(t_args_list **list_head, t_token *token)
     return(NULL);
   new_arg = malloc(sizeof(t_args_list));
   if(!new_arg)
-  {
-    // free other stufvoid
     return (NULL);
-  }
   new_arg->value = strdup(token->value);
   new_arg->type = token->type;
   new_arg->next = NULL;
-
   if(*list_head == NULL)
   {
     *list_head = new_arg;
@@ -103,17 +99,17 @@ void fill_array(t_args_list *list, t_command *cmd)
 {
     t_args_list *current;
     int i;
-    
+
     i = 0;
     current = list;
-    
+
     if (!current || !cmd || !cmd->name)
         return;
-        
+
     cmd->args[i++] = strdup(cmd->name);
-    
+
     if (current != NULL && strcmp(current->value, cmd->name) == 0)
         current = current->next;
-        
+
     process_args(current, cmd, &i);
 }
