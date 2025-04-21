@@ -60,6 +60,14 @@ void	process_quote_char(t_process_data *data, t_quotes_info *info)
 	(data->i)++;
 }
 
+t_quotes_info check_just_quotes(t_process_data *data, t_quotes_info info, int len)
+{
+
+	if (data->j == 0 && len > 0)
+		return(info);
+	return(info);
+}
+
 t_quotes_info	strip_quotes(char *str)
 {
 	t_quotes_info	info;
@@ -81,6 +89,7 @@ t_quotes_info	strip_quotes(char *str)
 		process_quote_char(&data, &info);
 	data.result[data.j] = '\0';
 	info.stripped_text = data.result;
+	check_just_quotes(&data,info,len);
 	if (data.j == 0 && len == 0)
 	{
 		free(data.result);

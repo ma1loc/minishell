@@ -3,9 +3,9 @@
 
 int check_syntax(char *input, int len, int *i)
 {
-	int j;
+	// int j;
 
-	j = 0;
+	// j = 0;
 	if (check_pipes(input, len, i))
 		return (1);
 	if (check_redirections(input, len, i))
@@ -17,7 +17,7 @@ int check_syntax(char *input, int len, int *i)
 
 void check_unclosed_quotes(t_setup *setup, int *i, int *in_quotes, char *quotes_char)
 {
-	if ((setup->input[*i] == '"' || setup->input[*i] == '\'') && 
+	if ((setup->input[*i] == '"' || setup->input[*i] == '\'') &&
 		(*quotes_char == setup->input[*i] || *in_quotes == 0))
 	{
 		if (!*in_quotes)
