@@ -1,50 +1,5 @@
 # include "mini_shell.h"
 
-// int		should_expand(t_setup *setup)
-// {
-// 	static t_token	*token;
-// 	int 	quotes;
-
-// 	token = setup->token->next;
-// 	quotes = token->quotes_info->quotes_type;
-// 	printf("if token -> %s\n", token->value);
-// 	if (quotes == 0 && token->type == TOKEN_WORD)
-// 		return (1);
-// 	else
-// 	{
-// 		token = token->next;
-// 		quotes = token->quotes_info->quotes_type;
-// 		printf("else token -> %s\n", token->value);
-// 		if (quotes == 0 && token->type == TOKEN_WORD)
-// 			return (1);
-// 		return (0);
-// 	}
-// 	return (0);
-
-// 	// token = setup->token;
-// 	// while (token)
-// 	// {
-// 	// 	if (token->type == TOKEN_HERDOC)
-// 	// 	{
-
-// 	// 	}
-// 	// 	token = token->next
-// 	// }
-// }
-
-// int		should_expand(t_setup *setup)
-// {
-// 	t_token	*token;
-// 	int 	quotes;
-	
-// 	token = setup->token->next;
-// 	quotes = token->quotes_info->quotes_type;
-// 	printf("token -> %s\n", token->next->value);
-// 	if (quotes == 0)
-// 		return (1);
-// 	return (0);
-// }
-
 void	cleanup_heredoc(t_setup *setup)
 {
 	int i;

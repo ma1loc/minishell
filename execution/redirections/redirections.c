@@ -8,21 +8,21 @@ void	restored_org_red(int std_in, int std_out)
     close(std_out);
 }
 
-int	get_red(t_setup *setup, t_tree *tree, t_redirections *red)
+int	get_red(t_setup *setup, t_tree *tree, t_redirections *redir)
 {
 	int	status;
 
 	status = 0;
-	if (red->type == TOKEN_RED_IN)
-		status = red_input(setup, tree, red);
-	else if (red->type == TOKEN_RED_OUT)
-		status = red_output(setup, tree, red);
-	else if (red->type == TOKEN_RED_INOUT)
-		status = red_in_out(setup, tree, red);	// >>> have to remove it later on, no need
-	else if (red->type == TOKEN_APPEND)
-		status = red_append(setup, tree, red);
-	else if (red->type == TOKEN_HERDOC)
-		status = red_heredoc(setup, tree);
+	if (redir->type == TOKEN_RED_IN)
+		status = red_input(setup, tree, redir);
+	else if (redir->type == TOKEN_RED_OUT)
+		status = red_output(setup, tree, redir);
+	else if (redir->type == TOKEN_RED_INOUT)
+		status = red_in_out(setup, tree, redir);
+	else if (redir->type == TOKEN_APPEND)
+		status = red_append(setup, tree, redir);
+	else if (redir->type == TOKEN_HERDOC)
+		status = red_heredoc(setup, tree, redir);
 	return (status);
 }
 

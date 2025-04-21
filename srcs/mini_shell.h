@@ -95,6 +95,7 @@ typedef struct s_heredoc
 	int		fd[HERE_DOC_MAX];   // >>> store heredoc pipe fds (read ends)
 	char	*file_name[HERE_DOC_MAX];	// >>> sotre file name to unlink them later
 	int		qoutes_type;
+	char    *delim_map[HERE_DOC_MAX];
 }	t_heredoc;
 
 
@@ -195,7 +196,7 @@ int		red_input(t_setup *setup,t_tree *tree, t_redirections *redirection);
 int		red_append(t_setup *setup, t_tree *tree, t_redirections *redirection);
 int		red_output(t_setup *setup, t_tree *tree, t_redirections *redirection);
 int		red_in_out(t_setup *setup,t_tree *tree, t_redirections *redirection);
-int		red_heredoc(t_setup *setup, t_tree *tree);
+int		red_heredoc(t_setup *setup, t_tree *tree, t_redirections *redirection);
 
 
 // >>>>>>>>>>>>>>>>>>> heredoc >>>>>>>>>>>>>>>>>>>>>>

@@ -2081,3 +2081,150 @@ void    echo_cmd(t_setup *setup)
 				// setup->token = setup->token->next;
 				printf("token after -> %s\n", setup->token->value);
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+void execute_redirections(t_tree *tree, t_setup *setup)
+{
+    t_redirections *redir;
+    int original_stdin = dup(STDIN_FILENO);
+    int original_stdout = dup(STDOUT_FILENO);
+    int redirect_performed = 0;
+
+    
+    redir = tree->cmd->redirections;
+    while (redir)
+    {
+        if (redir->type == TOKEN_HERDOC)
+        {
+            int found = 0;
+            for (int i = 0; i < setup->heredoc_counter; i++)
+            {
+                if (ft_strcmp(setup->heredoc->delim_map[i], redir->file_name) == 0)
+                {
+                    int fd = open(setup->heredoc->file_name[i], O_RDONLY);
+                    if (fd >= 0)
+                    {
+                        dup2(fd, STDIN_FILENO);
+                        close(fd);
+                        found = 1;
+                        redirect_performed = 1;
+                        break;
+                    }
+                }
+            }
+            if (!found)
+            {
+                ft_perror(setup, "heredoc file not found", EXIT_FAILURE);
+                return;
+            }
+        }
+		if (red->type == TOKEN_RED_IN)
+			red_input(setup, tree, red);
+		else if (red->type == TOKEN_RED_OUT)
+			red_output(setup, tree, red);
+		else if (red->type == TOKEN_RED_INOUT)
+			red_in_out(setup, tree, red);	// >>> have to remove it later on, no need
+		else if (red->type == TOKEN_APPEND)
+			red_append(setup, tree, red);
+		// else if (red->type == TOKEN_HERDOC)
+			// red_heredoc(setup, tree);
+		// return (status);
+        // Rest of your redirection handling...
+        
+        redir = redir->next;
+    }
+    
+    execute_commands(tree, setup);
+    
+    if (redirect_performed)
+    {
+        dup2(original_stdin, STDIN_FILENO);
+        dup2(original_stdout, STDOUT_FILENO);
+    }
+    close(original_stdin);
+    close(original_stdout);
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+void	execute_redirections(t_tree *tree, t_setup *setup)
+{
+	int				status;
+    int				save_stdin;
+    int				save_stdout;
+    t_redirections	*red;
+
+	status = 0;
+	save_stdin = dup(STDIN_FILENO);
+	save_stdout = dup(STDOUT_FILENO);
+    red = tree->cmd->redirections;
+    while (red != NULL)
+    {
+        status = get_red(setup, tree, red);
+		if (status == -1)
+			break;
+		red = red->next;
+    }
+	if (status == -1)
+		return (restored_org_red(save_stdin, save_stdout), (void)0);
+	if (status == 0)
+		execute_commands(tree, setup);
+	restored_org_red(save_stdin, save_stdout);
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// void execute_redirections(t_tree *tree, t_setup *setup)
+// {
+//     t_redirections *redir;
+//     int original_stdin = dup(STDIN_FILENO);
+//     int original_stdout = dup(STDOUT_FILENO);
+//     int redirect_performed = 0;
+    
+//     redir = tree->cmd->redirections;
+//     while (redir)
+//     {
+//         if (redir->type == TOKEN_HERDOC)
+//         {
+//             // BUG: You're not correctly matching the heredoc file to the command
+//             // FIX: Need to find the specific heredoc file for this delimiter
+//             int found = 0;
+//             for (int i = 0; i < setup->heredoc_counter; i++)
+//             {
+//                 // Compare the delimiter in the redirection with stored delimiters
+//                 if (ft_strcmp(setup->heredoc->delim_map[i], redir->file_name) == 0)
+//                 {
+//                     int fd = open(setup->heredoc->file_name[i], O_RDONLY);
+//                     if (fd >= 0)
+//                     {
+//                         dup2(fd, STDIN_FILENO);
+//                         close(fd);
+//                         found = 1;
+//                         redirect_performed = 1;
+//                         break;
+//                     }
+//                 }
+//             }
+//             if (!found)
+//             {
+//                 // If no matching heredoc file was found, report an error
+//                 ft_perror(setup, "heredoc file not found", EXIT_FAILURE);
+//                 return;
+//             }
+//         }
+//         // Rest of your redirection handling...
+        
+//         redir = redir->next;
+//     }
+    
+//     // Execute the command
+//     execute_commands(tree, setup);
+    
+//     // Restore original file descriptors
+//     if (redirect_performed)
+//     {
+//         dup2(original_stdin, STDIN_FILENO);
+//         dup2(original_stdout, STDOUT_FILENO);
+//     }
+//     close(original_stdin);
+//     close(original_stdout);
+// }
