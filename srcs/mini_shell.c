@@ -1,15 +1,6 @@
 # include "mini_shell.h"
 #include "../parsing/tokenizer.h"
 
-// ls >a "-la" > |  echo $a > | >> a <<A""a
-// ls >a "-la" > |  echo $a  >> a <<A""a 
-// ls >a "-la" > |  echo $a
-// echo  "||||||||||||||||||||||||||||"
-// echo -nnnnnnnnnnnnnnnnnnnnnnnnnnnn -n
-// << cat
-// > delimited by end-of-file
-// bash: warning: here-document at line 35 delimited by end-of-file (wanted `cat')
-
 t_gc	*g_gc = NULL;
 
 void	start_execution(t_setup *setup)
@@ -48,10 +39,10 @@ int	main(int argc, char **argv, char **env)
 			do_eof(setup);
 		if (setup->input[0] == '\0')
 			continue ;
-		add_history(setup->input);
 		setup->token = tokenize(setup);
 		if (!setup->token || ft_strlen(setup->token->value) == 0)
 			continue ;
+		add_history(setup->input);
 		setup->cmd = pars_tokens(setup);
 		setup->tree = build_tree_commande(setup->cmd);
 		start_execution(setup);
