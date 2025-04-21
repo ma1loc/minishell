@@ -162,10 +162,8 @@ t_token	*tokenize(t_setup *setup)
 		return (free(state), NULL);
 	tokenize_loop(input, state, setup, &tokens);
 	process_remainder_text(state, &tokens);
-	// print_tokens(tokens);
 	expand_env_vars(tokens, setup);
 	handel_is_split(tokens, &tokens);
-	print_tokens(tokens);
 	return (free(state), tokens);
 }
 
