@@ -131,6 +131,8 @@ void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
 {
 
   t_quotes_info info;
+  info.quotes_type = 0;
+  info.stripped_text = NULL;
   t_token *new_token;
   int is_space;
 

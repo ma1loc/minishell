@@ -69,7 +69,7 @@ int is_heredoc(t_tree *tree)
     t_redirections *redir;
 
     if (!tree)
-	return (0);
+		return (0);
 	
     if (tree->cmd && tree->cmd->redirections)
     {

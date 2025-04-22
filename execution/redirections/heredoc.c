@@ -46,8 +46,8 @@ void	get_delimiter_qoutes(t_setup *setup)
 		if (setup->token->type == TOKEN_HERDOC)
 		{
 			setup->token = setup->token->next;
-			printf("setup->token->quotes_info->quotes_type = %d\n", setup->token->quotes_info->quotes_type);
-			printf("setup->token->value = %s\n", setup->token->value);
+			// printf("setup->token->quotes_info->quotes_type = %d\n", setup->token->quotes_info->quotes_type);
+			// printf("setup->token->value = %s\n", setup->token->value);
 			
 			setup->heredoc->qoutes_type = setup->token->quotes_info->quotes_type;
 			break;
@@ -58,6 +58,7 @@ void	get_delimiter_qoutes(t_setup *setup)
 
 int	get_heredoc_fds(t_setup *setup, t_redirections *red)
 {
+	// (void)red;
 	t_heredoc	*heredoc;
 	char		*file_name;
 	int			i;
