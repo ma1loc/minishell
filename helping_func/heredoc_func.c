@@ -8,6 +8,15 @@ void	heredoc_counter_in_pipe(t_setup *setup, t_tree *tree)
 		heredoc_counter(setup, tree->right);
 }
 
+void	get_delimiter(t_setup *setup, t_redirections *red)
+{
+	if (setup->heredoc->delimiter)
+		gc_free(g_gc, setup->heredoc->delimiter);
+	setup->heredoc->delimiter = ft_strdup(red->file_name);
+	red = red->next;
+	return ;
+}
+
 void	heredoc_counter(t_setup *setup, t_tree *tree)
 {
     t_redirections	*redir;

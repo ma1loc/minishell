@@ -1,8 +1,5 @@
 # include "mini_shell.h"
 
-//	>>> here i have to get the path of the command, i mean the path the 
-//	will the cmd will be there and executed.
-
 char	*split_path(char *path, char *cmd)
 {
 	int		i;
@@ -37,7 +34,6 @@ int		is_directory(t_setup *setup, char *cmd_path)
 	status = stat(cmd_path, &st);
 	if (status == 0 && S_ISDIR(st.st_mode))
 	{
-		// >>> here i have to set the exit status of 126 litter on
 		ft_perror(setup ,"Error: Is a directory\n", CMD_NOT_EXEC);
 		return (1);
 	}
@@ -49,7 +45,6 @@ char	*is_valid_str(char *cmd)
 	char	*dup;
 
 	dup = NULL;
-	// if ((ft_strchr(cmd, '/') != NULL) || (access(cmd, F_OK | X_OK == 0)))
 	if ((ft_strchr(cmd, '/') != NULL) || (access(cmd, F_OK | X_OK) == 0))
 	{
 		dup = ft_strdup(cmd);

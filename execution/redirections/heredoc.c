@@ -1,4 +1,16 @@
-# include "mini_shell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/22 20:04:15 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/22 20:04:20 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "mini_shell.h"
 
 void	loding_heredoc(t_setup *setup)
 {
@@ -7,15 +19,15 @@ void	loding_heredoc(t_setup *setup)
 	while (true)
 	{
 		input = readline("heredoc> ");
-        if (input == NULL)
+		if (input == NULL)
 			do_eof_heredoc(setup);
-        if (ft_strcmp(input, setup->heredoc->delimiter) == 0)
-        {
-            free(input);
-            break;
-        }
+		if (ft_strcmp(input, setup->heredoc->delimiter) == 0)
+		{
+			free(input);
+			break ;
+		}
 		if (input[0] == '\0')
-            continue ;
+			continue ;
 		if (setup->heredoc->qoutes_type == 0)
 			expand_heredoc_input(setup, input);
 		else
@@ -27,30 +39,19 @@ void	loding_heredoc(t_setup *setup)
 	}
 }
 
-void	get_delimiter(t_setup *setup, t_redirections *red)
-{
-	if (setup->heredoc->delimiter)
-		gc_free(g_gc, setup->heredoc->delimiter);
-
-	setup->heredoc->delimiter = ft_strdup(red->file_name);
-	red = red->next;
-	return ;
-}
-
 void	get_delimiter_qoutes(t_setup *setup)
 {
-	setup->heredoc->qoutes_type = 0;
+	int	qoutes_type;
 
+	setup->heredoc->qoutes_type = 0;
 	while (setup->token)
 	{
 		if (setup->token->type == TOKEN_HERDOC)
 		{
 			setup->token = setup->token->next;
-			// printf("setup->token->quotes_info->quotes_type = %d\n", setup->token->quotes_info->quotes_type);
-			// printf("setup->token->value = %s\n", setup->token->value);
-			
-			setup->heredoc->qoutes_type = setup->token->quotes_info->quotes_type;
-			break;
+			qoutes_type = setup->token->quotes_info->quotes_type;
+			setup->heredoc->qoutes_type = qoutes_type;
+			break ;
 		}
 		setup->token = setup->token->next;
 	}
@@ -58,11 +59,10 @@ void	get_delimiter_qoutes(t_setup *setup)
 
 int	get_heredoc_fds(t_setup *setup, t_redirections *red)
 {
-	// (void)red;
 	t_heredoc	*heredoc;
 	char		*file_name;
 	int			i;
-	
+
 	i = setup->i;
 	heredoc = setup->heredoc;
 	file_name = get_file_name(setup);
@@ -84,23 +84,23 @@ int	get_heredoc_fds(t_setup *setup, t_redirections *red)
 
 void	init_heredoc(t_setup *setup, t_tree *tree)
 {
-	t_redirections *redir;
+	t_redirections	*redir;
 
 	redir = NULL;
 	if (!tree)
-        return ;
-    if (tree->cmd && tree->cmd->redirections)
-    {
-        redir = tree->cmd->redirections;
-        while (redir)
-        {
-            if (redir->type == TOKEN_HERDOC)
+		return ;
+	if (tree->cmd && tree->cmd->redirections)
+	{
+		redir = tree->cmd->redirections;
+		while (redir)
+		{
+			if (redir->type == TOKEN_HERDOC)
 			{
 				setup->heredoc_flag = 1;
-                if (get_heredoc_fds(setup, redir) == 1)
+				if (get_heredoc_fds(setup, redir) == 1)
 				{
 					ft_perror(setup, "heredoc process failed\n", EXIT_FAILURE);
-					break;
+					break ;
 				}
 				setup->i++;
 			}
@@ -111,26 +111,26 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
 	init_heredoc(setup, tree->right);
 }
 
-void heredoc_process(t_setup *setup, t_tree *tree)
+void	heredoc_process(t_setup *setup, t_tree *tree)
 {
-    pid_t	pid;
-    int		status;
-    int		exit_status;
-    
-    pid = set_fork(setup);    
-    if (pid == 0)
-    {
-        signal(SIGINT, heredoc_sigint);
-        setup->i = 0;
-        init_heredoc(setup, tree);
-        setup->i = 0;
-        execution(tree, setup);
-        exit_status = setup->exit_stat;
-        gc_destroy(g_gc);
-        exit(exit_status);
-    }
-    waitpid(pid, &status, 0);
-    if (WIFEXITED(status))
-        setup->exit_stat = WEXITSTATUS(status);
-    signal(SIGINT, main_sigint);
+	pid_t	pid;
+	int		status;
+	int		exit_status;
+
+	pid = set_fork(setup);
+	if (pid == 0)
+	{
+		signal(SIGINT, heredoc_sigint);
+		setup->i = 0;
+		init_heredoc(setup, tree);
+		setup->i = 0;
+		execution(tree, setup);
+		exit_status = setup->exit_stat;
+		gc_destroy(g_gc);
+		exit(exit_status);
+	}
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		setup->exit_stat = WEXITSTATUS(status);
+	signal(SIGINT, main_sigint);
 }

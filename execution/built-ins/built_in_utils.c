@@ -1,34 +1,39 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   built_in_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/22 18:21:21 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/22 18:21:25 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_shell.h"
 
-int is_valid_number(char *str)
+int	is_valid_number(char *str)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    if (str[0] == '-' || str[0] == '+')
-        i++;
-
-    if (!str[i])
-        return (0);
-
-    if (ft_isdigit(str + i) == 0)
-        return (0);
-
-    return (1);
+	i = 0;
+	if (str[0] == '-' || str[0] == '+')
+		i++;
+	if (!str[i])
+		return (0);
+	if (ft_isdigit(str + i) == 0)
+		return (0);
+	return (1);
 }
 
-int is_valid_identifier(char *key)
+int	is_valid_identifier(char *key)
 {
-	int i;
-	
+	int	i;
+
 	if (!key || !*key)
 		return (0);
-
-	// >>> check the first char in the "key"
 	if (!ft_isalpha(key[0]) && key[0] != '_')
 		return (0);
-	
-	// >>> loop the the remaining char can be num, alpha, or '_'
 	i = 1;
 	while (key[i])
 	{

@@ -1,8 +1,20 @@
-# include "mini_shell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc_expand.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/22 20:14:13 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/22 20:14:16 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "mini_shell.h"
 
 char	*get_env_val(t_setup *setup, char *key)
 {
-	t_env *env;
+	t_env	*env;
 
 	env = NULL;
 	if (!is_valid_identifier(key))
@@ -30,7 +42,7 @@ void	set_exit_status(t_setup *setup, char **result)
 
 void	set_dollar_sign(t_setup *setup, char **result)
 {
-	char *value;
+	char	*value;
 
 	value = ft_itoa(setup->exit_stat);
 	if (!value)
@@ -61,7 +73,7 @@ void	expand_heredoc_input(t_setup *setup, char *input)
 {
 	int		i;
 	char	*result;
-	
+
 	i = 0;
 	result = NULL;
 	while (input[i])
@@ -70,13 +82,13 @@ void	expand_heredoc_input(t_setup *setup, char *input)
 		{
 			i += 2;
 			set_dollar_sign(setup, &result);
-			continue;
+			continue ;
 		}
-		else if (input[i] == '$' && input[i + 1] &&
-			(ft_isalpha(input[i + 1]) || input[i + 1] == '_'))
+		else if (input[i] == '$' && input[i + 1]
+			&& (ft_isalpha(input[i + 1]) || input[i + 1] == '_'))
 		{
 			expand_env_variable(setup, input, &i, &result);
-			continue;
+			continue ;
 		}
 		result = ft_strjoin(result, char_to_str(input[i]));
 		i++;
