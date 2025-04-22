@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 16:45:47 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/20 17:44:58 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/22 19:40:06 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	check_redirections(char *input, int len, int *i)
 	return (0);
 }
 
-int check_quotes_syntax(t_setup *setup)
+int	check_quotes_syntax(t_setup *setup)
 {
     int     i;
     int     in_quotes;
@@ -95,38 +95,8 @@ int check_quotes_syntax(t_setup *setup)
     }
     return (handle_syntax_error(setup, in_quotes));
 }
-// int    check_quotes_syntax(t_setup *setup)
-// {
-//     int        i;
-//     int        in_quotes;
-//     char    quoest_char;
-//     int        len;
 
-//     i = 0;
-//     in_quotes = 0;
-//     quoest_char = 0;
-//     len = strlen(setup->input);
-//     while (setup->input[i] != '\0')
-//     {
-//         if (setup->input[i] != '\0' && (setup->input[i] == ' '
-//                 || setup->input[i] == '\t'))
-//         {
-//             i++;
-//             continue ;
-//         }
-//         if (check_syntax(setup->input, len, &i) != 0)
-//         {
-//             in_quotes = 1;
-//             break ;
-//         }
-//         check_unclosed_quotes(setup, &i, &in_quotes, &quoest_char);
-//         i++;
-//     }
-//     return (handle_syntax_error(setup, in_quotes));
-// }
-
-void	tokenize_loop(char *input, t_tokinizer_state *state, t_setup *setup,
-		t_token **tokens)
+void	tokenize_loop(char *input, t_tokinizer_state *state,t_token **tokens)
 {
 	while (input[state->i] != '\0')
 	{
@@ -138,7 +108,7 @@ void	tokenize_loop(char *input, t_tokinizer_state *state, t_setup *setup,
 		else if (input[state->i] == '$')
 			process_dollar(input, state, tokens);
 		else if (input[state->i] == '"' || input[state->i] == '\'')
-			process_quotes(input, state, setup, tokens);
+			process_quotes(input, state, tokens);
 		else
 			process_normal_word(input, state);
 	}
@@ -160,21 +130,9 @@ t_token	*tokenize(t_setup *setup)
 	memset(state->buff, 0, sizeof(state->buff));
 	if (!setup->input || check_quotes_syntax(setup) != 0)
 		return (free(state), NULL);
-	tokenize_loop(input, state, setup, &tokens);
+	tokenize_loop(input, state, &tokens);
 	process_remainder_text(state, &tokens);
 	expand_env_vars(tokens, setup);
 	handel_is_split(tokens, &tokens);
 	return (free(state), tokens);
-}
-
-void print_tokens(t_token *tokens)  // remov later
-{
-	t_token *current;
-
-	current = tokens;
-	while(current)
-	{
-		printf("token [%s]\n", current->value);
-		current = current->next;
-	}
 }

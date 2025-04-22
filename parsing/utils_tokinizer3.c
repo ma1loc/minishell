@@ -1,11 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_tokinizer3.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/22 19:29:41 by ytabia            #+#    #+#             */
+/*   Updated: 2025/04/22 19:29:42 by ytabia           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "tokenizer.h"
 #include "../srcs/mini_shell.h"
 
 int check_syntax(char *input, int len, int *i)
 {
-	// int j;
-
-	// j = 0;
 	if (check_pipes(input, len, i))
 		return (1);
 	if (check_redirections(input, len, i))
