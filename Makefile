@@ -2,7 +2,7 @@ CC = cc
 
 INCLUDE = -Isrcs -Iparsing
 
-CFLAGS = -Wall -Wextra -Werror $(INCLUDE) #-g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror $(INCLUDE) -g #-fsanitize=address
 
 SRC = srcs/mini_shell.c libft/ft_strlen.c libft/ft_split.c libft/ft_strjoin.c libft/ft_strdup.c libft/ft_strncmp.c \
 	libft/ft_putstr_fd.c execution/built-ins/echo_cmd.c execution/built-ins/cd_cmd.c execution/execute/signals.c \
