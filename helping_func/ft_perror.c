@@ -14,12 +14,15 @@ void    ft_exit(t_setup *setup, int exit_stat)
             setup->exit_stat = CMD_NOT_FOUND;
         else if (exit_stat == CMD_NOT_EXEC)			// >>> exit 126
             setup->exit_stat = CMD_NOT_EXEC;
+		else if (exit_stat == EXIT_SEGINT)
+			setup->exit_stat = EXIT_SEGINT;
+		else if (exit_stat == EXIT_QUIT)
+			setup->exit_stat = EXIT_QUIT;
     }
 }
 
 void    ft_perror(t_setup *setup, char *msg, int exit_stat)
 {
-    // >>> garbage collector have to create and call here <<<
     if (msg)
         ft_putstr_fd(msg, STDERR_FILENO);
     else

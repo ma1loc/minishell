@@ -188,5 +188,3 @@ void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup, t_tok
     }
     state->j = 0;
 }
-
-

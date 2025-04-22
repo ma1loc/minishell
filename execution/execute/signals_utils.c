@@ -1,8 +1,9 @@
-# include "mini_shell.h"
+#include "mini_shell.h"
 
 int	*exit_status()
 {
 	static int	status;
+	
 	return (&status);
 }
 

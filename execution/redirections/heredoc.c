@@ -46,6 +46,9 @@ void	get_delimiter_qoutes(t_setup *setup)
 		if (setup->token->type == TOKEN_HERDOC)
 		{
 			setup->token = setup->token->next;
+			printf("setup->token->quotes_info->quotes_type = %d\n", setup->token->quotes_info->quotes_type);
+			printf("setup->token->value = %s\n", setup->token->value);
+			
 			setup->heredoc->qoutes_type = setup->token->quotes_info->quotes_type;
 			break;
 		}
