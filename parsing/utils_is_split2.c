@@ -33,16 +33,46 @@ int	extract_word(char *input, int i, char *buff)
 	buff[j] = '\0';
 	return (i);
 }
+// void handel_is_split(t_token *tokens, t_token **head)
+// {
+//     t_token *current;
+//     t_token *prev;
+
+//     current = tokens;
+//     prev = NULL;
+
+//     while (current)
+//     {
+//         if (current->is_split == 1 && current->value)
+//             current = handle_split_token(current, prev, head);
+//         else
+//         {
+//             prev = current;
+//             current = current->next;
+//         }
+//     }
+// }
+
 void handel_is_split(t_token *tokens, t_token **head)
 {
     t_token *current;
     t_token *prev;
-    
+
     current = tokens;
     prev = NULL;
-    
     while (current)
     {
+        if (current->type == TOKEN_HERDOC)
+        {
+            prev = current;
+            current = current->next;
+            if (current)
+            {
+                prev = current;
+                current = current->next;
+            }
+            continue;
+        }
         if (current->is_split == 1 && current->value)
             current = handle_split_token(current, prev, head);
         else
