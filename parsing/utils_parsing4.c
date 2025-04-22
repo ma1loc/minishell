@@ -13,7 +13,7 @@ t_command	*creat_new_node_command(t_command *commandes)
 	commandes->next = NULL;
 	return (commandes);
 }
-void	remove_token(t_token **head, t_token *current)
+void		remove_token(t_token **head, t_token *current)
 {
 	t_token	*temp;
 	t_token	*prev;
