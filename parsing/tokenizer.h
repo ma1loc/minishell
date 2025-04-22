@@ -30,6 +30,15 @@ typedef struct s_process_data
 	int		j;
 }	t_process_data;
 
+typedef struct s_content_info
+{
+	char	*input;
+	char	*content;
+	int		start;
+	int		length;
+	int		end;
+}	t_content_info;
+
 typedef struct s_expand_data {
   int var_index;
   int buff_index;
@@ -116,45 +125,30 @@ typedef struct s_tree   // struct for the tree
 
 t_token *tokenize(t_setup *setup);
 t_command *pars_tokens(t_setup *setup);
-void print_tokens(t_token *tokens);  // remov later
-void print_commands(t_command *cmd);  // remove later
-void free_tokens(t_token *tokens);    // use it if needed
-//
 t_tree *build_tree_commande(t_command *commandes);
-t_command *find_pipe_node(t_command *commands);   // remove later
 t_args_list *add_args_to_list(t_args_list **list_head, t_token *token);
 int count_args_list(t_args_list *args);
 void fill_array(t_args_list *args_list, t_command *commads);
 void free_list_args(t_args_list *list_args);
-void print_tree(t_tree *root, int level); // remove later
-/////////////////////////////////
 t_redirections *new_redirection(char *file_name, t_token_type type);
 void add_redirection_to_list( t_command *cmd, char *file_name, t_token_type type);
 void free_redirections(t_redirections *redir);
-
-//////////////////////
 void process_spaces(t_tokinizer_state *state, t_token **tokens);
 void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tokens);
 void process_operators(char *input, t_tokinizer_state *state, t_token **tokens);
-void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup, t_token **tokens);
+void process_quotes(char *input, t_tokinizer_state *state, t_token **tokens);
 void process_normal_word(char *input, t_tokinizer_state *state);
 void process_remainder_text(t_tokinizer_state *state, t_token **tokens);
-
-///////////////////////
-
 void creat_node_next_commande(t_commande_state *state);
 void creat_node_pipe_commande(t_commande_state *state);
 t_command *creat_new_node_command(t_command *commandes);
 void process_token_type_pipe(t_commande_state *state, t_args_list **list_args);
 t_token *process_token_type_redir(t_commande_state *state, t_token *current);
 void process_args_last_cmd(t_commande_state *state, t_args_list *list_args);
-///////////////////////
 void expand_env_vars(t_token *tokens, t_setup *setup);
 char *get_env_value(char *name, t_setup *setup);
 char *expand_env_in_string(char *str, t_setup *setup);
 void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens);
-
-
 t_token *add_token( t_token **head, char *value, t_token_type type, int quotes_type);
 t_quotes_info strip_quotes(char *str);
 void    ft_perror(t_setup *setup, char *msg, int exit_stat);  /// remove it later
@@ -162,8 +156,6 @@ char	*ft_itoa_(int n);
 void	remove_token(t_token **head, t_token *current);
 int check_space(char *str);
 bool check_current_type(enum e_token_type type);
-
-
 t_token *insert_new_token(t_insert_info info, t_token *last_inserted);
 int extract_word(char *input, int i, char *buff);
 t_token *process_word(t_insert_info info, char *buff, t_token *last_inserted);
@@ -171,7 +163,6 @@ int skip_whitespace(char *input, int i);
 t_token *process_split_token(char *input, t_token **head, t_token *last_inserted, int quotes_type);
 int get_quotes_type(t_token *token);
 t_token *set_last_inserted(t_token *prev);
-// t_token *add_token_at_position(t_token **head, char *value, t_token_type type, int quotes_type);
 t_token *handle_split_token(t_token *current, t_token *prev, t_token **head);
 void handel_is_split(t_token *tokens, t_token **head);
 t_quotes_info	strip_quotes(char *str);
@@ -192,7 +183,6 @@ t_command	*creat_new_node_command(t_command *commandes);
 char	*ft_strjoin_(char *s1, char *s2);
 char *skip_spaces_while_expand(t_token *token,char *str);
 void copy_env_value_if_valid(t_expand_data *data, t_token *token);
-
 int expand_exit_status(t_expand_data *data, t_setup *setup);
 char *extract_var_name(t_expand_data *data);
 int handle_dollar_expansion(t_expand_data *data, t_setup *setup);
@@ -201,6 +191,11 @@ void handle_single_operator(char *input, t_tokinizer_state *state, t_token **tok
 int is_single_quote(char *value);
 void process_args(t_args_list *current, t_command *cmd, int *i);
 int	skip_whitespace(char *input, int i);
+int	handle_dollar_dquotes(char *input, t_tokinizer_state *state, t_quotes_info info, t_token **tokens);
+int	handle_dollar_squotes(char *input, t_tokinizer_state *state, t_quotes_info info, t_token **tokens);
+int process_token_content(t_content_info *c_info, t_token **tokens, t_quotes_info info,t_tokinizer_state *state);
+int handle_dollar_quotes(char *input, t_tokinizer_state *state, t_token **tokens, t_quotes_info *info);
+
 
 
 #endif
