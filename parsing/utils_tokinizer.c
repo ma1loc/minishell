@@ -66,6 +66,7 @@ void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
       // Check for $" pattern (special case for $"string")
       if (input[state->i + 1] == '"')
       {
+		info.quotes_type = 2;
           // int quote_start = state->i + 1;  // Position of the opening quote
           int content_start = state->i + 2;  // Position after the opening quote
           int content_end = content_start;
@@ -83,7 +84,38 @@ void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
                   content[content_length] = '\0';
 
                   // Add the content as a token (without $ and quotes)
-                  new_token = add_token(tokens, content, TOKEN_WORD, 0);
+                //   new_token = add_token(tokens, content, TOKEN_WORD, 0);
+                  new_token = add_token(tokens, content, TOKEN_WORD, info.quotes_type);
+                  new_token->is_space = (input[content_end + 1] == ' ' || input[content_end + 1] == '\t') ? 1 : -1;
+                  free(content);
+                  // Skip past this entire construct
+                  state->i = content_end + 1;
+                  return;
+              }
+          }
+      }
+		else if (input[state->i + 1] == '\'')
+      {
+		info.quotes_type = 1;
+          // int quote_start = state->i + 1;  // Position of the opening quote
+          int content_start = state->i + 2;  // Position after the opening quote
+          int content_end = content_start;
+
+          // Find the closing quote
+          while (input[content_end] && input[content_end] != '\'')
+              content_end++;
+
+          if (input[content_end] == '\'') {
+              // We found a closing quote - extract just the content
+              int content_length = content_end - content_start;
+              char *content = malloc(content_length + 1);
+              if (content) {
+                  strncpy(content, input + content_start, content_length);
+                  content[content_length] = '\0';
+
+                  // Add the content as a token (without $ and quotes)
+                //   new_token = add_token(tokens, content, TOKEN_WORD, 0);
+                  new_token = add_token(tokens, content, TOKEN_WORD, info.quotes_type);
                   new_token->is_space = (input[content_end + 1] == ' ' || input[content_end + 1] == '\t') ? 1 : -1;
                   free(content);
                   // Skip past this entire construct
