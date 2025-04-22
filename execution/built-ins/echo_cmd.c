@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo_cmd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/22 18:29:04 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/22 18:29:06 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_shell.h"
 
-int		is_n_option(char *opt)
+int	is_n_option(char *opt)
 {
 	int	i;
 
@@ -16,7 +28,7 @@ int		is_n_option(char *opt)
 	while (opt[i])
 	{
 		if (opt[i] == 'n')
-			i++;	
+			i++;
 		else
 			return (1);
 	}
@@ -37,7 +49,7 @@ void	echo_print(t_command *cmd, int i)
 void	echo_cmd(t_setup *setup)
 {
 	int	i;
-	
+
 	i = 1;
 	if (!setup->cmd->args[1])
 		printf("\n");

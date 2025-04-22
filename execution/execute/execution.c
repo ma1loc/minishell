@@ -19,17 +19,16 @@ void	execute_externals(t_setup *setup)
 
 	pid = 0;
 	setup->cmd_path = path_resolver(setup);
-	// printf("PATH_resover  => %s\n", setup->cmd_path);
 	if (!setup->cmd_path)
-		return (ft_perror(setup, "command"\
-		" not found\n", CMD_NOT_FOUND), (void)0);
+	{
+		write(STDERR_FILENO, "command not found\n", 18);
+		return (setup->exit_stat = CMD_NOT_FOUND, (void)0);
+	}
 	pid = set_fork(setup);
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-		// printf("setup->cmd->args => %s\n", setup->cmd->args[0]);
-		// if (execve(setup->cmd_path, setup->cmd->args, setup->envp) == -1)
 		if (execve(setup->cmd_path, setup->cmd->args, setup->exec_env) == -1)
 			ft_perror(setup, NULL, EXIT_FAILURE);
 		return (gc_destroy(g_gc), exit(EXIT_FAILURE), (void)0);

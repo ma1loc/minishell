@@ -1,9 +1,21 @@
-# include "mini_shell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/22 18:44:14 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/22 18:44:19 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "mini_shell.h"
 
 void	add_to_env(t_setup *setup, char *key, char *value)
 {
 	t_env	*env;
-	
+
 	env = ft_lstlast(setup->env);
 	if (!env)
 	{

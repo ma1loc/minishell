@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit_cmd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/22 18:32:51 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/22 18:32:53 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_shell.h"
 
-void	numeric_error()
+void	numeric_error(void)
 {
 	ft_putstr_fd("exit: numeric argument required\n", STDERR_FILENO);
 	gc_destroy(g_gc);
@@ -55,16 +67,16 @@ int	a_to_i(char *str)
 
 void	exiting(t_setup *setup)
 {
-    int	input;
+	int	input;
 
 	input = 0;
 	if (is_valid_number(setup->cmd->args[1]))
-    {
-        input = a_to_i(setup->cmd->args[1]);
+	{
+		input = a_to_i(setup->cmd->args[1]);
 		gc_destroy(g_gc);
 		exit(input);
-    }
-    else
+	}
+	else
 		numeric_error();
 }
 
@@ -74,17 +86,17 @@ void	exit_cmd(t_setup *setup)
 
 	exit_status = 0;
 	exit_status = setup->exit_stat;
-    ft_putstr_fd("exit\n", STDOUT_FILENO);
-    if (!setup->cmd->args[1])
+	ft_putstr_fd("exit\n", STDOUT_FILENO);
+	if (!setup->cmd->args[1])
 	{
 		gc_destroy(g_gc);
-        exit(exit_status);	
+		exit(exit_status);
 	}
-    else if (setup->cmd->args[2])
-    {
-        ft_perror(setup, "exit: too many arguments\n", EXIT_FAILURE);
-        return ;
-    }
-    else
+	else if (setup->cmd->args[2])
+	{
+		ft_perror(setup, "exit: too many arguments\n", EXIT_FAILURE);
+		return ;
+	}
+	else
 		exiting(setup);
 }

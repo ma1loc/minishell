@@ -210,6 +210,7 @@ void	expand_heredoc_input(t_setup *setup, char *input);
 void	cleanup_heredoc(t_setup *setup);
 void	heredoc_counter(t_setup *setup, t_tree *tree);
 void	do_eof_heredoc(t_setup *setup);
+void	get_delimiter(t_setup *setup, t_redirections *red);
 void	maximum_heredoc_msg();
 
 
