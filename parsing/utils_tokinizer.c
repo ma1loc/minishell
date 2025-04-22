@@ -54,6 +54,78 @@ void process_remainder_text(t_tokinizer_state *state, t_token **tokens)
     state->j = 0;
   }
 }
+int	handle_dollar_dquotes(char *input, t_tokinizer_state *state, t_quotes_info info, t_token **tokens)
+{
+	t_token	*new_token;
+	int		content_start;
+	int		content_end;
+	int		content_length;
+	char	*content;
+
+	if (input[state->i + 1] == '"')
+	{
+    info.quotes_type = 2;
+		content_start = state->i + 2;
+		content_end = content_start;
+		while (input[content_end] && input[content_end] != '"')
+			content_end++;
+		if (input[content_end] == '"')
+		{
+			content_length = content_end - content_start;
+			content = malloc(content_length + 1);
+			if (content)
+			{
+				strncpy(content, input + content_start, content_length);
+				content[content_length] = '\0';
+				new_token = add_token(tokens, content, TOKEN_WORD, info.quotes_type);
+				if (input[content_end + 1] == ' ' || input[content_end + 1] == '\t')
+					new_token->is_space = 1;
+				else
+					new_token->is_space = -1;
+				free(content);
+				state->i = content_end + 1;
+				return (1);
+			}
+		}
+	}
+	return (0);
+}
+int	handle_dollar_squotes(char *input, t_tokinizer_state *state, t_quotes_info info, t_token **tokens)
+{
+	t_token	*new_token;
+	int		content_start;
+	int		content_end;
+	int		content_length;
+	char	*content;
+
+	if (input[state->i + 1] == '\'')
+	{
+    info.quotes_type = 1;
+		content_start = state->i + 2;
+		content_end = content_start;
+		while (input[content_end] && input[content_end] != '\'')
+			content_end++;
+		if (input[content_end] == '\'')
+		{
+			content_length = content_end - content_start;
+			content = malloc(content_length + 1);
+			if (content)
+			{
+				strncpy(content, input + content_start, content_length);
+				content[content_length] = '\0';
+				new_token = add_token(tokens, content, TOKEN_WORD, info.quotes_type);
+				if (input[content_end + 1] == ' ' || input[content_end + 1] == '\t')
+					new_token->is_space = 1;
+				else
+					new_token->is_space = -1;
+				free(content);
+				state->i = content_end + 1;
+				return (1);
+			}
+		}
+	}
+	return (0);
+}
 
 void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
 {
@@ -64,66 +136,10 @@ void process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
 
   is_space = -1;
       // Check for $" pattern (special case for $"string")
-      if (input[state->i + 1] == '"')
-      {
-		info.quotes_type = 2;
-          // int quote_start = state->i + 1;  // Position of the opening quote
-          int content_start = state->i + 2;  // Position after the opening quote
-          int content_end = content_start;
-
-          // Find the closing quote
-          while (input[content_end] && input[content_end] != '"')
-              content_end++;
-
-          if (input[content_end] == '"') {
-              // We found a closing quote - extract just the content
-              int content_length = content_end - content_start;
-              char *content = malloc(content_length + 1);
-              if (content) {
-                  strncpy(content, input + content_start, content_length);
-                  content[content_length] = '\0';
-
-                  // Add the content as a token (without $ and quotes)
-                //   new_token = add_token(tokens, content, TOKEN_WORD, 0);
-                  new_token = add_token(tokens, content, TOKEN_WORD, info.quotes_type);
-                  new_token->is_space = (input[content_end + 1] == ' ' || input[content_end + 1] == '\t') ? 1 : -1;
-                  free(content);
-                  // Skip past this entire construct
-                  state->i = content_end + 1;
-                  return;
-              }
-          }
-      }
-		else if (input[state->i + 1] == '\'')
-      {
-		info.quotes_type = 1;
-          // int quote_start = state->i + 1;  // Position of the opening quote
-          int content_start = state->i + 2;  // Position after the opening quote
-          int content_end = content_start;
-
-          // Find the closing quote
-          while (input[content_end] && input[content_end] != '\'')
-              content_end++;
-
-          if (input[content_end] == '\'') {
-              // We found a closing quote - extract just the content
-              int content_length = content_end - content_start;
-              char *content = malloc(content_length + 1);
-              if (content) {
-                  strncpy(content, input + content_start, content_length);
-                  content[content_length] = '\0';
-
-                  // Add the content as a token (without $ and quotes)
-                //   new_token = add_token(tokens, content, TOKEN_WORD, 0);
-                  new_token = add_token(tokens, content, TOKEN_WORD, info.quotes_type);
-                  new_token->is_space = (input[content_end + 1] == ' ' || input[content_end + 1] == '\t') ? 1 : -1;
-                  free(content);
-                  // Skip past this entire construct
-                  state->i = content_end + 1;
-                  return;
-              }
-          }
-      }
+  if (handle_dollar_dquotes(input, state, info, tokens))
+    return;
+  else if(handle_dollar_squotes(input, state, info, tokens))
+    return;
   state->buff[state->j++] = input[state->i++];
   if (input[state->i] == '?') // expand exit stat ($?)
     state->buff[state->j++] = input[state->i++];
@@ -172,5 +188,3 @@ void process_quotes(char *input, t_tokinizer_state *state, t_setup *setup, t_tok
     }
     state->j = 0;
 }
-
-

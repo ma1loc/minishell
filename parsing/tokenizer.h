@@ -39,7 +39,7 @@ typedef struct s_expand_data {
   char *env_value;
 } t_expand_data;
 
-typedef struct s_quotes_info  
+typedef struct s_quotes_info
 {
   char *stripped_text;
   int quotes_type;
@@ -171,7 +171,7 @@ int skip_whitespace(char *input, int i);
 t_token *process_split_token(char *input, t_token **head, t_token *last_inserted, int quotes_type);
 int get_quotes_type(t_token *token);
 t_token *set_last_inserted(t_token *prev);
-t_token *add_token_at_position(t_token **head, char *value, t_token_type type, int quotes_type);
+// t_token *add_token_at_position(t_token **head, char *value, t_token_type type, int quotes_type);
 t_token *handle_split_token(t_token *current, t_token *prev, t_token **head);
 void handel_is_split(t_token *tokens, t_token **head);
 t_quotes_info	strip_quotes(char *str);
