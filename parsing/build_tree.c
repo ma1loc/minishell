@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 16:09:18 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/20 16:09:19 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:15:23 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_tree	*create_leaf_node(t_command *cmd)
 	if (!leaf)
 		return (NULL);
 	if (cmd->name != NULL)
-		leaf->name = strdup(cmd->name);
+		leaf->name = ft_strdup(cmd->name);
 	else
 		leaf->name = NULL;
 	leaf->type = TOKEN_WORD;

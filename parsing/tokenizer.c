@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 16:45:47 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/22 19:40:06 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:12:09 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	check_quotes_syntax(t_setup *setup)
     i = 0;
     in_quotes = 0;
     quoest_char = 0;
-    len = strlen(setup->input);
+    len = ft_strlen(setup->input);
     while (setup->input[i] != '\0')
     {
         i = skip_whitespace(setup->input, i);
@@ -127,7 +127,7 @@ t_token	*tokenize(t_setup *setup)
 		return (NULL);
 	state->i = 0;
 	state->j = 0;
-	memset(state->buff, 0, sizeof(state->buff));
+	ft_memset(state->buff, 0, sizeof(state->buff));
 	if (!setup->input || check_quotes_syntax(setup) != 0)
 		return (free(state), NULL);
 	tokenize_loop(input, state, &tokens);

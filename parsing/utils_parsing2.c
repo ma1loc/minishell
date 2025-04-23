@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:07:28 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/22 19:07:29 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:17:04 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ t_redirections	*new_redirection(char *file_name, t_token_type type)
 	if (!redir)
 		return (NULL);
 	if (file_name != NULL)
-		redir->file_name = strdup(file_name);
+		redir->file_name = ft_strdup(file_name);
 	else
 		redir->file_name = NULL;
 	redir->type = type;
@@ -55,7 +55,7 @@ t_redirections	*new_redirection(char *file_name, t_token_type type)
 
 int	is_single_quote(char *value)
 {
-	return (value[0] == '"' || value[0] == '\'') && (strlen(value) == 1);
+	return (value[0] == '"' || value[0] == '\'') && (ft_strlen(value) == 1);
 }
 
 void	process_args(t_args_list *current, t_command *cmd, int *i)
@@ -67,14 +67,14 @@ void	process_args(t_args_list *current, t_command *cmd, int *i)
 		if (is_single_quote(current->value) && current->next
 			&& is_single_quote(current->next->value))
 		{
-			strcpy(combined_args, current->value);
-			strcat(combined_args, current->next->value);
-			cmd->args[(*i)++] = strdup(combined_args);
+			ft_strcpy(combined_args, current->value);
+			ft_strcat(combined_args, current->next->value);
+			cmd->args[(*i)++] = ft_strdup(combined_args);
 			current = current->next->next;
 		}
 		else
 		{
-			cmd->args[(*i)++] = strdup(current->value);
+			cmd->args[(*i)++] = ft_strdup(current->value);
 			current = current->next;
 		}
 	}

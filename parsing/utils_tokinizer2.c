@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:29:31 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/22 19:29:32 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:17:32 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_token	*add_token(t_token **head, char *value, t_token_type type,
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return (NULL);
-	new_token->value = strdup(value);
+	new_token->value = ft_strdup(value);
 	new_token->type = type;
 	new_token->next = NULL;
 	new_token->quotes_info = malloc(sizeof(t_quotes_info));
@@ -90,7 +90,7 @@ t_quotes_info	strip_quotes(char *str)
 	int				len;
 
 	info.quotes_type = 0;
-	len = strlen(str);
+	len = ft_strlen(str);
 	data.result = malloc(len + 1);
 	if (!data.result)
 	{

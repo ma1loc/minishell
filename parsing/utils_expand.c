@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:04:13 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/22 19:04:14 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:22:48 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*get_env_value(char *name, t_setup *setup)
 	env = setup->env;
 	while (env)
 	{
-		if (strcmp(env->key, name) == 0)
+		if (ft_strcmp(env->key, name) == 0)
 			return (env->value);
 		env = env->next;
 	}
@@ -65,8 +65,8 @@ void	copy_env_value_if_valid(t_expand_data *data, t_token *token)
 		new = data->env_value;
 		if (token->quotes_info->quotes_type == 0 && check_space(new))
 			new = skip_spaces_while_expand(token, new);
-		strcpy(data->buff + data->buff_index, new);
-		data->buff_index += strlen(new);
+		ft_strcpy(data->buff + data->buff_index, new);
+		data->buff_index += ft_strlen(new);
 	}
 }
 
