@@ -1,4 +1,16 @@
-# include "mini_shell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   path_resolver.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/23 09:23:21 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/23 09:23:26 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "mini_shell.h"
 
 char	*split_path(char *path, char *cmd)
 {
@@ -9,14 +21,14 @@ char	*split_path(char *path, char *cmd)
 
 	split_path = ft_split(path, ':');
 	if (!split_path)
-		allocation_failed_msg(g_gc);
+		allocation_failed_msg();
 	i = 0;
 	while (split_path[i])
 	{
 		add_to_path = ft_strjoin(split_path[i], "/");
 		full_path = ft_strjoin(add_to_path, cmd);
 		if (!add_to_path || !full_path)
-			allocation_failed_msg(g_gc);
+			allocation_failed_msg();
 		gc_free(g_gc, add_to_path);
 		if (access(full_path, F_OK | X_OK) == 0)
 			return (full_path);
@@ -26,15 +38,15 @@ char	*split_path(char *path, char *cmd)
 	return (NULL);
 }
 
-int		is_directory(t_setup *setup, char *cmd_path)
+int	is_directory(t_setup *setup, char *cmd_path)
 {
-	int	status;
-	struct stat st;
+	int			status;
+	struct stat	st;
 
 	status = stat(cmd_path, &st);
 	if (status == 0 && S_ISDIR(st.st_mode))
 	{
-		ft_perror(setup ,"Error: Is a directory\n", CMD_NOT_EXEC);
+		ft_perror(setup, "Error: Is a directory\n", CMD_NOT_EXEC);
 		return (1);
 	}
 	return (0);
@@ -69,12 +81,12 @@ char	*path_resolver(t_setup *setup)
 	dup = is_valid_str(cmd);
 	if (dup)
 		return (dup);
-    while (env_list && ft_strcmp(env_list->key, "PATH") != 0)
+	while (env_list && ft_strcmp(env_list->key, "PATH") != 0)
 		env_list = env_list->next;
 	if (!env_list)
-		return (NULL);
+		return (command_not_found(setup), NULL);
 	path = split_path(env_list->value, cmd);
 	if (!path)
-		return (NULL);
+		return (command_not_found(setup), NULL);
 	return (path);
 }

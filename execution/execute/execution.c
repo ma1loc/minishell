@@ -20,10 +20,7 @@ void	execute_externals(t_setup *setup)
 	pid = 0;
 	setup->cmd_path = path_resolver(setup);
 	if (!setup->cmd_path)
-	{
-		write(STDERR_FILENO, "command not found\n", 18);
-		return (setup->exit_stat = CMD_NOT_FOUND, (void)0);
-	}
+		return ;
 	pid = set_fork(setup);
 	if (pid == 0)
 	{
@@ -75,6 +72,6 @@ void	execution(t_tree *tree, t_setup *setup)
 	}
 	if (setup->heredoc_flag)
 		cleanup_heredoc(setup);
-	setup->exec_env = update_exec_envp(setup);
+	setup->exec_env = update_exec_envp(setup, setup->env);
 	setup->fork_flag = 0;
 }

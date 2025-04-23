@@ -86,7 +86,8 @@ void	exit_cmd(t_setup *setup)
 
 	exit_status = 0;
 	exit_status = setup->exit_stat;
-	ft_putstr_fd("exit\n", STDOUT_FILENO);
+	if (isatty(STDIN_FILENO))
+		ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (!setup->cmd->args[1])
 	{
 		gc_destroy(g_gc);
