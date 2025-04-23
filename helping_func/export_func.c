@@ -1,29 +1,40 @@
-# include "mini_shell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_func.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/23 09:57:02 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/23 09:57:04 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void export_display(t_setup *setup)
+#include "mini_shell.h"
+
+void	export_display(t_setup *setup)
 {
-    t_env *tmp_env;
-    
-    tmp_env = setup->env;
-    if (!setup->env)
-        return;
-    
-    while (tmp_env)
-    {
-        printf("declare -x %s", tmp_env->key);
-        if (tmp_env->value)
-            printf("=\"%s\"", tmp_env->value);
-        printf("\n");
-        tmp_env = tmp_env->next;
-    }
-    setup->exit_stat = 0;
+	t_env	*tmp_env;
+
+	tmp_env = setup->env;
+	if (!setup->env)
+		return ;
+	while (tmp_env)
+	{
+		printf("declare -x %s", tmp_env->key);
+		if (tmp_env->value)
+			printf("=\"%s\"", tmp_env->value);
+		printf("\n");
+		tmp_env = tmp_env->next;
+	}
+	setup->exit_stat = 0;
 }
 
 t_export_type	get_export_type(char *arg)
 {
 	char	*equal;
 	char	*plus;
-	
+
 	plus = ft_strchr(arg, '+');
 	equal = ft_strchr(arg, '=');
 	if (!equal)

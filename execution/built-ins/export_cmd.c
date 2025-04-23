@@ -27,7 +27,7 @@ int	export_key_only(t_setup *setup, char *key)
 		allocation_failed_msg();
 	new_node->key = ft_strdup(key);
 	if (!new_node->key)
-		allocation_failed_msg(g_gc);
+		allocation_failed_msg();
 	new_node->value = NULL;
 	new_node->next = NULL;
 	if (!setup->env)

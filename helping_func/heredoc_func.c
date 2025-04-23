@@ -1,10 +1,22 @@
-# include "mini_shell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc_func.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/23 10:00:06 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/23 10:00:12 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "mini_shell.h"
 
 void	heredoc_counter_in_pipe(t_setup *setup, t_tree *tree)
 {
-    if (tree->left)
+	if (tree->left)
 		heredoc_counter(setup, tree->left);
-    if (tree->right)
+	if (tree->right)
 		heredoc_counter(setup, tree->right);
 }
 
@@ -19,20 +31,19 @@ void	get_delimiter(t_setup *setup, t_redirections *red)
 
 void	heredoc_counter(t_setup *setup, t_tree *tree)
 {
-    t_redirections	*redir;
+	t_redirections	*redir;
 
 	redir = tree->redirections;
-    if (!tree)
+	if (!tree)
 		return ;
-	
-    if (tree->cmd && tree->cmd->redirections)
-    {
-        while (redir)
-        {
-            if (redir->type == TOKEN_HERDOC)
-                setup->heredoc_counter++;
-            redir = redir->next;
-        }
-    }
+	if (tree->cmd && tree->cmd->redirections)
+	{
+		while (redir)
+		{
+			if (redir->type == TOKEN_HERDOC)
+				setup->heredoc_counter++;
+			redir = redir->next;
+		}
+	}
 	heredoc_counter_in_pipe(setup, tree);
 }

@@ -28,12 +28,12 @@ void	add_to_env(t_setup *setup, char *key, char *value)
 		env = env->next;
 	}
 	if (!env)
-		allocation_failed_msg(g_gc);
+		allocation_failed_msg();
 	env->key = ft_strdup(key);
 	env->value = ft_strdup(value);
 	env->next = NULL;
 	if (!env->key || !env->value)
-		allocation_failed_msg(g_gc);
+		allocation_failed_msg();
 }
 
 void	update_env(t_setup *setup, char *key, char *value)

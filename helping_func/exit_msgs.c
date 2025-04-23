@@ -1,6 +1,18 @@
-# include "mini_shell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit_msgs.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/23 09:54:50 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/23 09:54:55 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	allocation_failed_msg()
+#include "mini_shell.h"
+
+void	allocation_failed_msg(void)
 {
 	ft_putstr_fd("minishell: Error: memory "\
 		"allocation failed.\n", STDERR_FILENO);
@@ -8,8 +20,7 @@ void	allocation_failed_msg()
 	exit(EXIT_FAILURE);
 }
 
-// maximum here-document count exceeded
-void	maximum_heredoc_msg()
+void	maximum_heredoc_msg(void)
 {
 	ft_putstr_fd("minishell: maximum here-document "\
 		"count exceeded.\n", STDERR_FILENO);
@@ -19,12 +30,14 @@ void	maximum_heredoc_msg()
 
 void	do_eof_heredoc(t_setup *setup)
 {
-	// (void)setup;
-	// i think here i have to clean up the heredoc things
 	ft_putstr_fd("minishell: warning: here-document "\
-		"delimited by end-of-file.\n", STDERR_FILENO);	
+	"delimited by end-of-file.\n", STDERR_FILENO);
 	cleanup_heredoc(setup);
 	exit(EXIT_SUCCESS);
 }
 
-// void	
+void	command_not_found(t_setup *setup)
+{
+	write(STDERR_FILENO, "command not found\n", 18);
+	setup->exit_stat = CMD_NOT_FOUND;
+}

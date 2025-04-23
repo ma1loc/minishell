@@ -1,8 +1,20 @@
-# include "mini_shell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc_utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanflous <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/23 09:34:02 by yanflous          #+#    #+#             */
+/*   Updated: 2025/04/23 09:34:10 by yanflous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "mini_shell.h"
 
 void	cleanup_heredoc(t_setup *setup)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (setup->heredoc->fd[i])
@@ -42,7 +54,7 @@ char	*get_file_name(t_setup *setup)
 
 int	refresh_fds(t_setup *setup, char *file_name)
 {
-	int i;
+	int	i;
 
 	i = setup->i;
 	close(setup->heredoc->fd[i]);
@@ -50,38 +62,37 @@ int	refresh_fds(t_setup *setup, char *file_name)
 	if (!setup->heredoc->fd[i])
 	{
 		ft_perror(setup, NULL, EXIT_FAILURE);
-		return (cleanup_heredoc(setup), free(file_name),1);
+		return (cleanup_heredoc(setup), free(file_name), 1);
 	}
 	return (0);
 }
 
-int is_heredoc_in_pipe(t_tree *tree)
+int	is_heredoc_in_pipe(t_tree *tree)
 {
-    if (tree->left && is_heredoc(tree->left))
-        return (1);
-    if (tree->right && is_heredoc(tree->right))
-        return (1);
-    return (0);
+	if (tree->left && is_heredoc(tree->left))
+		return (1);
+	if (tree->right && is_heredoc(tree->right))
+		return (1);
+	return (0);
 }
 
-int is_heredoc(t_tree *tree)
+int	is_heredoc(t_tree *tree)
 {
-    t_redirections *redir;
+	t_redirections	*redir;
 
-    if (!tree)
+	if (!tree)
 		return (0);
-	
-    if (tree->cmd && tree->cmd->redirections)
-    {
+	if (tree->cmd && tree->cmd->redirections)
+	{
 		redir = tree->cmd->redirections;
-        while (redir)
-        {
-            if (redir->type == TOKEN_HERDOC)
-                return (1);
-            redir = redir->next;
-        }
-    }
+		while (redir)
+		{
+			if (redir->type == TOKEN_HERDOC)
+				return (1);
+			redir = redir->next;
+		}
+	}
 	if (is_heredoc_in_pipe(tree))
 		return (1);
-    return (0);
+	return (0);
 }
