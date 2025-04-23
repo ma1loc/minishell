@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:06:55 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/22 19:06:56 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:16:16 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ char	*ft_strjoin_(char *s1, char *s2)
 	if (!s1)
 		return (NULL);
 	if (!s2)
-		return (strdup(s1));
+		return (ft_strdup(s1));
 	total_len = ft_strlen(s1) + ft_strlen(s2);
 	ptr = malloc(sizeof(char) * (total_len + 1));
 	if (!ptr)

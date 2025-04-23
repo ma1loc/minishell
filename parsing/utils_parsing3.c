@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:09:48 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/22 19:09:49 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:17:20 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	creat_node_pipe_commande(t_commande_state *state)
 		free(state);
 		return ;
 	}
-	state->new_cmd->name = strdup("|");
+	state->new_cmd->name = ft_strdup("|");
 	state->new_cmd->args = NULL;
 	state->new_cmd->redirections = NULL;
 	state->new_cmd->type = TOKEN_PIPE;
@@ -101,7 +101,7 @@ void	process_args_last_cmd(t_commande_state *state, t_args_list *list_args)
 		if (!state->current_cmd->args)
 			return ;
 		if (state->current_cmd->name)
-			state->current_cmd->args[0] = strdup(state->current_cmd->name);
+			state->current_cmd->args[0] = ft_strdup(state->current_cmd->name);
 		else
 			state->current_cmd->args[0] = NULL;
 		state->current_cmd->args[1] = NULL;

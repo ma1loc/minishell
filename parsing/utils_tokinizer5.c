@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:30:01 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/22 19:30:02 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:06:24 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int process_token_content(t_content_info *c_info, t_token **tokens, t_quotes_inf
 {
   t_token *new_token;
   
-  strncpy(c_info->content, c_info->input + c_info->start, c_info->length);
+  ft_strncpy(c_info->content, c_info->input + c_info->start, c_info->length);
   c_info->content[c_info->length] = '\0';
   new_token = add_token(tokens, c_info->content, TOKEN_WORD, info.quotes_type);
   if (c_info->input[c_info->end + 1] == ' ' || c_info->input[c_info->end + 1] == '\t')

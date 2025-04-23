@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 16:10:31 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/20 16:10:32 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:15:34 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	*expand_env_in_string(char *str, t_setup *setup)
 		data.ptr++;
 	}
 	data.buff[data.buff_index] = '\0';
-	rslt = strdup(data.buff);
+	rslt = ft_strdup(data.buff);
 	return (rslt);
 }
 
@@ -103,8 +103,8 @@ int	expand_exit_status(t_expand_data *data, t_setup *setup)
 	exit = ft_itoa_(setup->exit_stat);
 	if (!exit)
 		return (1);
-	strcpy(data->buff + data->buff_index, exit);
-	data->buff_index += strlen(exit);
+	ft_strcpy(data->buff + data->buff_index, exit);
+	data->buff_index += ft_strlen(exit);
 	data->ptr += 2;
 	free(exit);
 	return (0);
