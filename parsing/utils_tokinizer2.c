@@ -6,40 +6,41 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:29:31 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/23 14:17:32 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 20:11:48 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
+#include "mini_shell.h"
 
-t_token    *add_token(t_token **head, char *value, t_token_type type,
-        int quotes_type)
+t_token	*add_token(t_token **head, char *value, t_token_type type,
+		int quotes_type)
 {
-    t_token    *new_token;
-    t_token    *current;
+	t_token	*new_token;
+	t_token	*current;
 
-    new_token = gc_malloc(g_gc, sizeof(t_token));
+	new_token = gc_malloc(g_gc, sizeof(t_token));
 	if (!new_token)
 		return (NULL);
 	ft_memset(new_token, 0, sizeof(t_token));
-    new_token->value = ft_strdup(value);
-    new_token->type = type;
-    new_token->quotes_info = gc_malloc(g_gc, sizeof(t_quotes_info));
-    if (!new_token->quotes_info)
-        return (gc_free(g_gc, new_token->value), gc_free(g_gc, new_token), NULL);
-    new_token->quotes_info->quotes_type = quotes_type;
-    if (*head == NULL)
-    {
-        *head = new_token;
-        return (new_token);
-    }
-    current = *head;
-    while (current->next != NULL)
-    {
-        current = current->next;
-    }
-    current->next = new_token;
-    return (new_token);
+	new_token->value = ft_strdup(value);
+	new_token->type = type;
+	new_token->quotes_info = gc_malloc(g_gc, sizeof(t_quotes_info));
+	if (!new_token->quotes_info)
+		return (gc_free(g_gc, new_token->value), gc_free(g_gc, new_token),
+			NULL);
+	new_token->quotes_info->quotes_type = quotes_type;
+	if (*head == NULL)
+	{
+		*head = new_token;
+		return (new_token);
+	}
+	current = *head;
+	while (current->next != NULL)
+	{
+		current = current->next;
+	}
+	current->next = new_token;
+	return (new_token);
 }
 
 void	process_quote_char(t_process_data *data, t_quotes_info *info)
@@ -71,6 +72,7 @@ t_quotes_info	check_just_quotes(t_process_data *data, t_quotes_info info,
 		return (info);
 	return (info);
 }
+
 t_quotes_info	check_empty_string(t_process_data *data, t_quotes_info info,
 		int len)
 {

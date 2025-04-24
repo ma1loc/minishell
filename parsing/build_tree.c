@@ -6,12 +6,11 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 16:09:18 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/23 14:15:23 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 19:57:31 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
-
+#include "mini_shell.h"
 
 t_tree	*create_leaf_node(t_command *cmd)
 {

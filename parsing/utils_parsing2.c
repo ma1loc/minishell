@@ -6,11 +6,11 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:07:28 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/23 14:17:04 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 20:06:11 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
+#include "mini_shell.h"
 
 void	add_redirection_to_list(t_command *cmd, char *file_name,
 		t_token_type type)
@@ -54,7 +54,7 @@ t_redirections	*new_redirection(char *file_name, t_token_type type)
 
 int	is_single_quote(char *value)
 {
-	return (value[0] == '"' || value[0] == '\'') && (ft_strlen(value) == 1);
+	return ((value[0] == '"' || value[0] == '\'') && (ft_strlen(value) == 1));
 }
 
 void	process_args(t_args_list *current, t_command *cmd, int *i)

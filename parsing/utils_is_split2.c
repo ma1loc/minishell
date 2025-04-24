@@ -6,11 +6,11 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:06:41 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/22 19:06:42 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 20:04:45 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
+#include "mini_shell.h"
 
 int	skip_whitespace(char *input, int i)
 {
@@ -45,27 +45,27 @@ int	extract_word(char *input, int i, char *buff)
 	return (i);
 }
 
-void handel_is_split(t_token *tokens, t_token **head)
+void	handel_is_split(t_token *tokens, t_token **head)
 {
-    t_token *current;
-    t_token *prev;
+	t_token	*current;
+	t_token	*prev;
 
-    current = tokens;
-    prev = NULL;
-    while (current)
-    {
-        if (current->type == TOKEN_HERDOC)
-        {
-            prev = current;
-            current = current->next->next;
-            continue;
-        }
-        if (current->is_split == 1 && current->value)
-            current = handle_split_token(current, prev, head);
-        else
-        {
-            prev = current;
-            current = current->next;
-        }
-    }
+	current = tokens;
+	prev = NULL;
+	while (current)
+	{
+		if (current->type == TOKEN_HERDOC)
+		{
+			prev = current;
+			current = current->next->next;
+			continue ;
+		}
+		if (current->is_split == 1 && current->value)
+			current = handle_split_token(current, prev, head);
+		else
+		{
+			prev = current;
+			current = current->next;
+		}
+	}
 }
