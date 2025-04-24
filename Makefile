@@ -1,4 +1,3 @@
-#!/bin/env python3
 CC = cc
 
 INCLUDE = -Isrcs

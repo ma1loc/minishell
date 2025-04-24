@@ -19,19 +19,20 @@ t_setup	*init_setup(void)
 	setup = gc_malloc(g_gc, sizeof(t_setup));
 	if (!setup)
 		allocation_failed_msg();
-	setup->i = 0;
-	setup->input = NULL;
-	setup->env = NULL;
-	setup->token = NULL;
-	setup->cmd = NULL;
-	setup->tree = NULL;
-	setup->pwd = NULL;
-	setup->oldpwd = NULL;
-	setup->cmd_path = NULL;
-	setup->envp = NULL;
-	setup->exec_env = NULL;
-	setup->exit_stat = 0;
-	setup->heredoc = NULL;
+	// setup->i = 0;
+	// setup->input = NULL;
+	// setup->env = NULL;
+	// setup->token = NULL;
+	// setup->cmd = NULL;
+	// setup->tree = NULL;
+	// setup->pwd = NULL;
+	// setup->oldpwd = NULL;
+	// setup->cmd_path = NULL;
+	// setup->envp = NULL;
+	// setup->exec_env = NULL;
+	// setup->exit_stat = 0;
+	// setup->heredoc = NULL;
+	ft_memset(setup, 0, sizeof(t_setup));
 	return (setup);
 }
 
