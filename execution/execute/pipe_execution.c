@@ -14,6 +14,8 @@
 
 void	first_child_process(t_setup *setup, t_tree *tree, int *fd)
 {
+	int	exit_stat = 0;
+
 	close(fd[0]);
 	if (dup2(fd[1], STDOUT_FILENO) == -1)
 	{
@@ -34,11 +36,15 @@ void	first_child_process(t_setup *setup, t_tree *tree, int *fd)
 		else
 			execution(tree->left, setup);
 	}
-	exit(setup->exit_stat);
+	exit_stat = setup->exit_stat;
+	gc_destroy(g_gc);
+	exit(exit_stat);
 }
 
 void	second_child_process(t_setup *setup, t_tree *tree, int *fd)
 {
+	int	exit_stat = 0;
+
 	close(fd[1]);
 	if (dup2(fd[0], STDIN_FILENO) == -1)
 	{
@@ -59,7 +65,9 @@ void	second_child_process(t_setup *setup, t_tree *tree, int *fd)
 		else
 			execution(tree->right, setup);
 	}
-	exit(setup->exit_stat);
+	exit_stat = setup->exit_stat;
+	gc_destroy(g_gc);
+	exit(exit_stat);
 }
 
 void	execute_pipes(t_tree *tree, t_setup *setup)

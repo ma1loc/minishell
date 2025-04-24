@@ -33,6 +33,7 @@ void	do_eof_heredoc(t_setup *setup)
 	ft_putstr_fd("minishell: warning: here-document "\
 	"delimited by end-of-file.\n", STDERR_FILENO);
 	cleanup_heredoc(setup);
+	gc_destroy(g_gc);
 	exit(EXIT_SUCCESS);
 }
 

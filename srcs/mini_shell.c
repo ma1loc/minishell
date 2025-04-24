@@ -60,7 +60,7 @@ int	main(int argc, char **argv, char **env)
 		setup->cmd = pars_tokens(setup);
 		setup->tree = build_tree_commande(setup->cmd);
 		start_execution(setup);
-		// free(setup->input);
 	}
+	gc_destroy(g_gc);
 	return (0);
 }
