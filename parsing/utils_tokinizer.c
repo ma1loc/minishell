@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "../srcs/mini_shell.h"
-// #include "tokenizer.h"
 # include "mini_shell.h"
 
 void	process_spaces(t_tokinizer_state *state, t_token **tokens)

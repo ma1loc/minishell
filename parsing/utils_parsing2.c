@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "../srcs/mini_shell.h"
-// #include "tokenizer.h"
 # include "mini_shell.h"
 
 void	add_redirection_to_list(t_command *cmd, char *file_name,

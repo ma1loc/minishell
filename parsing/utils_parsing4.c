@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "../srcs/mini_shell.h"
-// #include "tokenizer.h"
 # include "mini_shell.h"
 
 t_command	*creat_new_node_command(t_command *commandes)

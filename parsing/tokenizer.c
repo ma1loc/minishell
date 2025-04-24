@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "../srcs/mini_shell.h"
-// #include "tokenizer.h"
 # include "mini_shell.h"
 
 int	check_pipes(char *input, int len, int *i)
@@ -84,14 +82,15 @@ int	check_quotes_syntax(t_setup *setup)
     while (setup->input[i] != '\0')
     {
         i = skip_whitespace(setup->input, i);
+		if (setup->input[i] == '\0')
+			break;
         if (check_syntax(setup->input, len, &i) != 0)
         {
             in_quotes = 1;
             break;
         }
-
-        check_unclosed_quotes(setup, &i, &in_quotes, &quoest_char);
-        i++;
+        check_unclosed_quotes(setup, &i, &in_quotes, &quoest_char);        
+		i++;
     }
     return (handle_syntax_error(setup, in_quotes));
 }

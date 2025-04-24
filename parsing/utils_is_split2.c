@@ -10,14 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "../srcs/mini_shell.h"
-// #include "tokenizer.h"
 # include "mini_shell.h"
 
 int	skip_whitespace(char *input, int i)
 {
-	// while ((input[i] == ' ' || input[i] == '\t'))
-	while (input[i + 1] && (input[i] == ' ' || input[i] == '\t'))
+	while (input[i] != '\0' && (input[i] == ' ' || input[i] == '\t'))
 		i++;
 	return (i);
 }
@@ -28,7 +25,7 @@ int	get_quotes_type(t_token *token)
 		return (token->quotes_info->quotes_type);
 	return (0);
 }
-// set the last inserted position based on prev
+
 t_token	*set_last_inserted(t_token *prev)
 {
 	if (prev == NULL)
@@ -36,7 +33,7 @@ t_token	*set_last_inserted(t_token *prev)
 	else
 		return (prev);
 }
-// create a buffer from non-whitespace characters
+
 int	extract_word(char *input, int i, char *buff)
 {
 	int	j;

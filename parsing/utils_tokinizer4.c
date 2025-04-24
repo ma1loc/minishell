@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "tokenizer.h"
-// #include "../srcs/mini_shell.h"
 # include "mini_shell.h"
 
 void handle_double_operator(char *input, t_tokinizer_state *state, t_token **tokens, t_quotes_info info)
