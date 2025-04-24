@@ -24,7 +24,8 @@ void	start_execution(t_setup *setup)
 			maximum_heredoc_msg();
 		setup->fork_flag = 1;
 		signal(SIGINT, SIG_IGN);
-		heredoc_process(setup, setup->tree);	
+		heredoc_process(setup, setup->tree);
+		cleanup_heredoc(setup);
 	}
 	else
 	{
