@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
-#include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+# include "mini_shell.h"
 
 void	process_spaces(t_tokinizer_state *state, t_token **tokens)
 {
@@ -24,7 +25,7 @@ void	process_spaces(t_tokinizer_state *state, t_token **tokens)
 		if (info.stripped_text != NULL)
 		{
 			add_token(tokens, info.stripped_text, TOKEN_WORD, info.quotes_type);
-			free(info.stripped_text);
+			gc_free(g_gc, info.stripped_text);
 		}
 		state->j = 0;
 	}
@@ -43,7 +44,7 @@ void	process_special_tokens(char *input, t_tokinizer_state *state,
 		if (info.stripped_text != NULL)
 		{
 			add_token(tokens, info.stripped_text, TOKEN_WORD, info.quotes_type);
-			free(info.stripped_text);
+			gc_free(g_gc, info.stripped_text);
 		}
 		state->j = 0;
 	}
@@ -61,7 +62,7 @@ void	process_remainder_text(t_tokinizer_state *state, t_token **tokens)
 		if (info.stripped_text != NULL)
 		{
 			add_token(tokens, info.stripped_text, TOKEN_WORD, info.quotes_type);
-			free(info.stripped_text);
+			gc_free(g_gc, info.stripped_text);
 		}
 		state->j = 0;
 	}
@@ -92,7 +93,7 @@ void	process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
 		new_token = add_token(tokens, info.stripped_text, TOKEN_WORD,
 				info.quotes_type);
 		new_token->is_space = is_space;
-		free(info.stripped_text);
+		gc_free(g_gc, info.stripped_text);
 	}
 	state->j = 0;
 }
@@ -121,7 +122,7 @@ void	process_quotes(char *input, t_tokinizer_state *state, t_token **tokens)
 		new_token = add_token(tokens, info.stripped_text, TOKEN_WORD,
 				info.quotes_type);
 		new_token->is_space = is_space;
-		free(info.stripped_text);
+		gc_free(g_gc, info.stripped_text);
 	}
 	state->j = 0;
 }

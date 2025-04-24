@@ -10,12 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
-#include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+# include "mini_shell.h"
 
 int	skip_whitespace(char *input, int i)
 {
-	while (input[i] == ' ' || input[i] == '\t')
+	// while ((input[i] == ' ' || input[i] == '\t'))
+	while (input[i + 1] && (input[i] == ' ' || input[i] == '\t'))
 		i++;
 	return (i);
 }

@@ -1,8 +1,9 @@
+#!/bin/env python3
 CC = cc
 
-INCLUDE = -Isrcs -Iparsing
+INCLUDE = -Isrcs
 
-CFLAGS = -Wall -Wextra -Werror $(INCLUDE) -g #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror $(INCLUDE) #-g3 -fsanitize=address
 
 SRC = srcs/mini_shell.c libft/ft_strlen.c libft/ft_split.c libft/ft_strjoin.c libft/ft_strdup.c libft/ft_strncmp.c \
 	libft/ft_putstr_fd.c execution/built-ins/echo_cmd.c execution/built-ins/cd_cmd.c execution/execute/signals.c \
@@ -19,7 +20,7 @@ SRC = srcs/mini_shell.c libft/ft_strlen.c libft/ft_split.c libft/ft_strjoin.c li
 	helping_func/update_exec_envp.c execution/execute/pipe_utils.c execution/execute/signals_utils.c helping_func/heredoc_func.c \
 	parsing/utils_expand.c parsing/utils_is_split1.c parsing/utils_is_split2.c parsing/utils_parsing2.c parsing/utils_parsing3.c parsing/utils_parsing4.c \
     parsing/utils_tokinizer2.c parsing/utils_tokinizer3.c parsing/utils_tokinizer4.c parsing/utils_tokinizer5.c \
-	libft/ft_strcpy.c libft/ft_strcat.c
+	libft/ft_strcpy.c libft/ft_strcat.c libft/ft_strncpy.c
 	
 
 OBJ = $(SRC:.c=.o)

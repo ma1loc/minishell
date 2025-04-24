@@ -10,14 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tokenizer.h"
-#include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+# include "mini_shell.h"
+
 
 t_tree	*create_leaf_node(t_command *cmd)
 {
 	t_tree	*leaf;
 
-	leaf = malloc(sizeof(t_tree));
+	leaf = gc_malloc(g_gc, sizeof(t_tree));
 	if (!leaf)
 		return (NULL);
 	if (cmd->name != NULL)
@@ -37,7 +39,7 @@ t_tree	*create_pipe_node(t_command *pip_cmd)
 {
 	t_tree	*root;
 
-	root = malloc(sizeof(t_tree));
+	root = gc_malloc(g_gc, sizeof(t_tree));
 	if (!root)
 		return (NULL);
 	root->name = NULL;

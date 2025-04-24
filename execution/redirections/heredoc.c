@@ -21,11 +21,11 @@ void	loding_heredoc(t_setup *setup)
 		input = readline("heredoc> ");
 		if (input == NULL)
 			do_eof_heredoc(setup);
+		char *tmp = input;
+		input = ft_strdup(tmp);
+		free(tmp);
 		if (ft_strcmp(input, setup->heredoc->delimiter) == 0)
-		{
-			free(input);
 			break ;
-		}
 		if (input[0] == '\0')
 			continue ;
 		if (setup->heredoc->qoutes_type == 0)
@@ -35,7 +35,6 @@ void	loding_heredoc(t_setup *setup)
 			write(setup->heredoc->fd[setup->i], input, ft_strlen(input));
 			write(setup->heredoc->fd[setup->i], "\n", 1);
 		}
-		free(input);
 	}
 }
 
@@ -124,7 +123,8 @@ void	heredoc_process(t_setup *setup, t_tree *tree)
 		setup->i = 0;
 		init_heredoc(setup, tree);
 		setup->i = 0;
-		execution(tree, setup);
+		if (setup->cmd->name)
+			execution(tree, setup);
 		exit_status = setup->exit_stat;
 		gc_destroy(g_gc);
 		exit(exit_status);

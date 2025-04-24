@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tokenizer.h"
-#include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+# include "mini_shell.h"
 
 int	handle_dollar_dquotes(char *input, t_tokinizer_state *state, t_quotes_info info, t_token **tokens)
 {
@@ -28,7 +29,7 @@ int	handle_dollar_dquotes(char *input, t_tokinizer_state *state, t_quotes_info i
 		if (input[c_info.end] == '"')
 		{
 			c_info.length = c_info.end - c_info.start;
-			c_info.content = malloc(c_info.length + 1);
+			c_info.content = gc_malloc(g_gc, c_info.length + 1);
 			if (c_info.content)
 			{
 				return (process_token_content(&c_info, tokens, info, state));
@@ -53,7 +54,7 @@ int	handle_dollar_squotes(char *input, t_tokinizer_state *state, t_quotes_info i
 		if (input[c_info.end] == '\'')
 		{
 			c_info.length = c_info.end - c_info.start;
-			c_info.content = malloc(c_info.length + 1);
+			c_info.content = gc_malloc(g_gc, c_info.length + 1);
 			if (c_info.content)
 			{
 				return (process_token_content(&c_info, tokens, info, state));
@@ -74,7 +75,7 @@ int process_token_content(t_content_info *c_info, t_token **tokens, t_quotes_inf
   new_token->is_space = 1;
   else
   new_token->is_space = -1;
-  free(c_info->content);
+  gc_free(g_gc, c_info->content);
   state->i = c_info->end + 1;
   return (1);
 }

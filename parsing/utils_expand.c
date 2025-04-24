@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
-#include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+# include "mini_shell.h"
 
 char	*get_env_value(char *name, t_setup *setup)
 {
@@ -39,7 +40,7 @@ char	*skip_spaces_while_expand(t_token *token, char *str)
 	j = 0;
 	if (!str)
 		return (NULL);
-	new_one = malloc(ft_strlen(str) + 1);
+	new_one = gc_malloc(g_gc, ft_strlen(str) + 1);
 	while (str[i])
 	{
 		if (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
