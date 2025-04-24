@@ -6,12 +6,11 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 16:10:31 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/23 14:15:34 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 19:58:03 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
-
+#include "mini_shell.h"
 
 void	expand_env_vars(t_token *tokens, t_setup *setup)
 {
@@ -94,7 +93,6 @@ int	handle_dollar_expansion(t_expand_data *data, t_setup *setup)
 	}
 	return (0);
 }
-
 
 int	expand_exit_status(t_expand_data *data, t_setup *setup)
 {

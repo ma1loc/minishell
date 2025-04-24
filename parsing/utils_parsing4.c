@@ -6,15 +6,15 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:09:59 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/22 19:10:00 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 20:07:35 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
+#include "mini_shell.h"
 
 t_command	*creat_new_node_command(t_command *commandes)
 {
-	commandes = gc_malloc(g_gc, sizeof(t_command)); // creat new commande
+	commandes = gc_malloc(g_gc, sizeof(t_command));
 	if (!commandes)
 		return (NULL);
 	commandes->name = NULL;
@@ -24,7 +24,8 @@ t_command	*creat_new_node_command(t_command *commandes)
 	commandes->next = NULL;
 	return (commandes);
 }
-void		remove_token(t_token **head, t_token *current)
+
+void	remove_token(t_token **head, t_token *current)
 {
 	t_token	*temp;
 	t_token	*prev;
@@ -35,9 +36,9 @@ void		remove_token(t_token **head, t_token *current)
 	{
 		temp = *head;
 		*head = (*head)->next;
-		gc_free(g_gc ,temp->value);
+		gc_free(g_gc, temp->value);
 		if (temp->quotes_info)
-			gc_free(g_gc ,temp->quotes_info);
+			gc_free(g_gc, temp->quotes_info);
 		gc_free(g_gc, temp);
 		return ;
 	}
@@ -66,20 +67,18 @@ int	join_tokens(t_token **current, t_token *head)
 }
 
 void	set_command_name(t_commande_state *state, t_token *current,
-    int *found_cmd_name)
+		int *found_cmd_name)
 {
-if (!(*found_cmd_name))
-{
-    state->current_cmd->name = ft_strdup(current->value);
-    *found_cmd_name = 1;
+	if (!(*found_cmd_name))
+	{
+		state->current_cmd->name = ft_strdup(current->value);
+		*found_cmd_name = 1;
+	}
 }
-}
-bool check_current_type(enum e_token_type type)
+
+bool	check_current_type(enum e_token_type type)
 {
 	return (type == TOKEN_RED_IN || type == TOKEN_HERDOC
-			|| type == TOKEN_RED_OUT || type == TOKEN_APPEND
-			|| type == TOKEN_RED_INOUT);
+		|| type == TOKEN_RED_OUT || type == TOKEN_APPEND
+		|| type == TOKEN_RED_INOUT);
 }
-
-
-

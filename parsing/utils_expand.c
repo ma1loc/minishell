@@ -6,11 +6,11 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:04:13 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/23 14:22:48 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 20:03:38 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
+#include "mini_shell.h"
 
 char	*get_env_value(char *name, t_setup *setup)
 {
@@ -49,7 +49,7 @@ char	*skip_spaces_while_expand(t_token *token, char *str)
 		while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
 			i++;
 		if (!str[i])
-                break;
+			break ;
 		new_one[j++] = str[i++];
 		token->is_split = 1;
 	}

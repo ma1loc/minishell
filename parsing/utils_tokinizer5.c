@@ -6,13 +6,14 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:30:01 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/23 14:06:24 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 20:13:40 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
+#include "mini_shell.h"
 
-int	handle_dollar_dquotes(char *input, t_tokinizer_state *state, t_quotes_info info, t_token **tokens)
+int	handle_dollar_dquotes(char *input, t_tokinizer_state *state,
+		t_quotes_info info, t_token **tokens)
 {
 	t_content_info	c_info;
 
@@ -37,7 +38,8 @@ int	handle_dollar_dquotes(char *input, t_tokinizer_state *state, t_quotes_info i
 	return (0);
 }
 
-int	handle_dollar_squotes(char *input, t_tokinizer_state *state, t_quotes_info info, t_token **tokens)
+int	handle_dollar_squotes(char *input, t_tokinizer_state *state,
+		t_quotes_info info, t_token **tokens)
 {
 	t_content_info	c_info;
 
@@ -62,27 +64,31 @@ int	handle_dollar_squotes(char *input, t_tokinizer_state *state, t_quotes_info i
 	return (0);
 }
 
-int process_token_content(t_content_info *c_info, t_token **tokens, t_quotes_info info,t_tokinizer_state *state)
+int	process_token_content(t_content_info *c_info, t_token **tokens,
+		t_quotes_info info, t_tokinizer_state *state)
 {
-  t_token *new_token;
-  
-  ft_strncpy(c_info->content, c_info->input + c_info->start, c_info->length);
-  c_info->content[c_info->length] = '\0';
-  new_token = add_token(tokens, c_info->content, TOKEN_WORD, info.quotes_type);
-  if (c_info->input[c_info->end + 1] == ' ' || c_info->input[c_info->end + 1] == '\t')
-  new_token->is_space = 1;
-  else
-  new_token->is_space = -1;
-  gc_free(g_gc, c_info->content);
-  state->i = c_info->end + 1;
-  return (1);
+	t_token	*new_token;
+
+	ft_strncpy(c_info->content, c_info->input + c_info->start, c_info->length);
+	c_info->content[c_info->length] = '\0';
+	new_token = add_token(tokens, c_info->content, TOKEN_WORD,
+			info.quotes_type);
+	if (c_info->input[c_info->end + 1] == ' ' || c_info->input[c_info->end
+			+ 1] == '\t')
+		new_token->is_space = 1;
+	else
+		new_token->is_space = -1;
+	gc_free(g_gc, c_info->content);
+	state->i = c_info->end + 1;
+	return (1);
 }
 
-int handle_dollar_quotes(char *input, t_tokinizer_state *state, t_token **tokens, t_quotes_info *info)
+int	handle_dollar_quotes(char *input, t_tokinizer_state *state,
+		t_token **tokens, t_quotes_info *info)
 {
-    if (handle_dollar_dquotes(input, state, *info, tokens))
-        return (1);
-    if (handle_dollar_squotes(input, state, *info, tokens))
-        return (1);
-    return (0);
+	if (handle_dollar_dquotes(input, state, *info, tokens))
+		return (1);
+	if (handle_dollar_squotes(input, state, *info, tokens))
+		return (1);
+	return (0);
 }

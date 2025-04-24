@@ -6,11 +6,11 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 16:45:47 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/23 14:12:09 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 20:02:55 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
+#include "mini_shell.h"
 
 int	check_pipes(char *input, int len, int *i)
 {
@@ -70,32 +70,32 @@ int	check_redirections(char *input, int len, int *i)
 
 int	check_quotes_syntax(t_setup *setup)
 {
-    int     i;
-    int     in_quotes;
-    char    quoest_char;
-    int     len;
+	int		i;
+	int		in_quotes;
+	char	quoest_char;
+	int		len;
 
-    i = 0;
-    in_quotes = 0;
-    quoest_char = 0;
-    len = ft_strlen(setup->input);
-    while (setup->input[i] != '\0')
-    {
-        i = skip_whitespace(setup->input, i);
+	i = 0;
+	in_quotes = 0;
+	quoest_char = 0;
+	len = ft_strlen(setup->input);
+	while (setup->input[i] != '\0')
+	{
+		i = skip_whitespace(setup->input, i);
 		if (setup->input[i] == '\0')
-			break;
-        if (check_syntax(setup->input, len, &i) != 0)
-        {
-            in_quotes = 1;
-            break;
-        }
-        check_unclosed_quotes(setup, &i, &in_quotes, &quoest_char);        
+			break ;
+		if (check_syntax(setup->input, len, &i) != 0)
+		{
+			in_quotes = 1;
+			break ;
+		}
+		check_unclosed_quotes(setup, &i, &in_quotes, &quoest_char);
 		i++;
-    }
-    return (handle_syntax_error(setup, in_quotes));
+	}
+	return (handle_syntax_error(setup, in_quotes));
 }
 
-void	tokenize_loop(char *input, t_tokinizer_state *state,t_token **tokens)
+void	tokenize_loop(char *input, t_tokinizer_state *state, t_token **tokens)
 {
 	while (input[state->i] != '\0')
 	{

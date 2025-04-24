@@ -6,11 +6,11 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:19:11 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/22 19:19:12 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 20:27:14 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
+#include "mini_shell.h"
 
 void	process_spaces(t_tokinizer_state *state, t_token **tokens)
 {
@@ -37,7 +37,7 @@ void	process_special_tokens(char *input, t_tokinizer_state *state,
 
 	if (state->j > 0)
 	{
-		state->buff[state->j] = '\0'; // save any buffered word first
+		state->buff[state->j] = '\0';
 		info = strip_quotes(state->buff);
 		if (info.stripped_text != NULL)
 		{
@@ -77,8 +77,7 @@ void	process_dollar(char *input, t_tokinizer_state *state, t_token **tokens)
 	if (handle_dollar_quotes(input, state, tokens, &info))
 		return ;
 	state->buff[state->j++] = input[state->i++];
-	if (input[state->i] == '?')
-		state->buff[state->j++] = input[state->i++];
+	handle_question_mark(input, state);
 	while (input[state->i] != '\0' && (isalnum(input[state->i])
 			|| input[state->i] == '_'))
 		state->buff[state->j++] = input[state->i++];

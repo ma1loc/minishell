@@ -6,11 +6,11 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:06:55 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/23 14:16:16 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/24 20:05:13 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "mini_shell.h"
+#include "mini_shell.h"
 
 static int	count_numbers(int n)
 {
@@ -71,6 +71,7 @@ char	*ft_itoa_(int n)
 	}
 	return (ptr);
 }
+
 static void	cpy(char *dest, const char *src)
 {
 	int	i;
