@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
-#include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+# include "mini_shell.h"
 
 t_token	*add_token(t_token **head, char *value, t_token_type type,
 		int quotes_type)
@@ -19,15 +20,15 @@ t_token	*add_token(t_token **head, char *value, t_token_type type,
 	t_token	*new_token;
 	t_token	*current;
 
-	new_token = malloc(sizeof(t_token));
+	new_token = gc_malloc(g_gc, sizeof(t_token));
 	if (!new_token)
 		return (NULL);
 	new_token->value = ft_strdup(value);
 	new_token->type = type;
 	new_token->next = NULL;
-	new_token->quotes_info = malloc(sizeof(t_quotes_info));
+	new_token->quotes_info = gc_malloc(g_gc, sizeof(t_quotes_info));
 	if (!new_token->quotes_info)
-		return (free(new_token->value), free(new_token), NULL);
+		return (gc_free(g_gc, new_token->value), gc_free(g_gc, new_token), NULL);
 	new_token->quotes_info->quotes_type = quotes_type;
 	if (*head == NULL)
 	{
@@ -77,7 +78,7 @@ t_quotes_info	check_empty_string(t_process_data *data, t_quotes_info info,
 {
 	if (data->j == 0 && len == 0)
 	{
-		free(data->result);
+		gc_free(g_gc, data->result);
 		info.stripped_text = NULL;
 	}
 	return (info);
@@ -91,7 +92,7 @@ t_quotes_info	strip_quotes(char *str)
 
 	info.quotes_type = 0;
 	len = ft_strlen(str);
-	data.result = malloc(len + 1);
+	data.result = gc_malloc(g_gc, len + 1);
 	if (!data.result)
 	{
 		info.stripped_text = NULL;

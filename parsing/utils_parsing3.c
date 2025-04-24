@@ -10,16 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
-#include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+# include "mini_shell.h"
 
 void	creat_node_pipe_commande(t_commande_state *state)
 {
-	state->new_cmd = malloc(sizeof(t_command));
+	state->new_cmd = gc_malloc(g_gc, sizeof(t_command));
 	if (!state->new_cmd)
 	{
-		free(state->new_cmd);
-		free(state);
+		gc_free(g_gc, state->new_cmd);
+		gc_free(g_gc, state);
 		return ;
 	}
 	state->new_cmd->name = ft_strdup("|");
@@ -33,11 +34,11 @@ void	creat_node_pipe_commande(t_commande_state *state)
 
 void	creat_node_next_commande(t_commande_state *state)
 {
-	state->new_cmd = malloc(sizeof(t_command));
+	state->new_cmd = gc_malloc(g_gc, sizeof(t_command));
 	if (!state->new_cmd)
 	{
-		free(state->new_cmd);
-		free(state);
+		gc_free(g_gc, state->new_cmd);
+		gc_free(g_gc,state);
 		return ;
 	}
 	state->new_cmd->name = NULL;
@@ -56,7 +57,7 @@ void	process_token_type_pipe(t_commande_state *state,
 if (list_args != NULL)
 {
     state->args_count = count_args_list(*list_args);
-    state->current_cmd->args = malloc((state->args_count + 2)
+    state->current_cmd->args = gc_malloc(g_gc, (state->args_count + 2)
             * sizeof(char *));
     fill_array(*list_args, state->current_cmd);
     state->current_cmd->args[state->args_count + 1] = NULL;
@@ -64,7 +65,7 @@ if (list_args != NULL)
 }
 else
 {
-    state->current_cmd->args = malloc(sizeof(char *));
+    state->current_cmd->args = gc_malloc(g_gc, sizeof(char *));
     state->current_cmd->args[0] = NULL;
 }
 creat_node_pipe_commande(state);
@@ -87,7 +88,7 @@ void	process_args_last_cmd(t_commande_state *state, t_args_list *list_args)
 	if (list_args != NULL)
 	{
 		state->args_count = count_args_list(list_args);
-		state->current_cmd->args = malloc((state->args_count + 2)
+		state->current_cmd->args = gc_malloc(g_gc, (state->args_count + 2)
 				* sizeof(char *));
 		if (!state->current_cmd->args)
 			return ;
@@ -97,7 +98,7 @@ void	process_args_last_cmd(t_commande_state *state, t_args_list *list_args)
 	}
 	else if (state->current_cmd->args == NULL)
 	{
-		state->current_cmd->args = malloc(2 * sizeof(char *));
+		state->current_cmd->args = gc_malloc(g_gc, 2 * sizeof(char *));
 		if (!state->current_cmd->args)
 			return ;
 		if (state->current_cmd->name)

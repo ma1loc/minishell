@@ -35,9 +35,12 @@ void	main_sigint(int sig)
 
 void	do_eof(t_setup *setup)
 {
+	int	exit_stat;
+
+	exit_stat = setup->exit_stat;
 	gc_destroy(g_gc);
 	printf("exit\n");
-	exit(setup->exit_stat);
+	exit(exit_stat);
 }
 
 void	heredoc_sigint(int sig)

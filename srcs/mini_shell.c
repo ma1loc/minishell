@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "mini_shell.h"
-#include "../parsing/tokenizer.h"
 
 t_gc	*g_gc = NULL;
 
@@ -25,7 +24,7 @@ void	start_execution(t_setup *setup)
 			maximum_heredoc_msg();
 		setup->fork_flag = 1;
 		signal(SIGINT, SIG_IGN);
-		heredoc_process(setup, setup->tree);
+		heredoc_process(setup, setup->tree);	
 	}
 	else
 	{
@@ -45,20 +44,23 @@ int	main(int argc, char **argv, char **env)
 	while (true)
 	{
 		setup->input = readline("minishell$ ");
-		if (*exit_status() == EXIT_SEGINT)
-			sigint_exit_status(setup);
 		if (setup->input == NULL)
 			do_eof(setup);
+		char *tmp = setup->input;
+		setup->input = ft_strdup(tmp);
+		free(tmp);
+		if (*exit_status() == EXIT_SEGINT)
+			sigint_exit_status(setup);
 		if (setup->input[0] == '\0')
 			continue ;
+		add_history(setup->input);
 		setup->token = tokenize(setup);
 		if (!setup->token || ft_strlen(setup->token->value) == 0)
 			continue ;
-		add_history(setup->input);
 		setup->cmd = pars_tokens(setup);
 		setup->tree = build_tree_commande(setup->cmd);
 		start_execution(setup);
-		free(setup->input);
+		// free(setup->input);
 	}
 	return (0);
 }

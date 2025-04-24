@@ -19,6 +19,8 @@ char	*ft_strchr(char *s, int c)
 
 	i = 0;
 	ch = (char)c;
+	if (!s[i])
+		return (NULL);
 	while (s[i])
 	{
 		if (s[i] == ch)

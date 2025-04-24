@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
-#include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+# include "mini_shell.h"
 
 static int	count_numbers(int n)
 {
@@ -52,7 +53,7 @@ char	*ft_itoa_(int n)
 	char			*ptr;
 
 	num_len = count_numbers(n);
-	ptr = malloc(sizeof(char) * (num_len + 1));
+	ptr = gc_malloc(g_gc, sizeof(char) * (num_len + 1));
 	if (!ptr)
 		return (NULL);
 	if (n < 0)
@@ -97,7 +98,7 @@ char	*ft_strjoin_(char *s1, char *s2)
 	if (!s2)
 		return (ft_strdup(s1));
 	total_len = ft_strlen(s1) + ft_strlen(s2);
-	ptr = malloc(sizeof(char) * (total_len + 1));
+	ptr = gc_malloc(g_gc, sizeof(char) * (total_len + 1));
 	if (!ptr)
 		return (NULL);
 	cpy(ptr, s1);

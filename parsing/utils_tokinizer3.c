@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tokenizer.h"
-#include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+# include "mini_shell.h"
 
 int check_syntax(char *input, int len, int *i)
 {

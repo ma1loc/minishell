@@ -10,8 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
-#include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+# include "mini_shell.h"
+
 
 void	expand_env_vars(t_token *tokens, t_setup *setup)
 {
@@ -30,7 +32,7 @@ void	expand_env_vars(t_token *tokens, t_setup *setup)
 		expanded = expand_env_in_string(current->value, setup);
 		if (expanded != NULL)
 		{
-			free(current->value);
+			gc_free(g_gc, current->value);
 			current->value = expanded;
 		}
 		current = current->next;
@@ -106,7 +108,7 @@ int	expand_exit_status(t_expand_data *data, t_setup *setup)
 	ft_strcpy(data->buff + data->buff_index, exit);
 	data->buff_index += ft_strlen(exit);
 	data->ptr += 2;
-	free(exit);
+	gc_free(g_gc, exit);
 	return (0);
 }
 

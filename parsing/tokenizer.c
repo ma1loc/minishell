@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
-#include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+# include "mini_shell.h"
 
 int	check_pipes(char *input, int len, int *i)
 {
@@ -83,7 +84,6 @@ int	check_quotes_syntax(t_setup *setup)
     while (setup->input[i] != '\0')
     {
         i = skip_whitespace(setup->input, i);
-
         if (check_syntax(setup->input, len, &i) != 0)
         {
             in_quotes = 1;
@@ -122,17 +122,17 @@ t_token	*tokenize(t_setup *setup)
 
 	input = setup->input;
 	tokens = NULL;
-	state = malloc(sizeof(t_tokinizer_state));
+	state = gc_malloc(g_gc, sizeof(t_tokinizer_state));
 	if (!state)
 		return (NULL);
 	state->i = 0;
 	state->j = 0;
 	ft_memset(state->buff, 0, sizeof(state->buff));
 	if (!setup->input || check_quotes_syntax(setup) != 0)
-		return (free(state), NULL);
+		return (gc_free(g_gc, state), NULL);
 	tokenize_loop(input, state, &tokens);
 	process_remainder_text(state, &tokens);
 	expand_env_vars(tokens, setup);
 	handel_is_split(tokens, &tokens);
-	return (free(state), tokens);
+	return (gc_free(g_gc, state), tokens);
 }

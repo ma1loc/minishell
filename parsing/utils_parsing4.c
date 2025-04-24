@@ -10,12 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
-#include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+# include "mini_shell.h"
 
 t_command	*creat_new_node_command(t_command *commandes)
 {
-	commandes = malloc(sizeof(t_command)); // creat new commande
+	commandes = gc_malloc(g_gc, sizeof(t_command)); // creat new commande
 	if (!commandes)
 		return (NULL);
 	commandes->name = NULL;
@@ -36,10 +37,10 @@ void		remove_token(t_token **head, t_token *current)
 	{
 		temp = *head;
 		*head = (*head)->next;
-		free(temp->value);
+		gc_free(g_gc ,temp->value);
 		if (temp->quotes_info)
-			free(temp->quotes_info);
-		free(temp);
+			gc_free(g_gc ,temp->quotes_info);
+		gc_free(g_gc, temp);
 		return ;
 	}
 	prev = *head;
@@ -48,8 +49,8 @@ void		remove_token(t_token **head, t_token *current)
 	if (prev)
 	{
 		prev->next = current->next;
-		free(current->value);
-		free(current);
+		gc_free(g_gc, current->value);
+		gc_free(g_gc, current);
 	}
 }
 

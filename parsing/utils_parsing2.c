@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../srcs/mini_shell.h"
-#include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+# include "mini_shell.h"
 
 void	add_redirection_to_list(t_command *cmd, char *file_name,
 		t_token_type type)
@@ -41,7 +42,7 @@ t_redirections	*new_redirection(char *file_name, t_token_type type)
 {
 	t_redirections	*redir;
 
-	redir = malloc(sizeof(t_redirections));
+	redir = gc_malloc(g_gc, sizeof(t_redirections));
 	if (!redir)
 		return (NULL);
 	if (file_name != NULL)

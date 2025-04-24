@@ -1,5 +1,6 @@
-#include "tokenizer.h"
-#include "../srcs/mini_shell.h"
+// #include "tokenizer.h"
+// #include "../srcs/mini_shell.h"
+# include "mini_shell.h"
 
 void	process_token(t_commande_state *state, t_token *current, t_args_list **list_args)
 {
@@ -41,15 +42,15 @@ t_command *pars_tokens(t_setup *setup)
   commandes = NULL;
   list_args = NULL;
   t_commande_state *state;    // state to use current commande and new onece
-  state = malloc(sizeof(t_commande_state));
+  state = gc_malloc(g_gc, sizeof(t_commande_state));
   if(!state)
     return(NULL);
-  memset(state, 0 , sizeof(t_commande_state));
+  ft_memset(state, 0 , sizeof(t_commande_state));
   commandes = creat_new_node_command(commandes);  // create first command node
   state->current_cmd = commandes;   // track current commande
   current = setup->token; // linked list of tokens
   process_token(state, current, &list_args);
-  free(state);
+  gc_free(g_gc, state);
   return(commandes);
 }
 
@@ -60,10 +61,10 @@ t_args_list *add_args_to_list(t_args_list **list_head, t_token *token)
 
   if(!token || !token->value)
     return(NULL);
-  new_arg = malloc(sizeof(t_args_list));
+  new_arg = gc_malloc(g_gc, sizeof(t_args_list));
   if(!new_arg)
     return (NULL);
-  new_arg->value = strdup(token->value);
+  new_arg->value = ft_strdup(token->value);
   new_arg->type = token->type;
   new_arg->next = NULL;
   if(*list_head == NULL)
@@ -106,9 +107,9 @@ void fill_array(t_args_list *list, t_command *cmd)
     if (!current || !cmd || !cmd->name)
         return;
 
-    cmd->args[i++] = strdup(cmd->name);
+    cmd->args[i++] = ft_strdup(cmd->name);
 
-    if (current != NULL && strcmp(current->value, cmd->name) == 0)
+    if (current != NULL && ft_strcmp(current->value, cmd->name) == 0)
         current = current->next;
 
     process_args(current, cmd, &i);
