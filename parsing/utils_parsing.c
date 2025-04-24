@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "../srcs/mini_shell.h"
-// #include "tokenizer.h"
 # include "mini_shell.h"
 
 static int	count_numbers(int n)

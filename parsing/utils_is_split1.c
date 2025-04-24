@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "../srcs/mini_shell.h"
-// #include "tokenizer.h"
 # include "mini_shell.h"
 
 t_token	*setup_token(char *value, int token_type, int quotes_type)
@@ -23,6 +21,7 @@ t_token	*setup_token(char *value, int token_type, int quotes_type)
 		return (NULL);
 	new_token->value = ft_strdup(value);
 	new_token->type = token_type;
+    new_token->is_space = 0;
 	new_token->is_split = 0;
 	new_token->quotes_info = gc_malloc(g_gc, sizeof(t_quotes_info));
 	if (!new_token->quotes_info)

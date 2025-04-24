@@ -1,5 +1,3 @@
-// #include "tokenizer.h"
-// #include "../srcs/mini_shell.h"
 # include "mini_shell.h"
 
 void	process_token(t_commande_state *state, t_token *current, t_args_list **list_args)
@@ -11,7 +9,7 @@ void	process_token(t_commande_state *state, t_token *current, t_args_list **list
 	head = current;
 	while (current != NULL)
 	{
-        if(check_current_type(current->type))
+    if(check_current_type(current->type))
 		    current = process_token_type_redir(state, current);
 		else if (current && current->type == TOKEN_WORD)
 		{
