@@ -56,7 +56,7 @@ void	get_delimiter_qoutes(t_setup *setup)
 	}
 }
 
-int	get_heredoc_fds(t_setup *setup, t_redirections *red)
+int	get_heredoc_fds(t_setup *setup, t_redirections *red, int flag)
 {
 	t_heredoc	*heredoc;
 	char		*file_name;
@@ -75,7 +75,7 @@ int	get_heredoc_fds(t_setup *setup, t_redirections *red)
 	heredoc->delim_map[i] = ft_strdup(setup->heredoc->delimiter);
 	get_delimiter_qoutes(setup);
 	loding_heredoc(setup);
-	if (refresh_fds(setup, file_name) == 1)
+	if (refresh_fds(setup, file_name, flag) == 1)
 		return (cleanup_heredoc(setup), 1);
 	gc_free(g_gc, file_name);
 	return (0);
@@ -84,8 +84,12 @@ int	get_heredoc_fds(t_setup *setup, t_redirections *red)
 void	init_heredoc(t_setup *setup, t_tree *tree)
 {
 	t_redirections	*redir;
+	t_command		*cmd;
+	int				flag;
 
 	redir = NULL;
+	flag = 0;
+	cmd = setup->cmd;
 	if (!tree)
 		return ;
 	if (tree->cmd && tree->cmd->redirections)
@@ -93,15 +97,20 @@ void	init_heredoc(t_setup *setup, t_tree *tree)
 		redir = tree->cmd->redirections;
 		while (redir)
 		{
+			if (cmd->name)
+				flag = 1;
 			if (redir->type == TOKEN_HERDOC)
 			{
 				setup->heredoc_flag = 1;
-				if (get_heredoc_fds(setup, redir) == 1)
+
+				if (get_heredoc_fds(setup, redir, flag) == 1)
 				{
 					ft_perror(setup, "heredoc process failed\n", EXIT_FAILURE);
 					break ;
 				}
 				setup->i++;
+				cmd = cmd->next;
+				flag = 0;
 			}
 			redir = redir->next;
 		}

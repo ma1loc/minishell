@@ -52,20 +52,24 @@ char	*get_file_name(t_setup *setup)
 	return (file_name);
 }
 
-int	refresh_fds(t_setup *setup, char *file_name)
+int refresh_fds(t_setup *setup, char *file_name, int flag)
 {
-	int	i;
+	int	i = setup->i;
 
-	i = setup->i;
-	close(setup->heredoc->fd[i]);
-	setup->heredoc->fd[i] = open(file_name, O_RDONLY, 0644);
-	if (!setup->heredoc->fd[i])
+	if (setup->heredoc->fd[i] >= 0)
+		close(setup->heredoc->fd[i]);
+	if (flag)
+		setup->heredoc->fd[i] = open(file_name, O_RDONLY);
+	if (setup->heredoc->fd[i] < 0)
 	{
 		ft_perror(setup, NULL, EXIT_FAILURE);
-		return (cleanup_heredoc(setup), free(file_name), 1);
+		cleanup_heredoc(setup);
+		gc_free(g_gc, file_name);
+		return (1);
 	}
 	return (0);
 }
+
 
 int	is_heredoc_in_pipe(t_tree *tree)
 {
