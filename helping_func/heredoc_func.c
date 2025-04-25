@@ -50,8 +50,8 @@ void	heredoc_counter(t_setup *setup, t_tree *tree)
 
 void	close_fds(t_setup *setup)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
 	if (setup->heredoc->fd[i])
 	{

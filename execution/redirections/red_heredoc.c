@@ -12,9 +12,7 @@
 
 #include "mini_shell.h"
 
-
-// int red_heredoc(t_setup *setup, t_tree *tree, t_redirections *redir)
-int red_heredoc(t_setup *setup, t_redirections *redir)
+int	red_heredoc(t_setup *setup, t_redirections *redir)
 {
 	int	found;
 	int	fd;
