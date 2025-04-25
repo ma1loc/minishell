@@ -272,10 +272,10 @@ t_tree *build_tree_commande(t_command *commandes);
 t_args_list *add_args_to_list(t_args_list **list_head, t_token *token);
 int count_args_list(t_args_list *args);
 void fill_array(t_args_list *args_list, t_command *commads);
-void free_list_args(t_args_list *list_args);
+// void free_list_args(t_args_list *list_args);
 t_redirections *new_redirection(char *file_name, t_token_type type);
 void add_redirection_to_list( t_command *cmd, char *file_name, t_token_type type);
-void free_redirections(t_redirections *redir);
+// void free_redirections(t_redirections *redir);
 void process_spaces(t_tokinizer_state *state, t_token **tokens);
 void process_special_tokens(char *input, t_tokinizer_state *state, t_token **tokens);
 void process_operators(char *input, t_tokinizer_state *state, t_token **tokens);
@@ -336,23 +336,17 @@ void process_args(t_args_list *current, t_command *cmd, int *i);
 int	skip_whitespace(char *input, int i);
 int	handle_dollar_dquotes(char *input, t_tokinizer_state *state, t_quotes_info info, t_token **tokens);
 int	handle_dollar_squotes(char *input, t_tokinizer_state *state, t_quotes_info info, t_token **tokens);
-int process_token_content(t_content_info *c_info, t_token **tokens, t_quotes_info info,t_tokinizer_state *state);
-int handle_dollar_quotes(char *input, t_tokinizer_state *state, t_token **tokens, t_quotes_info *info);
-
-
-
-
+int		process_token_content(t_content_info *c_info, t_token **tokens, t_quotes_info info,t_tokinizer_state *state);
+int 	handle_dollar_quotes(char *input, t_tokinizer_state *state, t_token **tokens, t_quotes_info *info);
+void 	handle_question_mark(char *input, t_tokinizer_state *state);
 // >>>>>>>>>>>>>>>>>>>>>> end >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 
 t_setup	*start_setup(int argc, char **argv, char **env);
 int		is_built_in(char *name);
 t_setup	*shell_env_setup(char **env);
-// t_setup	*init_setup_struct(void);
 char	*path_resolver(t_setup *setup);
-// char    **update_exec_envp(t_setup *setup);
 char	**update_exec_envp(t_setup *setup, t_env *cur_env);
-
-// void    execution(t_tree *tree, t_setup *setup);
 void	execution(t_tree *tree, t_setup *setup);
 void	execute_internals(t_command *cmd, t_setup *setup);
 void	execute_commands(t_tree *tree, t_setup *setup);
@@ -362,27 +356,21 @@ pid_t	set_first_fork(t_setup *setup, int *fd);
 pid_t	set_second_fork(t_setup *setup, pid_t pid_1, int *fd);
 pid_t	set_fork(t_setup *setup);
 void	command_not_found(t_setup *setup);
-
 void	execute_redirections(t_tree *tree, t_setup *setup);
 int		red_input(t_setup *setup, t_tree *tree, t_redirections *redirection);
 int		red_append(t_setup *setup, t_tree *tree, t_redirections *redirection);
 int		red_output(t_setup *setup, t_tree *tree, t_redirections *redirection);
 int		red_heredoc(t_setup *setup, t_redirections *redirection);
-
 int		is_heredoc(t_tree *tree);
 void	heredoc_process(t_setup *setup, t_tree *tree);
 char	*get_file_name(t_setup *setup);
-int		refresh_fds(t_setup *setup, char *file_name, int flag);
-// int	refresh_fds(t_setup *setup, char *file_name);
-// int	should_expand(t_token *token);
-int		should_expand(t_setup *setup);
+int		refresh_fds(t_setup *setup, char *file_name);
 void	expand_heredoc_input(t_setup *setup, char *input);
 void	cleanup_heredoc(t_setup *setup);
 void	heredoc_counter(t_setup *setup, t_tree *tree);
 void	do_eof_heredoc(t_setup *setup);
 void	get_delimiter(t_setup *setup, t_redirections *red);
 void	maximum_heredoc_msg(void);
-
 int		*exit_status(void);
 void	setup_signals(void);
 void	main_sigint(int sig);
@@ -391,8 +379,7 @@ void	do_eof(t_setup *setup);
 void	execute_sigint(int sig);
 void	sigint_exit_status(t_setup *setup);
 void	signal_status(t_setup *setup, int status);
-t_setup	**get_setup_ref(void);
-void	set_setup(t_setup *ptr);
-t_setup	*get_setup(void);
+t_setup	**get_setup(void);
+void	close_fds(t_setup *setup);
 
 #endif

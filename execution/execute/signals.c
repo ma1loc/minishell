@@ -33,6 +33,26 @@ void	main_sigint(int sig)
 	*exit_status() = EXIT_SEGINT;
 }
 
+t_setup	**get_setup(void)
+{
+	static t_setup	*setup_ptr;
+	
+	setup_ptr = NULL;
+	return (&setup_ptr);
+}
+
+void	heredoc_sigint(int sig)
+{
+	t_setup	*setup;
+	
+	(void)sig;
+	setup = *get_setup();
+	write(STDOUT_FILENO, "\n", 1);
+	cleanup_heredoc(setup);
+	gc_destroy(g_gc);
+	exit(EXIT_SEGINT);
+}
+
 void	do_eof(t_setup *setup)
 {
 	int	exit_stat;
@@ -43,13 +63,6 @@ void	do_eof(t_setup *setup)
 	exit(exit_stat);
 }
 
-void	heredoc_sigint(int sig)
-{
-	(void)sig;
-	write(STDOUT_FILENO, "\n", 1);
-	gc_destroy(g_gc);
-	exit(EXIT_SEGINT);
-}
 
 void	signal_status(t_setup *setup, int status)
 {

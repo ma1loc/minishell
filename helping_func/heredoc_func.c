@@ -47,3 +47,18 @@ void	heredoc_counter(t_setup *setup, t_tree *tree)
 	}
 	heredoc_counter_in_pipe(setup, tree);
 }
+
+void	close_fds(t_setup *setup)
+{
+	int i;
+	
+	i = 0;
+	if (setup->heredoc->fd[i])
+	{
+		while (setup->heredoc->fd[i])
+		{
+			close(setup->heredoc->fd[i]);
+			i++;
+		}
+	}
+}
