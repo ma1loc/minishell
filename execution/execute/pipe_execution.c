@@ -70,30 +70,29 @@ void	second_child_process(t_setup *setup, t_tree *tree, int *fd)
 	exit(exit_stat);
 }
 
-void	execute_pipes(t_tree *tree, t_setup *setup)
+void execute_pipes(t_tree *tree, t_setup *setup)
 {
-	int		fd[2];
-	pid_t	pid_1;
-	pid_t	pid_2;
-	int		status;
+    int     fd[2];
+    pid_t   pid_1;
+    pid_t   pid_2;
+    int     status1, status2;
 
-	set_pipe(setup, fd);
-	pid_1 = set_first_fork(setup, fd);
-	if (pid_1 == 0)
-		first_child_process(setup, tree, fd);
-	pid_2 = set_second_fork(setup, pid_1, fd);
-	if (pid_2 == 0)
-		second_child_process(setup, tree, fd);
-	close(fd[0]);
-	close(fd[1]);
-	if (pid_1 < 0 || pid_2 < 0)
-		return (gc_destroy(g_gc), exit(EXIT_FAILURE), (void)0);
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	waitpid(pid_1, &status, 0);
-	signal_status(setup, status);
-	waitpid(pid_2, &status, 0);
-	signal_status(setup, status);
-	signal(SIGINT, main_sigint);
-	signal(SIGQUIT, SIG_IGN);
+    set_pipe(setup, fd);
+    pid_1 = set_first_fork(setup, fd);
+    if (pid_1 == 0)
+        first_child_process(setup, tree, fd);
+    pid_2 = set_second_fork(setup, pid_1, fd);
+    if (pid_2 == 0)
+        second_child_process(setup, tree, fd);
+    close(fd[0]);
+    close(fd[1]);
+    if (pid_1 < 0 || pid_2 < 0)
+        return (gc_destroy(g_gc), exit(EXIT_FAILURE), (void)0);
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    waitpid(pid_1, &status1, 0);
+    waitpid(pid_2, &status2, 0);
+    signal_status(setup, status2);
+    signal(SIGINT, main_sigint);
+    signal(SIGQUIT, SIG_IGN);
 }

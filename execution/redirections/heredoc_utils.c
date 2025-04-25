@@ -17,6 +17,7 @@ void	cleanup_heredoc(t_setup *setup)
 	int	i;
 
 	i = 0;
+	ft_putstr_fd("cleanup heredoc\n", STDIN_FILENO);
 	if (setup->heredoc->fd[i])
 	{
 		while (setup->heredoc->fd[i])
@@ -52,14 +53,13 @@ char	*get_file_name(t_setup *setup)
 	return (file_name);
 }
 
-int refresh_fds(t_setup *setup, char *file_name, int flag)
+int refresh_fds(t_setup *setup, char *file_name)
 {
 	int	i = setup->i;
 
 	if (setup->heredoc->fd[i] >= 0)
 		close(setup->heredoc->fd[i]);
-	if (flag)
-		setup->heredoc->fd[i] = open(file_name, O_RDONLY);
+	setup->heredoc->fd[i] = open(file_name, O_RDONLY);
 	if (setup->heredoc->fd[i] < 0)
 	{
 		ft_perror(setup, NULL, EXIT_FAILURE);
