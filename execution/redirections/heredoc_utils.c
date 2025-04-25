@@ -17,7 +17,6 @@ void	cleanup_heredoc(t_setup *setup)
 	int	i;
 
 	i = 0;
-	ft_putstr_fd("cleanup heredoc\n", STDIN_FILENO);
 	if (setup->heredoc->fd[i])
 	{
 		while (setup->heredoc->fd[i])
