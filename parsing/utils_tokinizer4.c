@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:29:48 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/24 20:13:09 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/25 13:22:16 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,6 @@ void	handle_double_operator(char *input, t_tokinizer_state *state,
 	else if (input[state->i] == '<' && input[state->i + 1] == '<')
 	{
 		add_token(tokens, "<<", TOKEN_HERDOC, info.quotes_type);
-		state->i += 2;
-	}
-	else if (input[state->i] == '<' && input[state->i + 1] == '>')
-	{
-		add_token(tokens, "<>", TOKEN_RED_INOUT, info.quotes_type);
 		state->i += 2;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:29:41 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/24 20:27:36 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/25 13:22:49 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ int	check_original_cases(char *input, int len, int *i)
 		return (1);
 	else if (input[*i] == '>' && input[*i + 1] == '<')
 		return (1);
+	else if (input[*i] == '<' && input[*i + 1] == '>')
+		return (1);
 	else if (input[0] == '<' && input[1] == '<' && input[2] == '<'
 		&& input[3] == '<')
 		return (1);
@@ -74,8 +76,8 @@ int	check_original_cases(char *input, int len, int *i)
 	return (0);
 }
 
-void handle_question_mark(char *input, t_tokinizer_state *state)
+void	handle_question_mark(char *input, t_tokinizer_state *state)
 {
-    if (input[state->i] == '?')
-        state->buff[state->j++] = input[state->i++];
+	if (input[state->i] == '?')
+		state->buff[state->j++] = input[state->i++];
 }

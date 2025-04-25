@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:29:31 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/24 20:11:48 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/25 12:28:47 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,7 @@ t_token	*add_token(t_token **head, char *value, t_token_type type,
 	}
 	current = *head;
 	while (current->next != NULL)
-	{
 		current = current->next;
-	}
 	current->next = new_token;
 	return (new_token);
 }
