@@ -6,7 +6,7 @@
 /*   By: ytabia <ytabia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 19:09:59 by ytabia            #+#    #+#             */
-/*   Updated: 2025/04/24 20:07:35 by ytabia           ###   ########.fr       */
+/*   Updated: 2025/04/25 15:30:49 by ytabia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,5 @@ void	set_command_name(t_commande_state *state, t_token *current,
 bool	check_current_type(enum e_token_type type)
 {
 	return (type == TOKEN_RED_IN || type == TOKEN_HERDOC
-		|| type == TOKEN_RED_OUT || type == TOKEN_APPEND
-		|| type == TOKEN_RED_INOUT);
+		|| type == TOKEN_RED_OUT || type == TOKEN_APPEND);
 }
