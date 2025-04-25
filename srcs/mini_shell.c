@@ -34,6 +34,15 @@ void	start_execution(t_setup *setup)
 	}
 }
 
+char	*readline_free(char *input)
+{
+	char	*tmp_input;
+
+	tmp_input = ft_strdup(input);
+	free(input);
+	return (tmp_input);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	t_setup	*setup;
@@ -41,15 +50,12 @@ int	main(int argc, char **argv, char **env)
 	setup = start_setup(argc, argv, env);
 	if (!setup)
 		return (1);
-	setup_signals();
 	while (true)
 	{
 		setup->input = readline("minishell$ ");
 		if (setup->input == NULL)
 			do_eof(setup);
-		char *tmp = setup->input;
-		setup->input = ft_strdup(tmp);
-		free(tmp);
+		setup->input = readline_free(setup->input);
 		if (*exit_status() == EXIT_SEGINT)
 			sigint_exit_status(setup);
 		if (setup->input[0] == '\0')
@@ -63,6 +69,5 @@ int	main(int argc, char **argv, char **env)
 		*get_setup() = setup;
 		start_execution(setup);
 	}
-	gc_destroy(g_gc);
-	return (0);
+	return (gc_destroy(g_gc), 0);
 }

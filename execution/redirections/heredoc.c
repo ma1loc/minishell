@@ -16,14 +16,13 @@ void	loding_heredoc(t_setup *setup)
 {
 	char			*input;
 
+	input = NULL;
 	while (true)
 	{
 		input = readline("heredoc> ");
 		if (input == NULL)
 			do_eof_heredoc(setup);
-		char *tmp = input;
-		input = ft_strdup(tmp);
-		free(tmp);
+		input = readline_free(input);
 		if (ft_strcmp(input, setup->heredoc->delimiter) == 0)
 			break ;
 		if (input[0] == '\0')

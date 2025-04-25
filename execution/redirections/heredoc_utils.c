@@ -53,10 +53,11 @@ char	*get_file_name(t_setup *setup)
 	return (file_name);
 }
 
-int refresh_fds(t_setup *setup, char *file_name)
+int	refresh_fds(t_setup *setup, char *file_name)
 {
-	int	i = setup->i;
+	int	i;
 
+	i = setup->i;
 	if (setup->heredoc->fd[i] >= 0)
 		close(setup->heredoc->fd[i]);
 	setup->heredoc->fd[i] = open(file_name, O_RDONLY);
@@ -69,7 +70,6 @@ int refresh_fds(t_setup *setup, char *file_name)
 	}
 	return (0);
 }
-
 
 int	is_heredoc_in_pipe(t_tree *tree)
 {

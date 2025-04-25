@@ -23,32 +23,22 @@ void	execute_sigint(int sig)
 	exit(EXIT_SEGINT);
 }
 
-void	main_sigint(int sig)
-{
-	(void)sig;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	*exit_status() = EXIT_SEGINT;
-}
-
 t_setup	**get_setup(void)
 {
 	static t_setup	*setup_ptr;
-	
-	setup_ptr = NULL;
+
 	return (&setup_ptr);
 }
 
 void	heredoc_sigint(int sig)
 {
 	t_setup	*setup;
-	
+
 	(void)sig;
 	setup = *get_setup();
 	write(STDOUT_FILENO, "\n", 1);
-	cleanup_heredoc(setup);
+	if (setup != NULL)
+		cleanup_heredoc(setup);
 	gc_destroy(g_gc);
 	exit(EXIT_SEGINT);
 }
@@ -62,7 +52,6 @@ void	do_eof(t_setup *setup)
 	printf("exit\n");
 	exit(exit_stat);
 }
-
 
 void	signal_status(t_setup *setup, int status)
 {
