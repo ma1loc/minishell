@@ -2,7 +2,7 @@ CC = cc
 
 INCLUDE = -Isrcs
 
-CFLAGS = -Wall -Wextra -Werror $(INCLUDE) #-g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror $(INCLUDE)
 
 SRC = srcs/mini_shell.c libft/ft_strlen.c libft/ft_split.c libft/ft_strjoin.c libft/ft_strdup.c libft/ft_strncmp.c \
 	libft/ft_putstr_fd.c execution/built-ins/echo_cmd.c execution/built-ins/cd_cmd.c execution/execute/signals.c \
@@ -43,4 +43,3 @@ fclean: clean
 re: fclean all
 
 .PHONY: clean fclean re
-# .SECONDRY: $(OBJ)

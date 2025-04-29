@@ -38,7 +38,7 @@ void	first_child_process(t_setup *setup, t_tree *tree, int *fd)
 			execution(tree->left, setup);
 	}
 	exit_stat = setup->exit_stat;
-	return (gc_destroy(g_gc), exit(exit_stat), (void)0);
+	return (close_fds(setup), gc_destroy(g_gc), exit(exit_stat), (void)0);
 }
 
 void	second_child_process(t_setup *setup, t_tree *tree, int *fd)
@@ -67,7 +67,7 @@ void	second_child_process(t_setup *setup, t_tree *tree, int *fd)
 			execution(tree->right, setup);
 	}
 	exit_stat = setup->exit_stat;
-	return (gc_destroy(g_gc), exit(exit_stat), (void)0);
+	return (close_fds(setup), gc_destroy(g_gc), exit(exit_stat), (void)0);
 }
 
 void	execute_pipes(t_tree *tree, t_setup *setup)

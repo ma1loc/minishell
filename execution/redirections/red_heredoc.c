@@ -12,15 +12,17 @@
 
 #include "mini_shell.h"
 
-int	red_heredoc(t_setup *setup, t_redirections *redir)
+int	red_heredoc(t_setup *setup, t_tree *tree, t_redirections *redir)
 {
 	int	found;
 	int	fd;
 	int	i;
 
-	i = 0;
+	i = -1;
 	found = 0;
-	while (i < setup->heredoc_counter)
+	if (tree->cmd->name == NULL)
+		return (cleanup_heredoc(setup), 1);
+	while (++i < setup->heredoc_counter)
 	{
 		if (ft_strcmp(setup->heredoc->delim_map[i], redir->file_name) == 0)
 		{
@@ -33,9 +35,8 @@ int	red_heredoc(t_setup *setup, t_redirections *redir)
 				break ;
 			}
 		}
-		i++;
 	}
 	if (!found)
-		return (ft_perror(setup, "heredoc file not found", EXIT_FAILURE), 1);
+		return (ft_perror(setup, "heredoc file not found", EXIT_FAILURE), -1);
 	return (0);
 }

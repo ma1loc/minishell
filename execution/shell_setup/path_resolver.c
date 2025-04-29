@@ -54,14 +54,8 @@ int	is_directory(t_setup *setup, char *cmd_path)
 
 char	*is_valid_str(char *cmd)
 {
-	char	*dup;
-
-	dup = NULL;
-	if ((ft_strchr(cmd, '/') != NULL) && (access(cmd, F_OK | X_OK) == 0))
-	{
-		dup = ft_strdup(cmd);
-		return (dup);
-	}
+	if ((ft_strchr(cmd, '/') != NULL) || (access(cmd, F_OK | X_OK) == 0))
+		return (ft_strdup(cmd));
 	return (NULL);
 }
 

@@ -144,6 +144,7 @@ typedef struct s_heredoc
 	char			*file_name[HERE_DOC_MAX];
 	int				qoutes_type;
 	char			*delim_map[HERE_DOC_MAX];
+	char			*cmd;
 }					t_heredoc;
 
 typedef struct s_tree
@@ -229,9 +230,7 @@ int					ft_atoi(char *str);
 char				*ft_strcpy(char *dst, const char *src);
 char				*ft_strcat(char *dest, const char *src);
 char				*ft_strncpy(char *dest, const char *src, unsigned int n);
-
 t_export_type		get_export_type(char *arg);
-
 void				cd_cmd(t_setup *setup);
 void				pwd_cmd(t_setup *setup);
 int					get_pwd(t_setup *setup);
@@ -256,7 +255,6 @@ t_gc				*gc_init(void);
 void				*gc_malloc(t_gc *gc, size_t size);
 void				gc_cleanup(t_gc *gc);
 void				gc_destroy(t_gc *gc);
-// void	gc_print_stats(t_gc *gc); // >>> to remove later on
 void				gc_free(t_gc *gc, void *ptr);
 t_token				*tokenize(t_setup *setup);
 t_command			*pars_tokens(t_setup *setup);
@@ -264,11 +262,9 @@ t_tree				*build_tree_commande(t_command *commandes);
 t_args_list			*add_args_to_list(t_args_list **list_head, t_token *token);
 int					count_args_list(t_args_list *args);
 void				fill_array(t_args_list *args_list, t_command *commads);
-// void free_list_args(t_args_list *list_args);
 t_redirections		*new_redirection(char *file_name, t_token_type type);
 void				add_redirection_to_list(t_command *cmd, char *file_name,
 						t_token_type type);
-// void free_redirections(t_redirections *redir);
 void				process_spaces(t_tokinizer_state *state, t_token **tokens);
 void				process_special_tokens(char *input,
 						t_tokinizer_state *state, t_token **tokens);
@@ -296,8 +292,6 @@ void				process_dollar(char *input, t_tokinizer_state *state,
 t_token				*add_token(t_token **head, char *value, t_token_type type,
 						int quotes_type);
 t_quotes_info		strip_quotes(char *str);
-// void    ft_perror(t_setup *setup, char *msg, int exit_stat);
-/// remove it later
 char				*ft_itoa_(int n);
 void				remove_token(t_token **head, t_token *current);
 int					check_space(char *str);
@@ -382,7 +376,8 @@ int					red_append(t_setup *setup, t_tree *tree,
 						t_redirections *redirection);
 int					red_output(t_setup *setup, t_tree *tree,
 						t_redirections *redirection);
-int					red_heredoc(t_setup *setup, t_redirections *redirection);
+int					red_heredoc(t_setup *setup, t_tree *tree,
+						t_redirections *redir);
 int					is_heredoc(t_tree *tree);
 void				heredoc_process(t_setup *setup, t_tree *tree);
 char				*get_file_name(t_setup *setup);

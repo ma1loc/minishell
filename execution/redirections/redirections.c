@@ -32,7 +32,7 @@ int	get_red(t_setup *setup, t_tree *tree, t_redirections *redir)
 	else if (redir->type == TOKEN_APPEND)
 		status = red_append(setup, tree, redir);
 	else if (redir->type == TOKEN_HERDOC)
-		status = red_heredoc(setup, redir);
+		status = red_heredoc(setup, tree, redir);
 	return (status);
 }
 
