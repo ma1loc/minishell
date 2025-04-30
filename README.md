@@ -5,7 +5,7 @@ A simple shell implementation based on bash.
 ![C](https://img.shields.io/badge/language-C-blue)
 ![Status](https://img.shields.io/badge/status-completed-success)
 
-![minishell](https://github.com/user-attachments/assets/6f129293-a94d-42be-9fd8-2e9259230c24)
+![minishell](https://github.com/user-attachments/assets/e088d025-215c-4113-ab3f-db43de07fb31)
 
 ## Overview
 
