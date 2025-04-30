@@ -14,6 +14,16 @@
 
 t_gc	*g_gc = NULL;
 
+void	minishell_header(void)
+{
+    printf("███╗   ███╗██╗███╗  ██╗██╗  ██████╗ ██╗  ██╗███████╗██╗     ██╗     \n");
+    printf("████╗ ████║██║████╗ ██║██║ ██╔════╝ ██║  ██║██╔════╝██║     ██║     \n");
+    printf("██╔████╔██║██║██╔██╗██║██║ ███████╗ ███████║█████╗  ██║     ██║          by:\n");
+    printf("██║╚██╔╝██║██║██║╚████║██║ ╚════██╗ ██╔══██║██╔══╝  ██║     ██║          @ma1loc\n");
+    printf("██║ ╚═╝ ██║██║██║ ╚███║██║ ███████╔╝██║  ██║███████╗███████╗███████╗     @X-Hunter\n");
+    printf("╚═╝     ╚═╝╚═╝╚═╝  ╚══╝╚═╝ ╚══════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝     Date: March 10, 2025\n");
+}
+
 void	start_execution(t_setup *setup)
 {
 	setup->heredoc_counter = 0;
@@ -50,6 +60,8 @@ int	main(int argc, char **argv, char **env)
 	setup = start_setup(argc, argv, env);
 	if (!setup)
 		return (1);
+
+	minishell_header();
 	while (true)
 	{
 		setup->input = readline("minishell$ ");
