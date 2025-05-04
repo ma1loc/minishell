@@ -5,7 +5,8 @@ A simple shell implementation based on bash.
 ![C](https://img.shields.io/badge/language-C-blue)
 ![Status](https://img.shields.io/badge/status-completed-success)
 
-![minishell](https://github.com/user-attachments/assets/e088d025-215c-4113-ab3f-db43de07fb31)
+![VN20250504_150041-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/b9cb0c3b-cc29-4c58-931a-03ff285a1f33)
+
 
 ## Overview
 
