@@ -96,7 +96,8 @@ Environment variables:
 
 ## Author Username
 
-[@ma1loc](https://github.com/ma1loc) - [@bronIIcode](https://github.com/bornIIcode)
+[@ma1loc](https://github.com/ma1loc) for @me i did the execution part
+[@bronIIcode](https://github.com/bornIIcode)
 
 ---
 
